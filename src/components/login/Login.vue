@@ -33,11 +33,9 @@
     </div>
   </div>
   <div class="signup-wrapper second">
-    <h3>Registrujte se na našem webu a získejte řadu výhod!</h3>
+    <h3>Proč je potřeba se registrovat</h3>
     <ul>
-      <li>Přístup do databáze mimoškolních aktivit s více než 300 vzdělávacími akcemi, soutěžemi a dobrovolnictvím</li>
-      <li>Pravidelnou dávku aktivit do svého e-mailu.</li>
-      <li>Možnost účastnit se našich akcí Středoškolák roku, Amigo a Free Spirit.</li>
+      <li>Aby bylo možné pracovat s přihláškou.</li>
     </ul>
   </div>
   </div>
