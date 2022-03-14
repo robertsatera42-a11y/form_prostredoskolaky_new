@@ -198,13 +198,18 @@ export default {
     src: local('NunitoExtraLight'),
     url('~@/assets/fonts/NunitoExtraLight.ttf') format('truetype');
   }
+  @font-face {
+    font-family: 'AvenirNext';
+    src: local('AvenirNext'),
+    url('~@/assets/fonts/AvenirNextLTPro-Regular.otf') format('opentype');
+  }
 
   * {
     box-sizing: border-box;
   }
 
   #app {
-    font-family: 'EuclidCircularB', sans-serif;
+    font-family: 'AvenirNext', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: $dark;
@@ -217,7 +222,7 @@ export default {
   .login-button {
     border-color: #4A4A4A;
     background: none;
-    font-family: 'NunitoLight', sans-serif;
+    font-family: 'AvenirNext', sans-serif;
 
     &:hover {
       border-color: #F06027;
@@ -239,7 +244,7 @@ export default {
 
     /* color of checkbox label */
     .control-label {
-      font-family: 'NunitoLight', sans-serif;
+      font-family: 'AvenirNext', sans-serif;
       font-weight: normal;
       font-size: 14px;
     }
@@ -375,7 +380,7 @@ export default {
             padding: 20px;
             transition: .3s;
             color: $dark;
-            font-family: 'NunitoLight', sans-serif;
+            font-family: 'AvenirNext', sans-serif;
 
             /*&.router-link-exact-active {
               color: green
@@ -394,6 +399,9 @@ export default {
     }
   }
 
+  .input {
+    border-radius: 0;
+  }
   .animation-content {
     width: 100%;
   }
