@@ -1,7 +1,9 @@
 <template>
+  <div class="wrapper">
   <div style="text-align: center">
     <h1>Soutěž Středoškolák roku 2022</h1>
     <p>Vytvoř si profil a přihlas se do soutěže</p>
+  </div>
   </div>
   <div class="wrapper">
   <div class="signup-wrapper">

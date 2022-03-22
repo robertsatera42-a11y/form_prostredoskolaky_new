@@ -399,7 +399,7 @@ export default {
     }
   }
 
-  .input, select, .button, .login-button {
+  .input, select, .button, .login-button, .textarea, .select select {
     border-radius: 0;
   }
   .animation-content {

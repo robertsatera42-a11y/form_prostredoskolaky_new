@@ -301,7 +301,7 @@ section.finalise-step {
     .activity {
       color: #FFF;
       padding: 20px;
-      border-radius: 12px;
+      border-radius: 0;
       display: flex;
       flex-direction: row;
       margin: 0 10px 20px;
