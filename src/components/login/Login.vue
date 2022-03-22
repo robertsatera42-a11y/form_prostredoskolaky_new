@@ -34,8 +34,11 @@
   </div>
   <div class="signup-wrapper second">
     <h3>Proč je potřeba se registrovat</h3>
+    <p>Vytvořením účtu získáš řadu výhod</p>
     <ul>
-      <li>Aby bylo možné pracovat s přihláškou.</li>
+      <li>Možnost se k přihlášce kdykoli vrátit a upravovat ji</li>
+      <li>Pravidelnou dávku aktivit do tvého emailu</li>
+      <li>Přístup k databázi mimočkolních aktivit na webu <a href="https://www.prostredoskolaky.cz/">prostredoskolaky.cz</a></li>
     </ul>
   </div>
   </div>

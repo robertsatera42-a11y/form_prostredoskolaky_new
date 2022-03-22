@@ -3,7 +3,7 @@
     <div class="content">
       <div class="header-text">
         <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
-          <span class="orange">2021</span>
+          <span class="orange">2022</span>
         </h1>
         <h2>
           Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.
@@ -211,7 +211,7 @@ section.activities-step {
     .activity {
       color: #FFF;
       padding: 20px;
-      border-radius: 12px;
+      border-radius: 0;
       display: flex;
       flex-direction: row;
       margin: 0 10px 20px;
@@ -222,15 +222,15 @@ section.activities-step {
       height: 250px;
 
       &:nth-child(3n + 1) {
-        background: #E82346;
+        background: #f26427;
       }
 
       &:nth-child(3n + 2) {
-        background: #F53A23;
+        background: #f26427;
       }
 
       &:nth-child(3n + 3) {
-        background: #F52323;
+        background: #f26427;
       }
 
       &-info {

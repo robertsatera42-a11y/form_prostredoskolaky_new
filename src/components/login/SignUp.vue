@@ -9,7 +9,7 @@
       </div>
     </div>
     <div v-else class="login-wrapper">
-      <h2 class="title">Registrace</h2>
+      <h2 class="title">Nová registrace</h2>
       <b-field
         label="Vyberte své povolání"
       >
@@ -236,6 +236,7 @@ export default {
 
 .button {
   margin: 20px 0;
+  border-radius: 0;
 }
 
 .wrapper {

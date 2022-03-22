@@ -5,7 +5,7 @@
         <div class="header-text">
           <h1>
             Vítáme tě v soutěži Středoškolák&nbsp;roku
-            <span class="orange">2021</span>
+            <span class="orange">2022</span>
           </h1>
           <h2>
             Děkujeme za tvou přihlášku, dotazník byl uložen a na {{user.email}} zaslán potvrzovací email. Přihlášku můžeš až do deadlinu kdykoliv otevřít a upravit ji.
@@ -16,7 +16,7 @@
         <div class="header-text">
           <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
           <h1>Vítáme tě v soutěži Středoškolák roku
-            <span class="orange">2021</span>
+            <span class="orange">2022</span>
           </h1>
           <h2>
             Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.
@@ -92,7 +92,8 @@
     </div>
 
     <div class="help-link">
-      <p>Zaznamenal/a jsi nějaké potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
+      <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
+      <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">soutez@prostredoskolaky.cz</span>.</p>
     </div>
 
     </div>
@@ -311,15 +312,15 @@ section.finalise-step {
       height: 250px;
 
       &:nth-child(3n + 1) {
-        background: #E82346;
+        background: #f26427;
       }
 
       &:nth-child(3n + 2) {
-        background: #F53A23;
+        background: #f26427;
       }
 
       &:nth-child(3n + 3) {
-        background: #F52323;
+        background: #f26427;
       }
 
       &-info {

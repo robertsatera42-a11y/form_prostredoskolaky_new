@@ -61,7 +61,7 @@
             </b-dropdown>
           </div>
           <div v-else>
-            <button @click="goToLogin(); closeMenu()" class="button login-button">Přihlášení</button>
+            <a href="https://stredoskolakroku.cz/" class="button login-button">Zpět na homepage</a>
           </div>
         </nav>
       </div>

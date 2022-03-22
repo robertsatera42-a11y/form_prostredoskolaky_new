@@ -3,7 +3,7 @@
     <div class="content">
       <div class="header-text">
         <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
-          <span class="orange">2021</span>
+          <span class="orange">2022</span>
         </h1>
         <h2>
           Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>
@@ -218,7 +218,8 @@
         </b-field>
       </div>
       <div class="help-link">
-        <p>Zaznamenal/a jsi nějaké potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
+        <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
+        <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">soutez@prostredoskolaky.cz</span>.</p>
       </div>
 
       <!--<pre style="max-height: 400px"><b>Tags:</b>{{ user.interests }}</pre>-->
