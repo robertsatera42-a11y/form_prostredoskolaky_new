@@ -1,4 +1,8 @@
 <template>
+  <div style="text-align: center">
+    <h1>Soutěž Středoškolák roku 2022</h1>
+    <p>Vytvoř si profil a přihlas se do soutěže</p>
+  </div>
   <div class="wrapper">
   <div class="signup-wrapper">
     <h2 class="title">Přihlášení</h2>
@@ -167,7 +171,7 @@ export default {
     }
     li::before {
       content: "\2022";
-      color: #f06027;
+      color: #f26427;
       width: 20px;
       margin-left: -20px;
       display: inline-block;

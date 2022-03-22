@@ -61,7 +61,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: linear-gradient(160deg, rgba(127, 97, 250, 0.8) 25%, rgba(215, 109, 124, 0.8) 75%);
+  background: linear-gradient(160deg, rgba(240, 78, 35, 0.8) 25%, rgba(255, 106, 63, 0.8) 75%);
   opacity: .25;
 }
 .content {
@@ -81,7 +81,7 @@ export default {
     padding-top: 40px;
     text-align: center;
     font-size: 20px;
-    color: #F06027;
+    color: #f26427;
   }
 
   .db {
@@ -99,7 +99,7 @@ export default {
     }
     li::before {
       content: "\2022";
-      color: #f06027;
+      color: #f26427;
       width: 20px;
       margin-left: -20px;
       display: inline-block;

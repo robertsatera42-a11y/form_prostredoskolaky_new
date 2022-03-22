@@ -103,7 +103,7 @@ export default {
 
 .title {
   font-size: 30px;
-  color: #F06027;
+  color: #f26427;
 }
 
 .content {

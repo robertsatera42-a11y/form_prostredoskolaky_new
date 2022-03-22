@@ -153,7 +153,7 @@ export default {
 <style lang="scss">
   @import '~bulma/sass/utilities/all';
 
-  $primary: #F06027;
+  $primary: #f26427;
   $dark: #4A4A4A;
 
   $primary-invert: findColorInvert($primary);
@@ -225,7 +225,7 @@ export default {
     font-family: 'AvenirNext', sans-serif;
 
     &:hover {
-      border-color: #F06027;
+      border-color: #f26427;
     }
 
     .icon {
@@ -399,7 +399,7 @@ export default {
     }
   }
 
-  .input {
+  .input, select, .button, .login-button {
     border-radius: 0;
   }
   .animation-content {

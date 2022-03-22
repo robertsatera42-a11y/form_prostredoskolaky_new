@@ -107,7 +107,7 @@ export default {
   left: 0;
   width: 100%;
   height: 72%;
-  background: linear-gradient(160deg, rgba(127, 97, 250, 0.8) 25%, rgba(215, 109, 124, 0.8) 75%);
+  background: linear-gradient(160deg, rgba(240, 78, 35, 0.8) 25%, rgba(255, 106, 63, 0.8) 75%);
   z-index: -1;
   opacity: .25
 }
