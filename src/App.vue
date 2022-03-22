@@ -405,4 +405,7 @@ export default {
   .animation-content {
     width: 100%;
   }
+  .input:focus {
+    box-shadow: none;
+  }
   </style>

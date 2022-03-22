@@ -209,7 +209,7 @@ export default {
   width: 90%;
   margin: auto !important;
   max-width: 800px;
-  border-radius: 18px;
+  border-radius: 0;
   font-size: 13px;
 }
 </style>

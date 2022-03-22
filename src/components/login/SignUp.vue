@@ -243,7 +243,7 @@ export default {
   max-width: 43%;
   height: 779px;
   background: white;
-  border-radius: 10px;
+  border-radius: 0;
 
   @media (max-width: 650px) {
     max-width: 100%;

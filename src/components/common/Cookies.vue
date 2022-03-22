@@ -53,7 +53,7 @@ export default {
   bottom: 20px;
   right: 20px;
   border-radius: 0;
-  box-shadow: 0 0 4px 0px #ed4f10;
+  box-shadow: none;
   max-width: 300px;
   width: 100%;
 
