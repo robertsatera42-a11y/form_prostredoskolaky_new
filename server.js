@@ -39,10 +39,10 @@ app.get("/", function (req, res) {
 
 // comment above
 // app.get(
-//   "/.well-known/acme-challenge/Vytv7IVPHj6rLP-_q6Fz0Pb_QM3DMgEnSAeQwA7tnng",
+//   "/.well-known/acme-challenge/drw_qXAroLifgwV6Sg2Odxvt_GzhpU6abwwIzBIj4U8",
 //   function (req, res) {
 //     res.send(
-//       "Vytv7IVPHj6rLP-_q6Fz0Pb_QM3DMgEnSAeQwA7tnng.K0kYVkI1RbD_XVfNybqUHTGx0yZB-ShFcv_w5x93nMo"
+//       "drw_qXAroLifgwV6Sg2Odxvt_GzhpU6abwwIzBIj4U8.K0kYVkI1RbD_XVfNybqUHTGx0yZB-ShFcv_w5x93nMo"
 //     );
 //   }
 // );
