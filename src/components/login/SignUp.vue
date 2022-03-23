@@ -239,6 +239,9 @@ export default {
   border-radius: 0;
 }
 
+.signup-wrapper {
+  border:0;
+}
 .wrapper {
   max-width: 43%;
   height: 809px;

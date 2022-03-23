@@ -157,7 +157,7 @@ export default {
 .signup-wrapper {
   padding: 30px 30px;
   background: white;
-  border-radius: 10px;
+  border-radius: 0;
   margin-bottom: 20px;
 
   &.second {
