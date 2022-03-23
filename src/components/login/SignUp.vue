@@ -241,7 +241,7 @@ export default {
 
 .wrapper {
   max-width: 43%;
-  height: 779px;
+  height: 809px;
   background: white;
   border-radius: 0;
 

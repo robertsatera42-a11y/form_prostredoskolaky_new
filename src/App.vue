@@ -399,7 +399,7 @@ export default {
     }
   }
 
-  .input, select, .button, .login-button, .textarea, .select select {
+  .input, select, .button, .login-button, .textarea, .select select, .signup-wrapper, .cookie-bar p, .modal-card {
     border-radius: 0;
   }
   .animation-content {
