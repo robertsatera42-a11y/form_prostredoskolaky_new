@@ -4,17 +4,16 @@
 
     <section class="main-container">
       <div v-if="redirectMessage" class="redirect-message">{{redirectMessage}}</div>
-      <div class="db" v-if="this.$route.query.redirect === 'databaze'">
-        <ul>
-          <li>Přístup k více než 300 aktivitám a akcím</li>
-          <li>Podrobné informace o vzdělávacích programech, soutěžích či dobrovolnictví</li>
-          <li>Přehledné filtrování podle předmětu a typu aktivity</li>
-        </ul>
-      </div>
-      <div class="content">
-        <Login />
-        <SignUp />
-      </div>
+        <div class="content-header">
+          header
+        </div>
+        <div class="content">
+          <Login />
+          <SignUp />
+        </div>
+        <div class="content-footer">
+          footer
+        </div>
     </section>
   </div>
 </template>
@@ -69,6 +68,15 @@ export default {
   max-width: 1200px;
   margin: 40px auto;
   padding: 10px 40px 0;
+}
+.content-header {
+  width: 80%;
+  max-width: 1200px;
+}
+
+.content-footer {
+  width: 80%;
+  max-width: 1200px;
 }
 
 .main-container {
