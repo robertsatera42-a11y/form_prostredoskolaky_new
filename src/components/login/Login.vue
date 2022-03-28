@@ -38,7 +38,7 @@
     <ul>
       <li>Možnost se k přihlášce kdykoli vrátit a upravovat ji</li>
       <li>Pravidelnou dávku aktivit do tvého emailu</li>
-      <li>Přístup k databázi mimočkolních aktivit na webu <a href="https://www.prostredoskolaky.cz/">prostredoskolaky.cz</a></li>
+      <li>Přístup k databázi mimoškolních aktivit na webu <a href="https://www.prostredoskolaky.cz/">prostredoskolaky.cz</a></li>
     </ul>
   </div>
   </div>
