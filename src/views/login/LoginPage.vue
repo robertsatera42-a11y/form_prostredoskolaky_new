@@ -98,6 +98,7 @@ export default {
   margin: 0 auto;
   width: 100%;
   display: block;
+  margin-top: 40px;
 }
 .footer-social {
   display: flex;
