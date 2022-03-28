@@ -94,8 +94,12 @@ export default {
   margin: 0 auto;
 }
 
-.content-footer {
-
+.content-footer > div {
+  text-align: center;
+  margin: 0 auto;
+}
+.content-footer a {
+  float: left;
 }
 .content-footer img {
   display: block;
