@@ -23,7 +23,7 @@
             <a href="https://www.linkedin.com/company/prost%C5%99edo%C5%A1kol%C3%A1ky-z-s-/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/LI-In-Bug-300x255.png" alt="" style="width: 88px;"></a>
           </div>
 
-          <div>© ProStředoškoláky 2022</div>
+          <div class="footer-year">© ProStředoškoláky 2022</div>
         </div>
     </section>
   </div>
@@ -93,7 +93,7 @@ export default {
   text-align: center;
   margin: 0 auto;
 }
-.content-footer > div {
+.footer-year {
   text-align: center;
   margin: 0 auto;
   width: 100%;
@@ -102,6 +102,9 @@ export default {
 .footer-social {
   display: flex;
   max-width: 600px;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .content-footer a {
