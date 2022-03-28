@@ -5,7 +5,8 @@
     <section class="main-container">
       <div v-if="redirectMessage" class="redirect-message">{{redirectMessage}}</div>
         <div class="content-header">
-          header
+          <h1>Soutěž Středoškolák roku 2022</h1>
+          <p>Vytvoř si profil a přihlas se do soutěže.</p>
         </div>
         <div class="content">
           <Login />
@@ -72,6 +73,7 @@ export default {
 .content-header {
   width: 80%;
   max-width: 1200px;
+  text-align: center;
 }
 
 .content-footer {
