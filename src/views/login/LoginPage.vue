@@ -105,15 +105,10 @@ export default {
 }
 
 .header-text {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   padding: 40px 0;
-  flex: 1;
 
   h1 {
-    flex: .5;
     font-size: 34px;
     margin: 0 20px 0 0;
     line-height: 1.2;
@@ -121,7 +116,6 @@ export default {
   }
 
   h2 {
-    flex: .5;
     font-size: 18px;
     margin: 0 0 0 20px;
     line-height: 1.2;
@@ -129,10 +123,8 @@ export default {
   }
 
   @media (max-width: 700px) {
-    flex-direction: column;
     h1, h2 {
       margin: 0 0 20px 0;
-      flex: 1;
     }
   }
 }
