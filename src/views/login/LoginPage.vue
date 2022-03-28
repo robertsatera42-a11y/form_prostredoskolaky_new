@@ -16,7 +16,10 @@
           <SignUp />
         </div>
         <div class="content-footer">
-          footer
+          <a href="https://www.facebook.com/prostredoskolaky"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/facebook.svg" alt=""></a>
+          <a href="https://www.instagram.com/stredoskolakroku/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/instagram.png" alt=""></a>
+          <a href="https://www.youtube.com/channel/UCzE5_oYsLRIYB5ej35unTBw"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/youtube.svg" alt=""></a>
+          <a href="https://www.linkedin.com/company/prost%C5%99edo%C5%A1kol%C3%A1ky-z-s-/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/LI-In-Bug-300x255.png" alt=""></a>
         </div>
     </section>
   </div>
@@ -83,6 +86,18 @@ export default {
 .content-footer {
   width: 80%;
   max-width: 1200px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.content-footer {
+
+}
+.content-footer img {
+  display: block;
+  width: 75px;
+  height: 75px;
+  margin: 0 40px;
 }
 
 .main-container {
