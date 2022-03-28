@@ -97,6 +97,8 @@ export default {
 .content-footer > div {
   text-align: center;
   margin: 0 auto;
+  width: 100%;
+  display: block;
 }
 .content-footer a {
   float: left;
