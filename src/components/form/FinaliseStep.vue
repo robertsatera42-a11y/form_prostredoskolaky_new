@@ -107,7 +107,7 @@
     <div class="submit-block">
       <div class="submit-actions content">
         <a v-if="!showSuccess" class="button a-orange" @click="goToEditActivities">Zpět na 2. krok</a>
-        <router-link v-if="showSuccess" class="button a-gray" to="https://stredoskolakroku.cz/">Zavřít</router-link>
+        <router-link v-if="showSuccess" class="button a-gray" to="https://prihlaska.stredoskolakroku.cz/">Zavřít</router-link>
         <a v-if="!showSuccess" class="button a-orange-full" @click="submit">Uložit přihlášku</a>
         <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
