@@ -228,7 +228,7 @@
 
     <div class="submit-block">
       <div class="submit-actions content">
-        <router-link class="button a-gray" to="/soutez">Zavřít</router-link>
+        <router-link class="button a-gray" to="https://stredoskolakroku.cz/">Zavřít</router-link>
         <a class="button a-orange" @click="goToActivities">Přejít na 2. krok</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved)}}</small>
       </div>
