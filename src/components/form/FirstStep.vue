@@ -17,7 +17,8 @@
     <div class="loader-block"></div>
 
     <div class="content form">
-      <h3>Základní údaje</h3>
+      <h3>Přihlašování ukončeno</h3>
+      <!-- <h3>Základní údaje</h3>
 
       <div class="form-block">
         <div class="half-block">
@@ -220,8 +221,9 @@
       <div class="help-link">
         <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
         <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">soutez@prostredoskolaky.cz</span>.</p>
-      </div>
+      </div> -->
 
+      <!-- neodkomentovat dale -->
       <!--<pre style="max-height: 400px"><b>Tags:</b>{{ user.interests }}</pre>-->
       <!--<pre>$xv: {{ $v.user }}</pre>-->
     </div>

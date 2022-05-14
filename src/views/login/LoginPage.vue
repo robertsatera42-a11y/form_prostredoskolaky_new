@@ -9,7 +9,7 @@
             <h1>Soutěž Středoškolák roku <span class="orange">2022</span></h1>
             <h2>Vytvoř si profil a přihlas se do soutěže.</h2>
           </div>
-
+          <h3>Přihlašování ukončeno</h3>
         </div>
         <div class="content">
           <Login />
@@ -81,10 +81,14 @@ export default {
   padding: 10px 40px 0;
 }
 .content-header {
-  width: 80%;
+  width: 60%;
   max-width: 1200px;
   text-align: center;
   margin: 0 auto;
+
+  h3 {
+    font-size: 30px;
+  }
 }
 
 .content-footer {
