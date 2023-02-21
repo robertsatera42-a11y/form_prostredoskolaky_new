@@ -179,7 +179,9 @@
           >
             <b-input
               v-model="user.phone"
-              placeholder="tvé telefonní číslo"
+              placeholder="+420"
+              @focus="focusedPhone = true"
+              @blur="focusedPhone = false"
             ></b-input>
           </b-field>
         </div>
@@ -293,6 +295,7 @@ export default {
       focusedDob: '',
       focusedRegion: '',
       focusedSummary: '',
+      focusedPhone: '',
       submitStatus: '',
     }
   },
