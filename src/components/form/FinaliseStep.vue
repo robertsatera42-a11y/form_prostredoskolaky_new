@@ -5,7 +5,7 @@
         <div class="header-text">
           <h1>
             Vítáme tě v soutěži Středoškolák&nbsp;roku
-            <span class="orange">2022</span>
+            <span class="orange">2023</span>
           </h1>
           <h2>
             Děkujeme za tvou přihlášku, dotazník byl uložen a na {{user.email}} zaslán potvrzovací email. Přihlášku můžeš až do deadlinu kdykoliv otevřít a upravit ji.
@@ -16,7 +16,7 @@
         <div class="header-text">
           <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
           <h1>Vítáme tě v soutěži Středoškolák roku
-            <span class="orange">2022</span>
+            <span class="orange">2023</span>
           </h1>
           <h2>
             Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.
@@ -169,8 +169,19 @@ export default {
           const result = await client.createRegistration(this.user)
           this.isLoading = false
           this.showSuccess = true
-          this.registrationId = result.registrationId
-          await fb.updateProfile(this.user)
+          this.registrationId = result.registrationI
+
+          const preparedActivities = this.user.activities.map(a => {
+            return {
+              ...a,
+              isIndividual: a.isIndividual === 'Individuální' ? true : false
+            }
+          })
+          const preparedUser = {
+            ...this.user,
+            activities: preparedActivities
+          }
+          await fb.updateProfile(preparedUser)
           this.user.hasRegistration = true
           tracking.track('competition', 'entrance_page', 'form_finished')
         } else this.error = config.errors.requiredTerms

@@ -18,9 +18,7 @@
             placeholder="např. Středoškolská odborná činnost"></b-input>
       </b-field>
       <b-field
-          label="Webová stránka aktivity"
-          :type="errorsLink.type"
-          :message="errorsLink.message">
+          label="Webová stránka aktivity">
         <b-input
             v-model="activity.link"
             v-focus="focusedLink"
@@ -30,21 +28,23 @@
         </b-input>
       </b-field>
       <b-field
-          label="Proč jsem začal/a?"
-          :type="errorsStart.type"
-          :message="errorsStart.message">
-        <b-input
-            maxlength="500"
-            type="textarea"
-            v-model="activity.start"
-            v-focus="focusedStart"
-            @focus="focusedStart = true"
-            @blur="focusedStart = false"
-            placeholder="Napiš, proč jsi s mimoškolní aktivitou začal/a.">
-        </b-input>
+        style="padding-top: 15px"
+        label="Typ aktivity"
+        :type="errorsType.type"
+        :message="errorsType.message"
+      >
+        <b-select
+          placeholder="Vyber typ aktivity"
+          v-model="activity.type"
+          v-focus="focusedType"
+          @focus="focusedType = true"
+          @blur="focusedType = false"
+        >
+          <option v-for="option in consts.types" :value="option" :key="option">{{ option }}</option>
+        </b-select>
       </b-field>
       <b-field
-          label="Co jsem dělal/a a s jakým výsledkem?"
+          label="Krátký popis aktivity"
           :type="errorsResult.type"
           :message="errorsResult.message">
         <b-input
@@ -54,21 +54,83 @@
             v-focus="focusedResult"
             @focus="focusedResult = true"
             @blur="focusedResult = false"
-            placeholder="Napiš, jakých výsledků jsi dosáhl/a a jaký měla pro tebe aktivita přínos.">
+            placeholder="Krátce aktivitu popiš, včetně výsledků, kterých jsi v ní dosáhl/a.">
         </b-input>
       </b-field>
       <b-field
-          label="Co mě to naučilo?"
-          :type="errorsLearning.type"
-          :message="errorsLearning.message">
+        v-if="showField.includes(activity.type)"
+        label="Oblast"
+        :type="errorsField.type"
+        :message="errorsField.message"
+      >
+        <b-select
+          placeholder="Vyber, do jakého kola ses nejdál dostal/a."
+          v-model="activity.field"
+          v-focus="focusedField"
+          @focus="focusedField = true"
+          @blur="focusedField = false"
+        >
+          <option v-for="option in consts.fields" :value="option" :key="option">{{ option }}</option>
+        </b-select>
+      </b-field>
+      <b-field
+          label="Časový rozsah"
+          :type="errorsStart.type"
+          :message="errorsStart.message">
         <b-input
             maxlength="500"
             type="textarea"
-            v-model="activity.learning"
-            v-focus="focusedLearning"
-            @focus="focusedLearning = true"
-            @blur="focusedLearning = false"
-            placeholder="Napiš, co ses při mimoškolní aktivitě naučila.">
+            v-model="activity.start"
+            v-focus="focusedStart"
+            @focus="focusedStart = true"
+            @blur="focusedStart = false"
+            placeholder="Napiš, kolik času jsi aktivitě věnoval či věnuješ.">
+        </b-input>
+      </b-field>
+      <b-field
+        v-if="showInterest.includes(activity.type)"
+        label="Obor"
+        :type="errorsInterest.type"
+        :message="errorsInterest.message"
+      >
+        <b-select
+          placeholder="Vyber, do jakého oboru se aktivita nejlépe hodí."
+          v-model="activity.interest"
+          v-focus="focusedInterest"
+          @focus="focusedInterest = true"
+          @blur="focusedInterest = false"
+        >
+          <option v-for="option in consts.interests" :value="option" :key="option">{{ option }}</option>
+        </b-select>
+      </b-field>
+      <b-field
+        v-if="showIsIndividual.includes(activity.type)"
+        label="Individuální/týmová"
+        :type="errorsIsIndividual.type"
+        :message="errorsIsIndividual.message"
+      >
+        <b-select
+          placeholder="Vyber, zda je aktivita individuální nebo týmová."
+          v-model="activity.isIndividual"
+          v-focus="focusedIsIndividual"
+          @focus="focusedIsIndividual = true"
+          @blur="focusedIsIndividual = false"
+        >
+          <option v-for="option in consts.individualities" :value="option" :key="option">{{ option }}</option>
+        </b-select>
+      </b-field>
+      <b-field
+          label="Reference"
+          style="padding-top: 15px;"
+          >
+        <b-input
+            maxlength="500"
+            type="textarea"
+            v-model="activity.reference"
+            v-focus="focusedReference"
+            @focus="focusedReference = true"
+            @blur="focusedReference = false"
+            placeholder="Napiš kontakt na osobu, která Ti může případně aktivitu potvrdit">
         </b-input>
       </b-field>
     </section>
@@ -90,6 +152,7 @@ import { mapFields } from 'vuex-map-fields'
 import { required } from 'vuelidate/lib/validators'
 import { mixin as focusMixin } from 'vue-focus'
 import config from '../../config/default'
+import { requiredIf } from "vuelidate/lib/validators";
 
 export default {
   name: 'activity-form',
@@ -104,24 +167,41 @@ export default {
   },
   data () {
     return {
+      showField: config.consts.showField,
+      showInterest: config.consts.showInterest,
+      showIsIndividual: config.consts.showIsIndividual,
+      consts: {
+        types: config.consts.activityTypes,
+        fields: config.consts.fields,
+        interests: config.consts.activityInterests,
+        individualities: config.consts.individualities
+      },
       activity: {
         name: '',
         link: '',
         result: '',
-        learning: '',
-        start: ''
+        start: '',
+        type: '',
+        field: '',
+        interest: '',
+        isIndividual: '',
+        reference: ''
       },
       focusedName: undefined,
       focusedLink: undefined,
       focusedResult: undefined,
       focusedStart: undefined,
-      focusedLearning: undefined,
+      focusedType: undefined,
+      focusedField: undefined,
+      focusedInterest: undefined,
+      focusedIsIndividual: undefined,
+      focusedReference: undefined,
       submitStatus: ''
     }
   },
   mounted () {
     if (this.index !== null) {
-      this.activity = this.act
+      this.activity = { ...this.act }
     }
   },
   computed: {
@@ -134,29 +214,41 @@ export default {
       this.submitStatus
       return this.validate('name', 'focusedName')
     },
-    errorsLink: function () {
-      this.focusedLink
-      this.$v.activity.link.$invalid
-      this.submitStatus
-      return this.validate('link', 'focusedLink')
-    },
     errorsResult: function () {
       this.focusedResult
       this.$v.activity.result.$invalid
       this.submitStatus
       return this.validate('result', 'focusedResult')
     },
-    errorsLearning: function () {
-      this.focusedLearning
-      this.$v.activity.learning.$invalid
-      this.submitStatus
-      return this.validate('learning', 'focusedLearning')
-    },
     errorsStart: function () {
       this.focusedStart
       this.$v.activity.start.$invalid
       this.submitStatus
       return this.validate('start', 'focusedStart')
+    },
+    errorsType: function () {
+      this.focusedType
+      this.$v.activity.type.$invalid
+      this.submitStatus
+      return this.validate('type', 'focusedType')
+    },
+    errorsField: function () {
+      this.focusedField
+      this.$v.activity.field.$invalid
+      this.submitStatus
+      return this.validate('field', 'focusedField')
+    },
+    errorsInterest: function () {
+      this.focusedInterest
+      this.$v.activity.interest.$invalid
+      this.submitStatus
+      return this.validate('interest', 'focusedInterest')
+    },
+    errorsIsIndividual: function () {
+      this.focusedIsIndividual
+      this.$v.activity.isIndividual.$invalid
+      this.submitStatus
+      return this.validate('isIndividual', 'focusedIsIndividual')
     }
   },
   methods: {
@@ -187,17 +279,29 @@ export default {
       name: {
         required
       },
-      link: {
-        required
-      },
       result: {
-        required
-      },
-      learning: {
         required
       },
       start: {
         required
+      },
+      type: {
+        required
+      },
+      field: {
+        required: requiredIf((form) => {
+          return config.consts.showField.includes(form.type)
+        })
+      },
+      interest: {
+        required: requiredIf((form) => {
+          return config.consts.showInterest.includes(form.type)
+        })
+      },
+      isIndividual: {
+        required: requiredIf((form) => {
+          return config.consts.showIsIndividual.includes(form.type)
+        })
       }
     }
   }

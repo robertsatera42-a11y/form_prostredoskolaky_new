@@ -3,7 +3,7 @@
     <div class="content">
       <div class="header-text">
         <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
-          <span class="orange">2022</span>
+          <span class="orange">2023</span>
         </h1>
         <h2>
           Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>
@@ -17,8 +17,8 @@
     <div class="loader-block"></div>
 
     <div class="content form">
-      <h3>Přihlašování ukončeno</h3>
-      <!-- <h3>Základní údaje</h3>
+      <!-- <h3>Přihlašování ukončeno</h3> -->
+      <h3>Základní údaje</h3>
 
       <div class="form-block">
         <div class="half-block">
@@ -72,7 +72,7 @@
 
           <b-field
             class="half-input"
-            label="Rok narození"
+            label="Datum narození"
             :type="errorsDob.type"
             :message="errorsDob.message"
           >
@@ -175,11 +175,11 @@
           </b-field>
           <b-field
             class="two-third-input"
-            label="Kontakt na učitele/školu (pokud nám chceš poskytnout)"
+            label="Telefonní čílo"
           >
             <b-input
-              v-model="user.schoolContact"
-              placeholder="email či telefonní číslo"
+              v-model="user.phone"
+              placeholder="tvé telefonní číslo"
             ></b-input>
           </b-field>
         </div>
@@ -187,7 +187,7 @@
 
       <div class="form-block">
         <b-field
-          label="LinkedIn účet"
+          label="LinkedIn účet (volitelné)"
         >
           <b-input
             v-model="user.linkedin"
@@ -208,6 +208,21 @@
         </b-field>
 
         <b-field
+          label="Napiš o sobě krátký medailonek ve 3. osobě"
+          :type="errorsSummary.type"
+          :message="errorsSummary.message">
+        <b-input
+            maxlength="250"
+            type="textarea"
+            v-model="user.summary"
+            v-focus="focusedSummary"
+            @focus="focusedSummary = true"
+            @blur="focusedSummary = false"
+            placeholder="Popiš se v několika větách ve třetí osobě.">
+        </b-input>
+      </b-field>
+
+        <b-field
           label="Jak ses dozvěděl/a o soutěži Středoškolák roku?"
         >
           <b-select
@@ -221,7 +236,7 @@
       <div class="help-link">
         <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
         <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">soutez@prostredoskolaky.cz</span>.</p>
-      </div> -->
+      </div>
 
       <!-- neodkomentovat dale -->
       <!--<pre style="max-height: 400px"><b>Tags:</b>{{ user.interests }}</pre>-->
@@ -277,7 +292,8 @@ export default {
       focusedEmail: '',
       focusedDob: '',
       focusedRegion: '',
-      submitStatus: ''
+      focusedSummary: '',
+      submitStatus: '',
     }
   },
   async mounted () {
@@ -334,6 +350,12 @@ export default {
       this.$v.user.grade.$invalid
       this.submitStatus
       return ValidationUtils.validate(this, 'grade', 'focusedGrade')
+    },
+    errorsSummary: function () {
+      this.focusedSummary
+      this.$v.user.summary.$invalid
+      this.submitStatus
+      return ValidationUtils.validate(this, 'summary', 'focusedSummary')
     }
   },
   methods: {
@@ -391,8 +413,7 @@ export default {
         required
       },
       email: {
-        email,
-        required
+        email
       },
       grade: {
         required
@@ -404,6 +425,9 @@ export default {
         required
       },
       region: {
+        required
+      },
+      summary: {
         required
       }
     }

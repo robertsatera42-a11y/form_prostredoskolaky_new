@@ -3,7 +3,7 @@
     <div class="content">
       <div class="header-text">
         <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
-          <span class="orange">2022</span>
+          <span class="orange">2023</span>
         </h1>
         <h2>
           Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.
@@ -141,7 +141,11 @@ export default {
             link: index !== null ? this.activities && this.activities[index] && this.activities[index].link : '',
             result: index !== null ? this.activities && this.activities[index] && this.activities[index].result : '',
             start: index !== null ? this.activities && this.activities[index] && this.activities[index].start : '',
-            learning: index !== null ? this.activities && this.activities[index] && this.activities[index].learning : ''
+            type: index !== null ? this.activities && this.activities[index] && this.activities[index].type : '',
+            field: index !== null ? this.activities && this.activities[index] && this.activities[index].field : '',
+            reference: index !== null ? this.activities && this.activities[index] && this.activities[index].reference : '',
+            isIndividual: index !== null ? this.activities && this.activities[index] && this.activities[index].isIndividual ? 'Individuální' : 'Týmové' : '',
+            interest: index !== null ? this.activities && this.activities[index] && this.activities[index].interest : '',
           }
         }
       })

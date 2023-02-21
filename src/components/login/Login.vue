@@ -27,7 +27,7 @@
         v-model="password"></b-input>
     </b-field>
     <message type="error" :message="message"/>
-    <button class="button is-primary" disabled @click="login">Přihlásit se</button>
+    <button class="button is-primary" @click="login">Přihlásit se</button>
     <div class="forgotten-password">
       <a @click="goToForgottenPassword">Obnovit zapomenuté heslo</a>
     </div>
