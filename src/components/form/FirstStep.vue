@@ -24,7 +24,7 @@
         <div class="half-block">
           <b-field
             class="half-input"
-            label="Jméno"
+            label="Jméno *"
             :type="errorsFirstName.type"
             :message="errorsFirstName.message"
           >
@@ -39,7 +39,7 @@
 
           <b-field
             class="half-input"
-            label="Příjmení"
+            label="Příjmení *"
             :type="errorsLastName.type"
             :message="errorsLastName.message"
           >
@@ -56,7 +56,7 @@
         <div class="half-block">
           <b-field
             class="half-input"
-            label="Emailová adresa"
+            label="E-mailová adresa *"
             :type="errorsEmail.type"
             :message="errorsEmail.message"
           >
@@ -72,7 +72,7 @@
 
           <b-field
             class="half-input"
-            label="Datum narození"
+            label="Datum narození *"
             :type="errorsDob.type"
             :message="errorsDob.message"
           >
@@ -94,7 +94,7 @@
         <div class="half-block">
           <b-field
             class="third-input"
-            label="Ročník střední školy"
+            label="Ročník střední školy *"
             :type="errorsGrade.type"
             :message="errorsGrade.message"
           >
@@ -131,7 +131,7 @@
 
           <b-field
             class="two-third-input"
-            label="Název střední školy"
+            label="Název střední školy *"
             :type="errorsSchool.type"
             :message="errorsSchool.message"
           >
@@ -159,7 +159,7 @@
         <div class="half-block">
           <b-field
             style="padding-top: 10px"
-            label="Kraj"
+            label="Kraj *"
             :type="errorsRegion.type"
             :message="errorsRegion.message"
           >
@@ -175,7 +175,7 @@
           </b-field>
           <b-field
             class="two-third-input"
-            label="Telefonní čílo"
+            label="Telefonní číslo"
           >
             <b-input
               v-model="user.phone"
@@ -189,7 +189,7 @@
 
       <div class="form-block">
         <b-field
-          label="LinkedIn účet (volitelné)"
+          label="LinkedIn účet"
         >
           <b-input
             v-model="user.linkedin"
@@ -210,7 +210,7 @@
         </b-field>
 
         <b-field
-          label="Napiš o sobě krátký medailonek ve 3. osobě"
+          label="Napiš o sobě krátký medailonek ve 3. osobě *"
           :type="errorsSummary.type"
           :message="errorsSummary.message">
         <b-input
@@ -224,6 +224,8 @@
         </b-input>
       </b-field>
 
+      <b-checkbox style="padding-bottom: 22px;" v-model="user.isFirstTime"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
+
         <b-field
           label="Jak ses dozvěděl/a o soutěži Středoškolák roku?"
         >
@@ -234,6 +236,7 @@
             <option v-for="option in consts.knowledge" :value="option" :key="option">{{ option }}</option>
           </b-select>
         </b-field>
+        <div style="padding-top: 20px;"><i>* povinné pole</i></div>
       </div>
       <div class="help-link">
         <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>

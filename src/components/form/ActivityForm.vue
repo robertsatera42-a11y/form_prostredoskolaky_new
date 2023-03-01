@@ -6,7 +6,7 @@
     <!--<form @submit.prevent="submit">-->
     <section class="modal-card-body">
       <b-field
-          label="Název aktivity"
+          label="Název aktivity *"
           :type="errorsName.type"
           :message="errorsName.message">
         <b-input
@@ -29,7 +29,7 @@
       </b-field>
       <b-field
         style="padding-top: 15px"
-        label="Typ aktivity"
+        label="Typ aktivity *"
         :type="errorsType.type"
         :message="errorsType.message"
       >
@@ -44,7 +44,7 @@
         </b-select>
       </b-field>
       <b-field
-          label="Krátký popis aktivity"
+          label="Krátký popis aktivity *"
           :type="errorsResult.type"
           :message="errorsResult.message">
         <b-input
@@ -74,7 +74,7 @@
         </b-select>
       </b-field>
       <b-field
-          label="Časový rozsah"
+          label="Časový rozsah *"
           :type="errorsStart.type"
           :message="errorsStart.message">
         <b-input
@@ -105,7 +105,7 @@
       </b-field>
       <b-field
         v-if="showIsIndividual.includes(activity.type)"
-        label="Individuální/týmová"
+        label="Individuální/týmová *"
         :type="errorsIsIndividual.type"
         :message="errorsIsIndividual.message"
       >
@@ -133,6 +133,8 @@
             placeholder="Napiš kontakt na osobu, která Ti může případně aktivitu potvrdit">
         </b-input>
       </b-field>
+
+      <div><i>* povinné pole</i></div>
     </section>
     <footer class="modal-card-foot">
       <button class="button" @click="$parent.close()">

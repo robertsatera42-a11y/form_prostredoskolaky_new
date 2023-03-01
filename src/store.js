@@ -62,6 +62,7 @@ const store = new Vuex.Store({
       schoolContact: "",
       hasRegistration: false,
       summary: "",
+      isFirstTime: false,
       phone: "",
     },
     events: [
@@ -145,6 +146,7 @@ const store = new Vuex.Store({
         schoolContact: user.schoolContact || "",
         hasRegistration: user.hasRegistration || false,
         summary: user.summary || "",
+        isFirstTime: user.isFirstTime || "",
         phone: user.phone || "",
       };
       if (user.sendNewsletter) {

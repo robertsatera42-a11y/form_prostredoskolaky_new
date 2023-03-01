@@ -179,6 +179,7 @@ export default {
           })
           const preparedUser = {
             ...this.user,
+            isFirstTime: !this.user.isFirstTime,
             activities: preparedActivities
           }
           await fb.updateProfile(preparedUser)
