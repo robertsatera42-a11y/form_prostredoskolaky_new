@@ -9,7 +9,7 @@
             <h1>Soutěž Středoškolák roku <span class="orange">2023</span></h1>
             <h2>Vytvoř si profil a přihlas se do soutěže.</h2>
           </div>
-          <h3>Přihlašování ukončeno</h3>
+          <h3>Přihlašování otevřeno</h3>
         </div>
         <div class="content">
           <Login />
