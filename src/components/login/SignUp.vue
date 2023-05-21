@@ -83,7 +83,7 @@
       <b-checkbox v-model="sendNewsletter" class="newsletter">Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit do svého e-mailu.</b-checkbox>
       <b-checkbox v-model="giveConsent" style="margin-left:0" class="newsletter">Souhlasím se zpracováním svých <a href="https://drive.google.com/file/d/1-MDM8wdW7xctBT3kmrq6FSI_48nl-2BB/view?usp=sharing" target="_blank">osobních údajů</a>.</b-checkbox>
       <message type="error" :message="message"/>
-      <button class="button is-primary" @click="signUp">Zaregistrovat se</button>
+      <button class="button is-primary" @click="signUp" disabled=true>Zaregistrovat se</button>
     </div>
   </div>
 </template>
