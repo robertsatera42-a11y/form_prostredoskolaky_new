@@ -145,7 +145,7 @@
       </button>
     </footer>
     <!--</form>-->
-    <!--<pre>$xv: {{ $v.activity }}</pre>-->
+    <!-- <pre>$xv: {{ $v.activity }}</pre> -->
   </div>
 </template>
 

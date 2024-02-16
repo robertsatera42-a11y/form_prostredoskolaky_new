@@ -5,7 +5,7 @@
         <div class="header-text">
           <h1>
             Vítáme tě v soutěži Středoškolák&nbsp;roku
-            <span class="orange">2023</span>
+            <span class="orange">2024</span>
           </h1>
           <h2>
             Děkujeme za tvou přihlášku, dotazník byl uložen a na {{user.email}} zaslán potvrzovací email. Přihlášku můžeš až do deadlinu kdykoliv otevřít a upravit ji.
@@ -16,7 +16,7 @@
         <div class="header-text">
           <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
           <h1>Vítáme tě v soutěži Středoškolák roku
-            <span class="orange">2023</span>
+            <span class="orange">2024</span>
           </h1>
           <h2>
             Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.
@@ -108,7 +108,7 @@
       <div class="submit-actions content">
         <a v-if="!showSuccess" class="button a-orange" @click="goToEditActivities">Zpět na 2. krok</a>
         <router-link v-if="showSuccess" class="button a-gray" to="https://prihlaska.stredoskolakroku.cz/">Zavřít</router-link>
-        <a v-if="!showSuccess" class="button a-orange-full" @click="submit" disabled=true>Uložit přihlášku</a>
+        <a v-if="!showSuccess" class="button a-orange-full" @click="submit">Uložit přihlášku</a>
         <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
@@ -165,23 +165,36 @@ export default {
       try {
         if (this.isAgree) {
           this.isLoading = true
-          this.transform()
-          const result = await client.createRegistration(this.user)
-          this.isLoading = false
-          this.showSuccess = true
-          this.registrationId = result.registrationI
+
+          const image = this.user.image
+          const typeList = image.name.split('.')
+          let imageType = typeList[typeList.length - 1].toLowerCase()
 
           const preparedActivities = this.user.activities.map(a => {
             return {
               ...a,
-              isIndividual: a.isIndividual === 'Individuální' ? true : false
+              isIndividual: a.isIndividual === 'Týmové' ? false : true
             }
           })
           const preparedUser = {
             ...this.user,
-            isFirstTime: !this.user.isFirstTime,
+            image: undefined,
+            imageType,
+            isFirstTime: !this.user.isRepeting,
             activities: preparedActivities
           }
+
+          this.transform()
+          const result = await client.createRegistration(preparedUser)
+          this.isLoading = false
+          this.showSuccess = true
+          this.registrationId = result.registrationId
+
+          const signedUrl = result.signedUrl
+          if (signedUrl) {
+            await this.uploadToGCP(image, signedUrl)
+          }
+
           await fb.updateProfile(preparedUser)
           this.user.hasRegistration = true
           tracking.track('competition', 'entrance_page', 'form_finished')
@@ -211,6 +224,22 @@ export default {
     },
     transformDate (dateString) {
       return transformerUtils.transformDate(dateString)
+    },
+    async uploadToGCP(file, signedUrl) {
+      try {
+        const response = await fetch(signedUrl, {
+          method: 'PUT',
+          body: file,
+        });
+
+        if (response.ok) {
+          console.log('Image uploaded successfully!');
+        } else {
+          console.error('Failed to upload image:', response.statusText);
+        }
+      } catch(err) {
+        console.error('Error uploading image:', error);
+      }
     }
   }
 }

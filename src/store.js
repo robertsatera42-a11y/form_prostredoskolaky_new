@@ -62,8 +62,9 @@ const store = new Vuex.Store({
       schoolContact: "",
       hasRegistration: false,
       summary: "",
-      isFirstTime: false,
+      isRepeting: false,
       phone: "",
+      image: undefined,
     },
     events: [
       {
@@ -146,7 +147,7 @@ const store = new Vuex.Store({
         schoolContact: user.schoolContact || "",
         hasRegistration: user.hasRegistration || false,
         summary: user.summary || "",
-        isFirstTime: user.isFirstTime || "",
+        isRepeting: user.isFirstTime === true ? false : true,
         phone: user.phone || "",
       };
       if (user.sendNewsletter) {
@@ -174,6 +175,7 @@ const store = new Vuex.Store({
     [FETCH_USER]: async ({ commit }, content) => {
       try {
         const user = await client.getUser(content);
+        console.log(user);
         if (content === "full") {
           user.interests = user.interests.map((interest) => {
             return transformerUtils.transformCategoriesBack(interest);

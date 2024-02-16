@@ -3,7 +3,7 @@
     <div class="content">
       <div class="header-text">
         <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
-          <span class="orange">2023</span>
+          <span class="orange">2024</span>
         </h1>
         <h2>
           Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.

@@ -3,7 +3,7 @@
     <div class="content">
       <div class="header-text">
         <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
-          <span class="orange">2023</span>
+          <span class="orange">2024</span>
         </h1>
         <h2>
           Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>
@@ -176,6 +176,8 @@
           <b-field
             class="two-third-input"
             label="Telefonní číslo"
+            :type="errorsPhone.type"
+            :message="errorsPhone.message"
           >
             <b-input
               v-model="user.phone"
@@ -224,7 +226,19 @@
         </b-input>
       </b-field>
 
-      <b-checkbox style="padding-bottom: 22px;" v-model="user.isFirstTime"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
+      <b-field class="file is-primary" :class="{'has-name': !!user.image}">
+        <b-upload style="display: block;" v-model="user.image" class="file-label" accept="image/jpeg, image/png, image/jpg" validationMessage="Prosím vyberte soubor">
+            <span class="file-cta">
+                <span class="file-label">Nahraj svou profilovou fotografii</span>
+            </span>
+            <span class="file-name" v-if="user.image">
+                {{ user.image.name }}
+            </span>
+        </b-upload>
+    </b-field>
+    <div style="padding-bottom: 25px; font-style: italic;">V případě tvého umístění bude fotografie použita během slavnostního galavečera. Podporovány jsou .png, .jpg a .jpeg formáty.</div>
+
+      <b-checkbox style="padding-bottom: 22px;" v-model="user.isRepeting"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
 
         <b-field
           label="Jak ses dozvěděl/a o soutěži Středoškolák roku?"
@@ -305,7 +319,6 @@ export default {
   async mounted () {
     tracking.track('competition', 'entrance_page', 'form_entrance')
     await this.fetchUser('full')
-    // console.log(this.user)
   },
   computed: {
     ...mapFields({
@@ -344,6 +357,12 @@ export default {
       this.$v.user.region.$invalid
       this.submitStatus
       return ValidationUtils.validate(this, 'region', 'focusedRegion')
+    },
+    errorsPhone: function () {
+      this.focusedPhone
+      this.$v.user.phone.$invalid
+      this.submitStatus
+      return ValidationUtils.validate(this, 'phone', 'focusedPhone')
     },
     errorsSchool: function () {
       this.focusedSchool
@@ -431,6 +450,9 @@ export default {
         required
       },
       region: {
+        required
+      },
+      phone: {
         required
       },
       summary: {
