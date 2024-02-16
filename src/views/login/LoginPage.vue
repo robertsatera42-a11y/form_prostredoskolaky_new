@@ -18,7 +18,7 @@
         <div class="content-footer">
           <div class="footer-social">
             <a href="https://www.facebook.com/prostredoskolaky"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/facebook.svg" alt=""></a>
-            <a href="https://www.instagram.com/stredoskolakroku/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/instagram.png" alt=""></a>
+            <a href="https://www.instagram.com/prostredoskolaky/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/instagram.png" alt=""></a>
             <a href="https://www.youtube.com/channel/UCzE5_oYsLRIYB5ej35unTBw"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/youtube.svg" alt=""></a>
             <a href="https://www.linkedin.com/company/prost%C5%99edo%C5%A1kol%C3%A1ky-z-s-/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/LI-In-Bug-300x255.png" alt="" style="width: 88px;"></a>
           </div>
