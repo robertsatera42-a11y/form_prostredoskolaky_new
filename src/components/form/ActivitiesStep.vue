@@ -2,7 +2,7 @@
   <section class="activities-step">
     <div class="content">
       <div class="header-text">
-        <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
+        <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
           <span class="orange">2024</span>
         </h1>
         <h2>
@@ -70,6 +70,11 @@
         <a class="button a-orange" @click="goToFinalise">Přejít ke kontrole a uložení</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
+    </div>
+
+    <div class="footer_links">
+      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Jak hodnotíme</a>
+      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a>
     </div>
 
   </section>
@@ -378,6 +383,24 @@ section.activities-step {
         a {
           margin: 0 auto 10px;
         }
+      }
+    }
+  }
+
+  .footer_links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 20px;
+    font-weight: 600;
+
+    .item {
+      padding-right: 15px;
+      padding-left: 15px;
+      color:#4A4A4A;
+
+      &:hover {
+        color:#f55c23;
       }
     }
   }

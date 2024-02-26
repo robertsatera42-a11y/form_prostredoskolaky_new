@@ -15,7 +15,7 @@
       <slot v-else>
         <div class="header-text">
           <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
-          <h1>Vítáme tě v soutěži Středoškolák roku
+          <h1>Přihlášení do soutěže Středoškolák roku
             <span class="orange">2024</span>
           </h1>
           <h2>
@@ -93,7 +93,7 @@
 
     <div class="help-link">
       <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
-      <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">soutez@prostredoskolaky.cz</span>.</p>
+      <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
     </div>
 
     </div>
@@ -111,6 +111,11 @@
         <a v-if="!showSuccess" class="button a-orange-full" @click="submit">Uložit přihlášku</a>
         <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
+    </div>
+
+    <div class="footer_links">
+      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Jak hodnotíme</a>
+      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a>
     </div>
 
   </section>
@@ -166,9 +171,12 @@ export default {
         if (this.isAgree) {
           this.isLoading = true
 
-          const image = this.user.image
-          const typeList = image.name.split('.')
-          let imageType = typeList[typeList.length - 1].toLowerCase()
+          let imageType = undefined
+          if (this.user.image) {
+            const image = this.user.image
+            const typeList = image.name.split('.')
+            imageType = typeList[typeList.length - 1].toLowerCase()
+          }
 
           const preparedActivities = this.user.activities.map(a => {
             return {
@@ -483,6 +491,24 @@ section.finalise-step {
         a {
           margin: 0 auto 10px;
         }
+      }
+    }
+  }
+
+  .footer_links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 20px;
+    font-weight: 600;
+
+    .item {
+      padding-right: 15px;
+      padding-left: 15px;
+      color:#4A4A4A;
+
+      &:hover {
+        color:#f55c23;
       }
     }
   }

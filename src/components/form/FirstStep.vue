@@ -2,7 +2,7 @@
   <section class="first-step">
     <div class="content">
       <div class="header-text">
-        <h1>Vítáme tě v soutěži Středoškolák&nbsp;roku
+        <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
           <span class="orange">2024</span>
         </h1>
         <h2>
@@ -175,7 +175,7 @@
           </b-field>
           <b-field
             class="two-third-input"
-            label="Telefonní číslo"
+            label="Telefonní číslo *"
             :type="errorsPhone.type"
             :message="errorsPhone.message"
           >
@@ -216,7 +216,7 @@
           :type="errorsSummary.type"
           :message="errorsSummary.message">
         <b-input
-            maxlength="250"
+            maxlength="500"
             type="textarea"
             v-model="user.summary"
             v-focus="focusedSummary"
@@ -236,7 +236,7 @@
             </span>
         </b-upload>
     </b-field>
-    <div style="padding-bottom: 25px; font-style: italic;">V případě tvého umístění bude fotografie použita během slavnostního galavečera. Podporovány jsou .png, .jpg a .jpeg formáty.</div>
+    <div style="padding-bottom: 25px; font-style: italic;">Nahrání je volitelné. V případě tvého umístění bude fotografie použita během Slavnostního Galavečera. Podporovány jsou .png, .jpg a .jpeg formáty.</div>
 
       <b-checkbox style="padding-bottom: 22px;" v-model="user.isRepeting"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
 
@@ -254,7 +254,7 @@
       </div>
       <div class="help-link">
         <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
-        <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">soutez@prostredoskolaky.cz</span>.</p>
+        <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
       </div>
 
       <!-- neodkomentovat dale -->
@@ -268,6 +268,11 @@
         <a class="button a-orange" @click="goToActivities">Přejít na 2. krok</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved)}}</small>
       </div>
+    </div>
+
+    <div class="footer_links">
+      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Jak hodnotíme</a>
+      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a>
     </div>
   </section>
 </template>
@@ -620,6 +625,24 @@ section.first-step {
         a {
           margin: 0 auto 10px;
         }
+      }
+    }
+  }
+
+  .footer_links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-weight: 600;
+    padding-bottom: 20px;
+
+    .item {
+      padding-right: 15px;
+      padding-left: 15px;
+      color:#4A4A4A;
+
+      &:hover {
+        color:#f55c23;
       }
     }
   }
