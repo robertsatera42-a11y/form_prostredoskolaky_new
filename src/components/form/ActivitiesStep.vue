@@ -1,6 +1,11 @@
 <template>
   <section class="activities-step">
     <div class="content">
+      <div class="header_links">
+        <a class="item" href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a>
+        <a class="item" href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a>
+        <a class="item" href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a>
+      </div>
       <div class="header-text">
         <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
           <span class="orange">2024</span>
@@ -70,11 +75,6 @@
         <a class="button a-orange" @click="goToFinalise">Přejít ke kontrole a uložení</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
-    </div>
-
-    <div class="footer_links">
-      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Jak hodnotíme</a>
-      <a class="item" href="https://storage.cloud.google.com/ps_other/Pravidla_souteze_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a>
     </div>
 
   </section>
@@ -387,16 +387,14 @@ section.activities-step {
     }
   }
 
-  .footer_links {
+  .header_links {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    padding-bottom: 20px;
+    justify-content: flex-start;
     font-weight: 600;
 
     .item {
-      padding-right: 15px;
-      padding-left: 15px;
+      padding-right: 30px;
       color:#4A4A4A;
 
       &:hover {
