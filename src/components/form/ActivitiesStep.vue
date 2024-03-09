@@ -2,9 +2,9 @@
   <section class="activities-step">
     <div class="content">
       <div class="header_links">
-        <a class="item" href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a>
-        <a class="item" href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a>
-        <a class="item" href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a>
+        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a></button>
+        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a></button>
+        <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a></button>
       </div>
       <div class="header-text">
         <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
@@ -393,13 +393,8 @@ section.activities-step {
     justify-content: flex-start;
     font-weight: 600;
 
-    .item {
-      padding-right: 30px;
-      color:#4A4A4A;
-
-      &:hover {
-        color:#f55c23;
-      }
+    .button {
+      margin-right: 15px;
     }
   }
 }
