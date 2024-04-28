@@ -114,7 +114,7 @@
         <a v-if="!showSuccess" class="button a-orange" @click="goToEditActivities">Zpět na 2. krok</a>
         <a v-if="showSuccess" class="button a-gray" href="https://stredoskolakroku.cz/">Zavřít</a>
         <a v-if="!showSuccess" class="button a-orange-full" @click="submit">Uložit přihlášku</a>
-        <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
+        <!-- <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small> -->
       </div>
     </div>
   </section>
