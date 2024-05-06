@@ -140,7 +140,14 @@ const store = new Vuex.Store({
         school: user.school || "",
         linkedin: user.linkedinUrl || "",
         interests: user.interests ? user.interests : [],
-        activities: user.activities ? user.activities : [],
+        activities: user.activities
+          ? user.activities.map((a) => {
+              return {
+                ...a,
+                isIndividual: a.isIndividual ? "Individuální" : "Týmové",
+              };
+            })
+          : [],
         knowledge: user.knowledge || null,
         lastSaved: user.updatedAt ? new Date(user.updatedAt) : undefined,
         role: user.role || "",
@@ -175,12 +182,6 @@ const store = new Vuex.Store({
     [FETCH_USER]: async ({ commit }, content) => {
       try {
         const user = await client.getUser(content);
-        console.log(user);
-        if (content === "full") {
-          user.interests = user.interests.map((interest) => {
-            return transformerUtils.transformCategoriesBack(interest);
-          });
-        }
         content === "profile"
           ? commit(SET_USER_PROFILE, user)
           : commit(SET_USER, user);

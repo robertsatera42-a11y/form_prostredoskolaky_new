@@ -149,7 +149,7 @@ export default {
             type: index !== null ? this.activities && this.activities[index] && this.activities[index].type : '',
             field: index !== null ? this.activities && this.activities[index] && this.activities[index].field : '',
             reference: index !== null ? this.activities && this.activities[index] && this.activities[index].reference : '',
-            isIndividual: index !== null ? this.activities && this.activities[index] && this.activities[index].isIndividual ? 'Individuální' : 'Týmové' : '',
+            isIndividual: index !== null ? this.activities && this.activities[index] && this.activities[index].isIndividual : '',
             interest: index !== null ? this.activities && this.activities[index] && this.activities[index].interest : '',
           }
         }
