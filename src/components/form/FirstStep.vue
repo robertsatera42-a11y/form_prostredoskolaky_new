@@ -21,8 +21,8 @@
     </div>
     <div class="loader-block"></div>
 
-    <div class="content form">
-      <!-- <h3>Přihlašování ukončeno</h3> -->
+    <div v-if="finished" class="content form"><h3>Přihlašování ukončeno</h3></div>
+    <div v-else class="content form">
       <h3>Základní údaje</h3>
 
       <div class="form-block">
@@ -267,7 +267,7 @@
       <!--<pre>$xv: {{ $v.user }}</pre>-->
     </div>
 
-    <div class="submit-block">
+    <div v-if="!finished" class="submit-block">
       <div class="submit-actions content">
         <router-link class="button a-gray" to="https://prihlaska.stredoskolakroku.cz/">Zavřít</router-link>
         <a class="button a-orange" @click="goToActivities">Přejít na 2. krok</a>
@@ -297,6 +297,8 @@ export default {
   mixins: [focusMixin],
   data () {
     return {
+      // when contest is finished, dont sshow form
+      finished: true,
       selected: '',
       schools: [],
       consts: {
