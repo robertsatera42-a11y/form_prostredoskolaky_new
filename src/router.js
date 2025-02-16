@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import firebase from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 Vue.use(Router);
 
@@ -62,7 +62,8 @@ const router = new Router({
 router.beforeEach(async (to, from, next) => {
   try {
     const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
-    const currentUser = firebase.auth().currentUser;
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
     if (requiresAuth && !currentUser) {
       if (to.name === "form") {
         next("/login?redirect=");

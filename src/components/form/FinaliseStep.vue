@@ -202,7 +202,7 @@ export default {
             await this.uploadToGCP(this.user.image, signedUrl)
           }
 
-          await fb.updateProfile(preparedUser)
+          await fb.updateProfileForCurrentUser(preparedUser)
           this.user.hasRegistration = true
           tracking.track('competition', 'entrance_page', 'form_finished')
         } else this.error = config.errors.requiredTerms
