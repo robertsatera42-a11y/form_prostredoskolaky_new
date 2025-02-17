@@ -8,7 +8,7 @@
     </div>
       <div class="header-text">
         <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
-          <span class="orange">2024</span>
+          <span class="orange">{{ competitionYear }}</span>
         </h1>
         <h2>
           Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>
@@ -224,7 +224,7 @@
           :type="errorsSummary.type"
           :message="errorsSummary.message">
         <b-input
-            maxlength="500"
+            maxlength="400"
             type="textarea"
             v-model="user.summary"
             v-focus="focusedSummary"
@@ -233,18 +233,22 @@
             placeholder="Popiš se v několika větách ve třetí osobě.">
         </b-input>
       </b-field>
+      <div style="padding-bottom: 30px; font-style: italic; margin-top:-25px; text-align:right">Nevíš jak na medailonek? přečti si <a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" class="orange">Jak na přihlášku</a></div>
 
-      <b-field class="file is-primary" :class="{'has-name': !!user.image}">
-        <b-upload style="display: block;" v-model="user.image" class="file-label" accept="image/jpeg, image/png, image/jpg" validationMessage="Prosím vyberte soubor">
-            <span class="file-cta">
-                <span class="file-label">Nahraj svou profilovou fotografii</span>
-            </span>
-            <span class="file-name" v-if="user.image">
-                {{ user.image.name }}
-            </span>
-        </b-upload>
-    </b-field>
-    <div style="padding-bottom: 25px; font-style: italic;">Nahrání je volitelné. V případě tvého umístění bude fotografie použita během Slavnostního Galavečera. Podporovány jsou .png, .jpg a .jpeg formáty.</div>
+      <!-- Image upload disabled -->
+      <div hidden> 
+        <b-field class="file is-primary" :class="{'has-name': !!user.image}">
+          <b-upload style="display: block;" v-model="user.image" class="file-label" accept="image/jpeg, image/png, image/jpg" validationMessage="Prosím vyberte soubor">
+              <span class="file-cta">
+                  <span class="file-label">Nahraj svou profilovou fotografii</span>
+              </span>
+              <span class="file-name" v-if="user.image">
+                  {{ user.image.name }}
+              </span>
+          </b-upload>
+        </b-field>
+        <div style="padding-bottom: 25px; font-style: italic;">Nahrání je volitelné. V případě tvého umístění bude fotografie použita během Slavnostního Galavečera. Podporovány jsou .png, .jpg a .jpeg formáty.</div>
+      </div>
 
       <b-checkbox style="padding-bottom: 22px;" v-model="user.isRepeting"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
 
@@ -305,6 +309,7 @@ export default {
       devPassphrase: "",
       selected: '',
       schools: [],
+      competitionYear: new Date().getFullYear(),
       consts: {
         grades: {
           four: config.consts.grades.four,

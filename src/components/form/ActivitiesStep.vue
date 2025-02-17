@@ -8,7 +8,7 @@
       </div>
       <div class="header-text">
         <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
-          <span class="orange">2024</span>
+          <span class="orange">{{ competitionYear }}</span>
         </h1>
         <h2>
           Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.
@@ -96,7 +96,8 @@ export default {
   data () {
     return {
       showActivityForm: false,
-      error: ''
+      error: '',
+      competitionYear: new Date().getFullYear()
     }
   },
   mounted () {

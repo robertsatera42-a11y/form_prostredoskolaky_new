@@ -6,7 +6,7 @@
       <div v-if="redirectMessage" class="redirect-message">{{redirectMessage}}</div>
         <div class="content-header">
           <div class="header-text">
-            <h1>Soutěž Středoškolák roku <span class="orange">2024</span></h1>
+            <h1>Soutěž Středoškolák roku <span class="orange">{{ competitionYear }}</span></h1>
             <h2>Vytvoř si profil a přihlas se do soutěže.</h2>
           </div>
           <!-- <h3>Přihlašování uzavřeno</h3> -->
@@ -23,7 +23,7 @@
             <a href="https://www.linkedin.com/company/prost%C5%99edo%C5%A1kol%C3%A1ky-z-s-/"><img src="https://stredoskolakroku.cz/wp-content/uploads/2022/03/LI-In-Bug-300x255.png" alt="" style="width: 88px;"></a>
           </div>
 
-          <div class="footer-year">© ProStředoškoláky 2024</div>
+          <div class="footer-year">© ProStředoškoláky {{ competitionYear }}</div>
         </div>
     </section>
   </div>
@@ -39,7 +39,8 @@ export default {
   components: { FooterBlock, SignUp, Login },
   data () {
     return {
-      redirectMessage: ''
+      redirectMessage: '',
+      competitionYear: new Date().getFullYear()
     }
   },
   mounted () {
@@ -174,7 +175,7 @@ export default {
         list-style: none;
     }
     li::before {
-      content: "\2024";
+      content: "\2025";
       color: #f26427;
       width: 20px;
       margin-left: -20px;
