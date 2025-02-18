@@ -122,7 +122,7 @@ export default {
     },
     async logout () {
       await fb.logoutUser()
-      router.push('/')
+      router.push('/login')
     },
     showUsers () {
       router.push('/users')

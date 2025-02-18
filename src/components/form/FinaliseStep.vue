@@ -1,42 +1,7 @@
 <template>
   <section class="finalise-step" id="finalise-step">
     <div class="content">
-      <slot v-if="showSuccess">
-        <div class="header-text">
-          <h1>
-            Vítáme tě v soutěži Středoškolák&nbsp;roku
-            <span class="orange">2024</span>
-          </h1>
-          <h2>
-            Děkujeme za tvou přihlášku, dotazník byl uložen a na {{user.email}} zaslán potvrzovací email. Přihlášku můžeš až do deadlinu kdykoliv otevřít a upravit ji.
-          </h2>
-        </div>
-      </slot>
-      <slot v-else>
-        <div class="header_links">
-          <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a></button>
-          <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a></button>
-          <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a></button>
-        </div>
-        <div class="header-text">
-          <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
-          <h1>Přihlášení do soutěže Středoškolák roku
-            <span class="orange">2024</span>
-          </h1>
-          <h2>
-            Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.
-          </h2>
-        </div>
-      </slot>
-    </div>
-    <div v-if="!showSuccess">
-    <div class="content step">
-      <h2>Poslední <span class="orange">krok</span>. HURÁ!</h2>
-    </div>
-    <div class="loader-block"></div>
-
-    <div class="content">
-
+      <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
     <div class="basic-info">
       <h3>Základní údaje</h3>
       <div class="info-row">
@@ -105,15 +70,13 @@
     <div class="error-message">
       <error-message :message="error"/>
     </div>
-    </div>
     <!--<div v-if="error">-->
     <!--<p>{{ error }}</p>-->
     <!--</div>-->
     <div class="submit-block">
       <div class="submit-actions content">
-        <a v-if="!showSuccess" class="button a-orange" @click="goToEditActivities">Zpět na 2. krok</a>
-        <a v-if="showSuccess" class="button a-gray" href="https://stredoskolakroku.cz/">Zavřít</a>
-        <a v-if="!showSuccess" class="button a-orange-full" @click="submit">Uložit přihlášku</a>
+        <a  class="button a-orange" @click="goToEditActivities">Zpět na 2. krok</a>
+        <a  class="button a-orange-full" @click="submit">Uložit přihlášku</a>
         <!-- <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small> -->
       </div>
     </div>
@@ -121,6 +84,7 @@
 </template>
 <script>
 import ActivitiesStep from './ActivitiesStep'
+import SuccessStep from './SuccessStep'
 import FirstStep from './FirstStep'
 import ErrorMessage from '../common/ErrorMessage'
 import ValidationUtils from '../../utils/validationUtils'
@@ -133,15 +97,19 @@ import fb from '../../firebase'
 
 export default {
   name: 'finalise-step',
+  description: `Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.`,
+  number: 4,
+  loaderBlockName: "čtvrtý krok - kontrola a uložení",
   data () {
     return {
       isLoading: false,
       isAgree: false,
       error: '',
-      showSuccess: false,
+      // showSuccess: false,
       registrationId: null,
       birthDate: new Date(),
-      year: []
+      year: [],
+      competitionYear: new Date().getFullYear()
     }
   },
   mounted () {
@@ -150,7 +118,7 @@ export default {
     this.year = this.user.grade.split('-')
     tracking.track('competition', 'entrance_page', 'form_activities_check')
   },
-  components: { ActivitiesStep, FirstStep, ErrorMessage },
+  components: { ActivitiesStep, FirstStep, SuccessStep, ErrorMessage },
   computed: {
     ...mapFields({
       user: 'user',
@@ -194,7 +162,7 @@ export default {
           this.transform()
           const result = await client.createRegistration(preparedUser)
           this.isLoading = false
-          this.showSuccess = true
+          // this.showSuccess = true
           this.registrationId = result.registrationId
 
           const signedUrl = result.signedUrl
@@ -205,6 +173,7 @@ export default {
           await fb.updateProfileForCurrentUser(preparedUser)
           this.user.hasRegistration = true
           tracking.track('competition', 'entrance_page', 'form_finished')
+          this.$emit('changeView', SuccessStep)
         } else this.error = config.errors.requiredTerms
       } catch (err) {
         this.isLoading = false
@@ -214,10 +183,10 @@ export default {
       }
     },
     goToEditActivities () {
-      this.$emit('changeView', ActivitiesStep.name)
+      this.$emit('changeView', ActivitiesStep)
     },
     goToFirstStep () {
-      this.$emit('changeView', FirstStep.name)
+      this.$emit('changeView', FirstStep)
     },
     transform () {
       this.user.interests = this.user.interests.map(interest => {

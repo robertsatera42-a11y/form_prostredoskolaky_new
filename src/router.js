@@ -66,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
     const currentUser = auth.currentUser;
     if (requiresAuth && !currentUser) {
       if (to.name === "form") {
-        next("/login?redirect=");
+        next("/login");
       }
     } else if (requiresAuth && currentUser) {
       next();

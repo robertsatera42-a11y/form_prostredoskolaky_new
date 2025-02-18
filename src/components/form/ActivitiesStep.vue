@@ -1,25 +1,5 @@
 <template>
   <section class="activities-step">
-    <div class="content">
-      <div class="header_links">
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a></button>
-      </div>
-      <div class="header-text">
-        <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
-          <span class="orange">{{ competitionYear }}</span>
-        </h1>
-        <h2>
-          Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.
-        </h2>
-      </div>
-    </div>
-
-    <div class="content step">
-      <h2>Ještě <span class="orange">jeden</span> krok</h2>
-    </div>
-    <div class="loader-block"></div>
 
     <div class="add-activities">
       <a v-if="!activities" class="button a-orange" @click="addItem">Přidat aktivitu</a>
@@ -93,11 +73,13 @@ import transformerUtils from '../../utils/transformerUtils'
 
 export default {
   name: 'activities-step',
+  description: `Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.`,
+  number: "ještě jeden",
+  loaderBlockName: "třetí krok - aktivity",
   data () {
     return {
       showActivityForm: false,
-      error: '',
-      competitionYear: new Date().getFullYear()
+      error: ''
     }
   },
   mounted () {
@@ -118,11 +100,11 @@ export default {
   },
   methods: {
     goToFirstStep () {
-      this.$emit('changeView', FirstStep.name)
+      this.$emit('changeView', FirstStep)
     },
     goToFinalise () {
       if (this.activities && this.activities.length > 0) {
-        this.$emit('changeView', FinaliseStep.name)
+        this.$emit('changeView', FinaliseStep)
       } else this.error = config.errors.requiredActivity
     },
     addItem () {

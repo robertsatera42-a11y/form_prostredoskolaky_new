@@ -1,26 +1,5 @@
 <template>
   <section class="first-step">
-    <div class="content">
-      <div class="header_links">
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a></button>
-    </div>
-      <div class="header-text">
-        <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
-          <span class="orange">{{ competitionYear }}</span>
-        </h1>
-        <h2>
-          Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>
-        </h2>
-      </div>
-    </div>
-
-    <div class="content step">
-      <h2>Krok <span class="orange">1.</span> z <span class="orange">3</span></h2>
-    </div>
-    <div class="loader-block"></div>
-
     <div v-if="finished" class="content form">
       <h3>Přihlašování ukončeno</h3>
       <br><input type="text" v-model="devPassphrase" style="width: 50px;">
@@ -300,6 +279,9 @@ import { FETCH_USER } from '../../types'
 
 export default {
   name: 'first-step',
+  description: `Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>`,
+  number: 1,
+  loaderBlockName: "první krok - základní údaje",
   components: { ActivitiesStep },
   mixins: [focusMixin],
   data () {
@@ -309,7 +291,6 @@ export default {
       devPassphrase: "",
       selected: '',
       schools: [],
-      competitionYear: new Date().getFullYear(),
       consts: {
         grades: {
           four: config.consts.grades.four,
@@ -412,7 +393,7 @@ export default {
         this.submitStatus = 'ERROR'
       } else {
         this.submitStatus = 'OK'
-        this.$emit('changeView', ActivitiesStep.name)
+        this.$emit('changeView', ActivitiesStep)
       }
     },
     getFilteredInterests (text) {

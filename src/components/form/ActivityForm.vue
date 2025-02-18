@@ -89,7 +89,7 @@
       </b-field>
       <b-field
         v-if="showInterest.includes(activity.type)"
-        label="Obor"
+        label="Obor *"
         :type="errorsInterest.type"
         :message="errorsInterest.message"
       >
