@@ -14,9 +14,16 @@
       </div>
     </div>
     <div class="content step">
-      <h2>Krok <span class="orange">{{ currentStep.number }}.</span> ze <span class="orange">4</span></h2>
+      <h2>Krok <span class="orange">{{ currentStep.number }}.</span> ze <span class="orange"> {{ totalSteps }}</span></h2>
     </div>
-    <div class="loader-block"></div>
+    <div class="loader-block-row">
+      <div class="loader-block-element"
+              v-for="stepNumber in totalSteps" :key="stepNumber"
+              :style="{width: (100/totalSteps) + '%'}">
+        <h3 :class="{active: isStepActive(stepNumber)}">{{ loaderBlockNames[stepNumber-1] }}</h3>
+        <div class="loader-block-parallelogram" :class="{activeP: isStepActive(stepNumber)}"></div>
+      </div>
+    </div>
     <keep-alive>
       <component :is="currentStep" @changeView="changeView"/>
     </keep-alive>
@@ -25,7 +32,7 @@
 
 <script>
 import FirstStep from '../components/form/FirstStep'
-import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
+//import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
 import ActivitiesStep from '../components/form/ActivitiesStep'
 import FinaliseStep from '../components/form/FinaliseStep'
 import { IS_LOGGED_IN } from '../types'
@@ -33,16 +40,18 @@ import { mapGetters } from 'vuex'
 import router from '../router'
 
 export default {
-  components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep },
+  components: { FirstStep, ActivitiesStep, FinaliseStep },
   data () {
     return {
       currentStep: FirstStep,
-
-      competitionYear: "2025"
+      competitionYear: "2025",
+      totalSteps: 3,
+      loaderBlockNames: [ FirstStep.loaderBlockName, ActivitiesStep.loaderBlockName, FinaliseStep.loaderBlockName ],
+      loaderBlockComponents: [ FirstStep, ActivitiesStep, FinaliseStep ]
     }
   },
   computed: {
-    ...mapGetters([IS_LOGGED_IN])
+    ...mapGetters([IS_LOGGED_IN]),
   },
   watch: {
     isLoggedIn() {
@@ -54,6 +63,9 @@ export default {
   methods: {
     changeView (step) {
       this.currentStep = step
+    },
+    isStepActive (stepNum) {
+      return stepNum <= this.currentStep.number;
     }
   }
 }
@@ -109,16 +121,39 @@ div.form-content {
     }
   }
 
-  .loader-block {
-    background: url(~@/assets/loader.svg) no-repeat;
-    background-size: contain;
+  .loader-block-row {
+    display: flex;
+    gap: 30px;
     max-width: 100%;
-    height: 50px;
+    margin-left: -10px;
+    margin-right: -10px;
     margin-bottom: 30px;
+
+    .loader-block-element {
+      h3 {
+        text-align: center;
+        color:  #f7c1c1;
+
+      }
+      .active {
+        color: #ec6767;
+      }
+      .loader-block-parallelogram {
+        
+        transform: skew(20deg);
+        height: 30px;
+        background-color: #f7c1c1;
+
+      }
+      .activeP {
+        background-color: #ec6767;
+      }
+    }
 
     @media (max-width: 900px) {
       display: none;
     }
+
   }
 
   .step {

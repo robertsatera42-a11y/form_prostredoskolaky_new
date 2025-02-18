@@ -98,7 +98,7 @@ import fb from '../../firebase'
 export default {
   name: 'finalise-step',
   description: `Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.`,
-  number: 4,
+  number: 3,
   loaderBlockName: "čtvrtý krok - kontrola a uložení",
   data () {
     return {
