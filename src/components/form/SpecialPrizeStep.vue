@@ -182,6 +182,7 @@ export default {
     }
   },
   async mounted () {
+    window.scrollTo(0, 0)
     tracking.track('competition', 'entrance_page', 'form_entrance')
     await this.fetchUser('full')
   },
@@ -254,6 +255,7 @@ export default {
       this.$emit('changeView', FirstStep)
     },
     goToActivities () {
+      console.log(this.user);
       if (this.$v.user.$invalid) {
         this.submitStatus = 'ERROR'
       } else {

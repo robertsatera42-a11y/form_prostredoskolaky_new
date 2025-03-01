@@ -5,15 +5,15 @@
     <div class="basic-info">
       <h3>Základní údaje</h3>
       <div class="info-row">
-        <p>Jméno :</p>
+        <p>Jméno:</p>
         <p>{{ user.firstName }}</p>
       </div>
       <div class="info-row">
-        <p>Příjmení :</p>
+        <p>Příjmení:</p>
         <p>{{ user.lastName }}</p>
       </div>
       <div class="info-row">
-        <p>E-mail :</p>
+        <p>E-mail:</p>
         <p>{{ user.email }}</p>
       </div>
       <div class="info-row">
@@ -21,26 +21,39 @@
         <p>{{ user.school }}</p>
       </div>
       <div class="info-row">
-        <p>Ročník střední školy :</p>
+        <p>Ročník střední školy:</p>
         <p>{{ year[0] }}. ročník {{ year[1] }}letého studia</p>
       </div>
       <div class="info-row">
-        <p>Kraj :</p>
+        <p>Kraj:</p>
         <p>{{ user.region }}</p>
       </div>
       <div class="info-row">
-        <p>Datum narození :</p>
+        <p>Datum narození:</p>
         <p>{{ birthDate.getDate() }}. {{ birthDate.getMonth() + 1 }}. {{ birthDate.getFullYear() }}</p>
       </div>
       <div class="info-row">
-        <p>Link na LinkedIn :</p>
+        <p>Link na LinkedIn:</p>
         <p>{{ user.linkedin }}</p>
       </div>
       <div class="info-row">
-        <p>Jak ses o soutěži dozvěděl/a? :</p>
+        <p>Jak ses o soutěži dozvěděl/a? </p>
         <p>{{ user.knowledge }}</p>
       </div>
       <a class="button a-orange" @click="goToFirstStep">Zpět k úpravám</a>
+    </div>
+
+    <div class="basic-info">
+      <h3>Speciální ceny</h3>
+      <div class="info-row">
+        <p>Start-up roku: </p>
+        <p>{{ specialPrize1 }}</p>
+      </div>
+      <div class="info-row">
+        <p> Sportovec roku: </p>
+        <p>{{ specialPrize2 }}</p>
+      </div>
+      <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět k úpravám</a>
     </div>
 
     <h3>Aktivity</h3>
@@ -58,7 +71,7 @@
     <a class="button a-orange" @click="goToEditActivities">Zpět k úpravám</a>
 
     <div class="consent">
-      <b-checkbox v-model="isAgree">Souhlasím s <a href="https://drive.google.com/file/d/1Jq48GaNIC-yhYy583tWcLdhWL3_6NIX9/view?usp=sharing" target="_blank">podmínkami soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1-bEgTzhrrQahPBU0wRtNJ5bE-phOChO9/view?usp=sharing" target="_blank">souhlas se zpracováním osobních údajů</a>.</b-checkbox>
+      <b-checkbox v-model="isAgree">Souhlasím s <a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2025.pdf" target="_blank">podmínkami soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1-bEgTzhrrQahPBU0wRtNJ5bE-phOChO9/view?usp=sharing" target="_blank">souhlas se zpracováním osobních údajů</a>.</b-checkbox>
     </div>
 
     <div class="help-link">
@@ -75,7 +88,7 @@
     <!--</div>-->
     <div class="submit-block">
       <div class="submit-actions content">
-        <a  class="button a-orange" @click="goToEditActivities">Zpět na 2. krok</a>
+        <a  class="button a-orange" @click="goToEditActivities">Zpět na 3. krok</a>
         <a  class="button a-orange-full" @click="submit">Uložit přihlášku</a>
         <!-- <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small> -->
       </div>
@@ -86,6 +99,7 @@
 import ActivitiesStep from './ActivitiesStep'
 import SuccessStep from './SuccessStep'
 import FirstStep from './FirstStep'
+import SpecialPrizeStep from './SpecialPrizeStep'
 import ErrorMessage from '../common/ErrorMessage'
 import ValidationUtils from '../../utils/validationUtils'
 import config from '../../config/default'
@@ -98,7 +112,7 @@ import fb from '../../firebase'
 export default {
   name: 'finalise-step',
   description: `Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.`,
-  number: 3,
+  number: 4,
   loaderBlockName: "čtvrtý krok - kontrola a uložení",
   data () {
     return {
@@ -118,12 +132,25 @@ export default {
     this.year = this.user.grade.split('-')
     tracking.track('competition', 'entrance_page', 'form_activities_check')
   },
-  components: { ActivitiesStep, FirstStep, SuccessStep, ErrorMessage },
+  components: { ActivitiesStep, SpecialPrizeStep, FirstStep, SuccessStep, ErrorMessage },
   computed: {
     ...mapFields({
       user: 'user',
       activities: 'user.activities'
-    })
+    }),
+    specialPrize1() {
+      
+      if (this.user.specialPrize1text) {
+        return "Vyplněno";
+      } else return "Nevyplněno";
+    },
+    specialPrize2() {
+
+      if (this.user.specialPrize2foreignStudy || this.user.specialPrize2doesSport) {
+        return "Vyplněno";
+      } else return "Nevyplněno";
+    }
+    
   },
   watch: {
     isAgree: function () {
@@ -184,6 +211,9 @@ export default {
     },
     goToEditActivities () {
       this.$emit('changeView', ActivitiesStep)
+    },
+    goToSpecialPrizeStep () {
+      this.$emit('changeView', SpecialPrizeStep)
     },
     goToFirstStep () {
       this.$emit('changeView', FirstStep)

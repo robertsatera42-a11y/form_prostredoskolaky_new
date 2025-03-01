@@ -74,7 +74,7 @@ import transformerUtils from '../../utils/transformerUtils'
 export default {
   name: 'activities-step',
   description: `Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.`,
-  number: 2,
+  number: 3,
   loaderBlockName: "třetí krok - aktivity",
   data () {
     return {
