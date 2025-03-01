@@ -182,71 +182,11 @@ export default {
   },
   async mounted () {
     window.scrollTo(0, 0)
-    tracking.track('competition', 'entrance_page', 'form_entrance')
-    await this.fetchUser('full')
   },
   computed: {
     ...mapFields({
       user: 'user'
-    }),
-    inters: function () {
-      // TODO: should interests be from `database interests`? (but sport -> individual/team -> BAD)
-      return this.consts.interests.map(i => i.name)
-    },
-    errorsFirstName: function () {
-      this.focusedFirstName
-      this.$v.user.firstName.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'firstName', 'focusedFirstName')
-    },
-    errorsLastName: function () {
-      this.focusedLastName
-      this.$v.user.lastName.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'lastName', 'focusedLastName')
-    },
-    errorsEmail: function () {
-      this.focusedEmail
-      this.$v.user.email.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'email', 'focusedEmail')
-    },
-    errorsDob: function () {
-      this.focusedDob
-      this.$v.user.dob.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'dob', 'focusedDob')
-    },
-    errorsRegion: function () {
-      this.focusedRegion
-      this.$v.user.region.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'region', 'focusedRegion')
-    },
-    errorsPhone: function () {
-      this.focusedPhone
-      this.$v.user.phone.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'phone', 'focusedPhone')
-    },
-    errorsSchool: function () {
-      this.focusedSchool
-      this.$v.user.school.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'school', 'focusedSchool')
-    },
-    errorsGrade: function () {
-      this.focusedGrade
-      this.$v.user.grade.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'grade', 'focusedGrade')
-    },
-    errorsSummary: function () {
-      this.focusedSummary
-      this.$v.user.summary.$invalid
-      this.submitStatus
-      return ValidationUtils.validate(this, 'summary', 'focusedSummary')
-    }
+    })
   },
   methods: {
     ...mapActions({ fetchUser: FETCH_USER }),
@@ -254,13 +194,7 @@ export default {
       this.$emit('changeView', FirstStep)
     },
     goToActivities () {
-      console.log(this.user);
-      if (this.$v.user.$invalid) {
-        this.submitStatus = 'ERROR'
-      } else {
-        this.submitStatus = 'OK'
-        this.$emit('changeView', ActivitiesStep)
-      }
+      this.$emit('changeView', ActivitiesStep)
     },
     getFilteredInterests (text) {
       this.consts.interests = config.consts.interests.filter(option => {
