@@ -2,10 +2,10 @@
   <section class="special-prize-step">
     <div class="content form">
       <h3>Speciální ceny</h3>
-      <label>Vyplnění následujících sekcí tě zařadí do soutěže o speciální ceny našich pratnerů. Účast je <b>zcela dobrovolná</b>.</label>
+      <label>Vyplnění následujících sekcí tě zařadí do soutěže o speciální ceny našich partnerů. Účast je <b>zcela dobrovolná</b>.</label>
 
       <div class="form-block">
-        <h4 class="blue">Start-up roku - <a href="https://startit.csob.cz/">StartIT @ČSOB</a></h4>
+        <h4 class="blue">Start up roku – <a href="https://startit.csob.cz/">Start it @ČSOB</a></h4>
         <b-field
           label="V jakém startupu jsi zapojen, čím se zabývá, jak velký je tým, jakou v něm máš roli a v jaké fázi startup je (nápad, prototyp, MVP, investice)?">
           <b-input
@@ -17,7 +17,7 @@
         </b-field>
       </div>
       <div class="form-block">
-        <h4 class="blue">Sportovec roku - <a href="https://www.usfutures.cz/">Sportegy Futures</a></h4>
+        <h4 class="blue">Sportovec roku – <a href="https://www.usfutures.cz/">usFutures</a></h4>
 
         <b-checkbox style="padding-bottom: 22px;" v-model="user.specialPrize2doesSport"><b>Děláš nějaký sport závodně?</b></b-checkbox>
 
@@ -121,7 +121,6 @@
 
     <div class="submit-block">
       <div class="submit-actions content">
-        <router-link class="button a-gray" to="https://prostredoskolaky.cz/">Zavřít</router-link>
         <a class="button a-orange" @click="goToFirstStep">Přejít na 1. krok</a>
         <a class="button a-orange" @click="goToActivities">Přejít na 3. krok</a>
       </div>

@@ -244,7 +244,7 @@
         <div style="padding-top: 20px;"><i>* povinné pole</i></div>
       </div>
       <div class="help-link">
-        <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
+        <p>POZOR! Přihláška se uloží až ve čtvrtém kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
         <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
       </div>
 
@@ -255,7 +255,7 @@
 
     <div v-if="!finished" class="submit-block">
       <div class="submit-actions content">
-        <router-link class="button a-gray" to="https://prihlaska.stredoskolakroku.cz/">Zavřít</router-link>
+        <router-link class="button a-gray" to="https://prostredoskolaky.cz/">Zavřít</router-link>
         <a class="button a-orange" @click="goToSpecialPrize">Přejít na 2. krok</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved)}}</small>
       </div>
