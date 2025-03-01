@@ -246,7 +246,7 @@ export default {
     required: "Pole je povinné",
     requiredActivity: "Vyplň alespoň jednu aktivitu",
     requiredTerms:
-      "Před odesláním přihlášky musíš souhlasit s pravidly soutěže.",
+      "Před odesláním přihlášky musíš souhlasit s pravidly soutěže a potvrdit, že sis přečetl/a všechny dokumenty.",
     passwordsNotMatch: "Hesla se neshodují",
     email: "Email musí být zadán ve správném formátu.",
   },

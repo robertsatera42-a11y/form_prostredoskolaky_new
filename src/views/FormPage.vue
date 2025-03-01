@@ -263,6 +263,8 @@ div.form-content {
 
     .button {
       margin-right: 15px;
+      border: 3px solid #f55c23;
+      font-weight: bold;
     }
   }
 }

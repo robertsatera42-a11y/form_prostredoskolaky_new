@@ -71,7 +71,9 @@
     <a class="button a-orange" @click="goToEditActivities">Zpět k úpravám</a>
 
     <div class="consent">
-      <b-checkbox v-model="isAgree">Souhlasím s <a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2025.pdf" target="_blank">podmínkami soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1WjInvNkWEZj1uKoG4UCgwI-8_3i_t-5G/view?pli=1" target="_blank">souhlas se zpracováním osobních údajů</a>.</b-checkbox>
+      <b-checkbox v-model="isAgree">Souhlasím s <a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2025.pdf" target="_blank">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1WjInvNkWEZj1uKoG4UCgwI-8_3i_t-5G/view?pli=1" target="_blank">souhlas se zpracováním osobních údajů</a>.
+      <br> Zároveň potvrzuji, že jsem si přečetl/a dokument <a style="color: #1dbcb9" href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a>.
+    </b-checkbox>
     </div>
 
     <div class="help-link">
