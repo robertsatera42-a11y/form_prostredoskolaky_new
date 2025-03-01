@@ -51,16 +51,16 @@
 
     <div class="submit-block">
       <div class="submit-actions content">
-        <a class="button a-orange" @click="goToFirstStep">Zpět na 1. krok</a>
+        <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět na 2. krok</a>
         <a class="button a-orange" @click="goToFinalise">Přejít ke kontrole a uložení</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
-
+ 
   </section>
 </template>
 <script>
-import FirstStep from './FirstStep'
+import SpecialPrizeStep from './SpecialPrizeStep' 
 import ActivityForm from './ActivityForm'
 import FinaliseStep from './FinaliseStep'
 import ErrorMessage from '../common/ErrorMessage'
@@ -86,7 +86,7 @@ export default {
     window.scrollTo(0, 0)
     tracking.track('competition', 'entrance_page', 'form_activities')
   },
-  components: { FirstStep, ActivityForm, FinaliseStep, ErrorMessage },
+  components: { SpecialPrizeStep, ActivityForm, FinaliseStep, ErrorMessage },
   computed: {
     ...mapFields({
       activities: 'user.activities'
@@ -99,8 +99,8 @@ export default {
     }
   },
   methods: {
-    goToFirstStep () {
-      this.$emit('changeView', FirstStep)
+    goToSpecialPrizeStep () {
+      this.$emit('changeView', SpecialPrizeStep)
     },
     goToFinalise () {
       if (this.activities && this.activities.length > 0) {

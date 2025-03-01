@@ -59,7 +59,7 @@
       </b-field>
       <b-field
         v-if="showField.includes(activity.type)"
-        label="Oblast"
+        label="Oblast *"
         :type="errorsField.type"
         :message="errorsField.message"
       >

@@ -4,7 +4,7 @@
       <div class="header_links">
         <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a></button>
         <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2024.pdf" target="_blank">Pravidla soutěže</a></button>
+        <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2025.pdf" target="_blank">Pravidla soutěže</a></button>
     </div>
       <div class="header-text" id="headerText">
         <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
@@ -32,7 +32,7 @@
 
 <script>
 import FirstStep from '../components/form/FirstStep'
-//import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
+import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
 import ActivitiesStep from '../components/form/ActivitiesStep'
 import FinaliseStep from '../components/form/FinaliseStep'
 import { IS_LOGGED_IN } from '../types'
@@ -40,14 +40,14 @@ import { mapGetters } from 'vuex'
 import router from '../router'
 
 export default {
-  components: { FirstStep, ActivitiesStep, FinaliseStep },
+  components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep },
   data () {
     return {
       currentStep: FirstStep,
       competitionYear: "2025",
-      totalSteps: 3,
-      loaderBlockNames: [ FirstStep.loaderBlockName, ActivitiesStep.loaderBlockName, FinaliseStep.loaderBlockName ],
-      loaderBlockComponents: [ FirstStep, ActivitiesStep, FinaliseStep ]
+      totalSteps: 4,
+      loaderBlockNames: [ FirstStep.loaderBlockName, SpecialPrizeStep.loaderBlockName, ActivitiesStep.loaderBlockName, FinaliseStep.loaderBlockName ],
+      loaderBlockComponents: [ FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep ]
     }
   },
   computed: {

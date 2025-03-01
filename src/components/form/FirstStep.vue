@@ -1,7 +1,7 @@
 <template>
   <section class="first-step">
     <div v-if="finished" class="content form">
-      <h3>Přihlašování ukončeno</h3>
+      <h3>Přihlašování bude zahájeno <span class="orange">1. 3. 2025</span></h3>
       <br><input type="text" v-model="devPassphrase" style="width: 50px;">
     </div>
     <div v-else class="content form">
@@ -256,7 +256,7 @@
     <div v-if="!finished" class="submit-block">
       <div class="submit-actions content">
         <router-link class="button a-gray" to="https://prihlaska.stredoskolakroku.cz/">Zavřít</router-link>
-        <a class="button a-orange" @click="goToActivities">Přejít na 2. krok</a>
+        <a class="button a-orange" @click="goToSpecialPrize">Přejít na 2. krok</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved)}}</small>
       </div>
     </div>
@@ -264,7 +264,6 @@
   </section>
 </template>
 <script>
-import ActivitiesStep from './ActivitiesStep'
 import config from '../../config/default'
 import ValidationUtils from '../../utils/validationUtils'
 import transformerUtils from '../../utils/transformerUtils'
@@ -276,13 +275,14 @@ import { debounce } from 'debounce'
 import tracking from '../../utils/tracking'
 import { mapActions } from 'vuex'
 import { FETCH_USER } from '../../types'
+import SpecialPrizeStep from './SpecialPrizeStep.vue'
 
 export default {
   name: 'first-step',
   description: `Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>`,
   number: 1,
   loaderBlockName: "první krok - základní údaje",
-  components: { ActivitiesStep },
+  components: { SpecialPrizeStep },
   mixins: [focusMixin],
   data () {
     return {
@@ -388,12 +388,12 @@ export default {
   },
   methods: {
     ...mapActions({ fetchUser: FETCH_USER }),
-    goToActivities () {
+    goToSpecialPrize () {
       if (this.$v.user.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
         this.submitStatus = 'OK'
-        this.$emit('changeView', ActivitiesStep)
+        this.$emit('changeView', SpecialPrizeStep)
       }
     },
     getFilteredInterests (text) {
