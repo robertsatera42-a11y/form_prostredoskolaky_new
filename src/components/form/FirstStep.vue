@@ -287,7 +287,7 @@ export default {
   data () {
     return {
       // when contest is finished, dont show form
-      finished: true,
+      finished: false,
       devPassphrase: "",
       selected: '',
       schools: [],
