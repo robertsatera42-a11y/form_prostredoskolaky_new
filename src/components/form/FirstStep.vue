@@ -212,7 +212,7 @@
             placeholder="Popiš se v několika větách ve třetí osobě.">
         </b-input>
       </b-field>
-      <div style="padding-bottom: 30px; font-style: italic; margin-top:-25px; text-align:right">Nevíš jak na medailonek? přečti si <a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" class="orange">Jak na přihlášku</a></div>
+      <div style="padding-bottom: 30px; font-style: italic; margin-top:-25px; text-align:right"> Tvůj medailonek budeme číst na vyhlášení TOP100. Nevíš, jak na medailonek? přečti si <a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" class="orange">Jak na přihlášku</a></div>
 
       <!-- Image upload disabled -->
       <div hidden> 
