@@ -276,6 +276,7 @@ export default {
     "auth/invalid-email": "Zadaný email nebo heslo jsou nesprávné",
     "auth/user-not-found": "Zadaný email není registrovaný",
     "auth/weak-password": "Heslo musí obsahovat alespoň 6 znaků",
+    "auth/email-not-verified": "E-mailová adresa není ověřena.",
     default: "Něco se nepovedlo. Zkuste to prosím později.",
   },
   defaultErrorMessage: "Aktivitu se nepodařilo uložit. Zkuste to prosím znovu.",

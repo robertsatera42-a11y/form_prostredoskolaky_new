@@ -45,13 +45,20 @@ const createUser = async (user, password) => {
 
 const loginUser = async (email, password) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-    return 'OK'
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    // Check if the user's email is verified
+    if (!userCredential.user.emailVerified) {
+      await signOut(auth); // Sign out the user if the email is not verified
+      return transformerUtils.mapLoginErrorCodes('auth/email-not-verified');
+    }
+
+    return 'OK';
   } catch (err) {
-    console.log(err)
-    return transformerUtils.mapLoginErrorCodes(err.code)
+    console.log(err);
+    return transformerUtils.mapLoginErrorCodes(err.code);
   }
-}
+};
 
 const logoutUser = async () => {
   try {

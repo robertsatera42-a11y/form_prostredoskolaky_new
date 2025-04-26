@@ -43,6 +43,7 @@ export default {
   components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep },
   data () {
     return {
+//      unsaved: false,
       currentStep: FirstStep,
       competitionYear: "2025",
       totalSteps: 4,
@@ -66,6 +67,9 @@ export default {
     },
     isStepActive (stepNum) {
       return stepNum <= this.currentStep.number;
+//    },
+//    updateUnsavedChanges(value) {
+//      this.hasUnsavedChanges = value;
     }
   }
 }
