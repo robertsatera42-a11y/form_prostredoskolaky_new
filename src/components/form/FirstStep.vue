@@ -72,9 +72,8 @@
               placeholder="např. 1.8.2008"
               editable
               :mobile-native=true
-              :min-date="new Date(1900, 0, 1)"
-              :max-date="new Date(new Date().getFullYear() - 10, 11, 31)"
-            ></b-datepicker>
+              :focused-date="new Date(new Date().getFullYear() - 10, 11, 31)"
+              ></b-datepicker>
           </b-field>
         </div>
       </div>
