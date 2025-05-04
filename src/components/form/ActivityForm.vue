@@ -1,7 +1,8 @@
 <template>
-  <div class="modal-card">
+  <div class="modal-card" @keydown.esc="confirmClose">
     <header class="modal-card-head">
       <p class="modal-card-title">Přidat novou aktivitu</p>
+<button class="delete" aria-label="close" @click="confirmClose"></button>
     </header>
     <!--<form @submit.prevent="submit">-->
     <section class="modal-card-body">
@@ -137,7 +138,7 @@
       <div><i>* povinné pole</i></div>
     </section>
     <footer class="modal-card-foot">
-      <button class="button" @click="$parent.close()">
+      <button class="button" @click="confirmClose">
         Zavřít
       </button>
       <button class="button is-primary" @click="submit">
@@ -198,13 +199,15 @@ export default {
       focusedInterest: undefined,
       focusedIsIndividual: undefined,
       focusedReference: undefined,
-      submitStatus: ''
+      submitStatus: '',
+      isModified: false
     }
   },
   mounted () {
     if (this.index !== null) {
       this.activity = { ...this.act }
     }
+    this.$watch('activity', this.trackChanges, { deep: true });
   },
   computed: {
     ...mapFields({
@@ -274,6 +277,16 @@ export default {
       } else if (this.submitStatus === 'ERROR') {
         return { message: config.errors.required, type: config.errors.type }
       } else return { message: '', type: '' }
+},
+    confirmClose() {
+      if (this.isModified && confirm('Opravdu chcete zavřít upravování aktivity bez uložení?')) {
+        this.$parent.close();
+      } else if (!this.isModified) {
+        this.$parent.close();
+      }
+    },
+    trackChanges() {
+      this.isModified = true;
     }
   },
   validations: {
