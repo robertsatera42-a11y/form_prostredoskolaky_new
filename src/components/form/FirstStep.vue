@@ -1,7 +1,7 @@
 <template>
   <section class="first-step">
     <div v-if="finished" class="content form">
-      <h3>Přihlašování bude zahájeno <span class="orange">1. 3. 2025</span></h3>
+      <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2026</span></h3>
       <br><input type="text" v-model="devPassphrase" style="width: 50px;">
     </div>
     <div v-else class="content form">
@@ -288,7 +288,7 @@ export default {
   data () {
     return {
       // when contest is finished, dont show form
-      finished: false,
+      finished: true,
       devPassphrase: "",
       selected: '',
       schools: [],
@@ -384,7 +384,7 @@ export default {
   },
   watch: {
     devPassphrase(val) {
-      if (val === "HadamOlda") this.finished = false;
+      if (val === "ba080dc590db6d718e59fe031b41648846f01d012b9e8c9a5be4df053ffd1e83") this.finished = false;
     }
   },
   methods: {
