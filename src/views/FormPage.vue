@@ -1,10 +1,20 @@
 <template>
   <div class="form-content">
+    <div v-if="showDraftBanner" class="draft-banner-wrap">
+      <div class="content draft-banner">
+        <span class="draft-banner-message">Nalezený byl dříve uložený návrh. Chcete pokračovat tam, kde jste skončili?</span>
+        <div class="draft-banner-actions">
+          <button class="button a-orange" @click="keepDraft">Ano, pokračovat</button>
+          <button class="button a-gray" @click="startOverFromDraft">Ne, vrátit se k uložené verzi</button>
+        </div>
+        <button class="delete" aria-label="close" @click="dismissDraftBanner"></button>
+      </div>
+    </div>
     <div class="content">
       <div class="header_links">
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Jak_probiha_hodnoceni.pdf" target="_blank">Jak probíhá hodnocení</a></button>
-        <button class="button"><a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2025.pdf" target="_blank">Pravidla soutěže</a></button>
+        <button class="button"><a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a></button>
+        <button class="button"><a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank">Jak probíhá hodnocení</a></button>
+        <button class="button"><a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank">Pravidla soutěže</a></button>
         <!-- <a href="tel:+420-910-110-207" target="_blank" style="color: #1dbcb9">Nefunguje vám přihláška? Zavolejte na asistenci <strong>+420 910 110 207</strong></a> -->
     </div>
       <div class="header-text" id="headerText">
@@ -25,9 +35,12 @@
         <div class="loader-block-parallelogram" :class="{activeP: isStepActive(stepNumber)}"></div>
       </div>
     </div>
-    <keep-alive>
+    <keep-alive v-if="isUserBootstrapReady">
       <component :is="currentStep" @changeView="changeView"/>
     </keep-alive>
+    <div v-else class="content bootstrap-loading">
+      <h2>Načítám přihlášku...</h2>
+    </div>
   </div>
 </template>
 
@@ -36,7 +49,7 @@ import FirstStep from '../components/form/FirstStep'
 import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
 import ActivitiesStep from '../components/form/ActivitiesStep'
 import FinaliseStep from '../components/form/FinaliseStep'
-import { IS_LOGGED_IN } from '../types'
+import { IS_LOGGED_IN, USER, SET_USER } from '../types'
 import { mapGetters } from 'vuex'
 import router from '../router'
 
@@ -44,33 +57,152 @@ export default {
   components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep },
   data () {
     return {
-//      unsaved: false,
+      //      unsaved: false,
       currentStep: FirstStep,
-      competitionYear: "2025",
+      competitionYear: '2026',
       totalSteps: 4,
-      loaderBlockNames: [ FirstStep.loaderBlockName, SpecialPrizeStep.loaderBlockName, ActivitiesStep.loaderBlockName, FinaliseStep.loaderBlockName ],
-      loaderBlockComponents: [ FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep ]
+      showDraftBanner: false,
+      baselineDraftSignature: '',
+      unsubscribeStore: null,
+      loaderBlockNames: [ FirstStep.loaderBlockName, ActivitiesStep.loaderBlockName, SpecialPrizeStep.loaderBlockName, FinaliseStep.loaderBlockName ],
+      loaderBlockComponents: [ FirstStep, ActivitiesStep, SpecialPrizeStep, FinaliseStep ]
+    }
+  },
+  mounted () {
+    if (this.hasMeaningfulDraft()) {
+      this.showDraftBanner = true
+    }
+    this.setBaselineDraftSignature()
+    this.unsubscribeStore = this.$store.subscribe((mutation) => {
+      if (mutation.type === SET_USER || mutation.type === 'clearDraft') {
+        this.setBaselineDraftSignature()
+      }
+    })
+    window.addEventListener('beforeunload', this.handleBeforeUnload)
+  },
+  beforeDestroy () {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload)
+    if (this.unsubscribeStore) {
+      this.unsubscribeStore()
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.confirmLeaveWithoutSaving()) {
+      next()
+    } else {
+      next(false)
     }
   },
   computed: {
-    ...mapGetters([IS_LOGGED_IN]),
+    ...mapGetters([IS_LOGGED_IN, USER, 'isUserBootstrapReady'])
   },
   watch: {
-    isLoggedIn() {
+    isLoggedIn () {
       if (!this.isLoggedIn) {
         router.push('/login')
       }
     }
   },
   methods: {
+    getDraftSignature () {
+      return JSON.stringify({
+        grade: this.user.grade,
+        region: this.user.region,
+        school: this.user.school,
+        linkedin: this.user.linkedin,
+        interests: this.user.interests,
+        activities: this.user.activities,
+        knowledge: this.user.knowledge,
+        summary: this.user.summary,
+        specialPrize1text: this.user.specialPrize1text,
+        specialPrize2doesSport: this.user.specialPrize2doesSport,
+        specialPrize2sportAmbitions: this.user.specialPrize2sportAmbitions,
+        specialPrize2sportSuccess: this.user.specialPrize2sportSuccess,
+        specialPrize2sportObstacle: this.user.specialPrize2sportObstacle,
+        specialPrize2foreignStudy: this.user.specialPrize2foreignStudy,
+        specialPrize2foreignReason: this.user.specialPrize2foreignReason,
+        specialPrize2foreignUniversity: this.user.specialPrize2foreignUniversity,
+        specialPrize2foreignunique: this.user.specialPrize2foreignunique,
+        specialPrize2foreignScary: this.user.specialPrize2foreignScary,
+        specialPrize2englishB2: this.user.specialPrize2englishB2,
+        specialPrize2hasIB: this.user.specialPrize2hasIB,
+        specialPrize2AP: this.user.specialPrize2AP,
+        isRepeting: this.user.isRepeting,
+        phone: this.user.phone
+      })
+    },
+    setBaselineDraftSignature () {
+      this.baselineDraftSignature = this.getDraftSignature()
+    },
+    hasUnsavedChanges () {
+      return this.hasMeaningfulDraft() && this.getDraftSignature() !== this.baselineDraftSignature
+    },
+    confirmLeaveWithoutSaving () {
+      if (!this.hasUnsavedChanges()) {
+        return true
+      }
+      return confirm('Opravdu chcete opustit stránku bez uložení přihlášky?')
+    },
+    handleBeforeUnload (event) {
+      if (!this.hasUnsavedChanges()) {
+        return
+      }
+      event.preventDefault()
+      event.returnValue = ''
+    },
+    keepDraft () {
+      this.showDraftBanner = false
+    },
+    async startOverFromDraft () {
+      await this.$store.dispatch('revertToSaved')
+      this.currentStep = FirstStep
+      this.showDraftBanner = false
+    },
+    dismissDraftBanner () {
+      this.showDraftBanner = false
+    },
+    hasMeaningfulDraft () {
+      const user = this.user
+      if (!user) {
+        return false
+      }
+
+      const hasNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0
+
+      return Boolean(
+        user.grade !== null ||
+        user.region !== null ||
+        hasNonEmptyString(user.school) ||
+        hasNonEmptyString(user.linkedin) ||
+        (Array.isArray(user.interests) && user.interests.length > 0) ||
+        (Array.isArray(user.activities) && user.activities.length > 0) ||
+        user.knowledge !== null ||
+        hasNonEmptyString(user.summary) ||
+        hasNonEmptyString(user.specialPrize1text) ||
+        user.specialPrize2doesSport ||
+        hasNonEmptyString(user.specialPrize2sportAmbitions) ||
+        hasNonEmptyString(user.specialPrize2sportSuccess) ||
+        hasNonEmptyString(user.specialPrize2sportObstacle) ||
+        user.specialPrize2foreignStudy ||
+        hasNonEmptyString(user.specialPrize2foreignReason) ||
+        hasNonEmptyString(user.specialPrize2foreignUniversity) ||
+        hasNonEmptyString(user.specialPrize2foreignunique) ||
+        hasNonEmptyString(user.specialPrize2foreignScary) ||
+        user.specialPrize2englishB2 ||
+        user.specialPrize2hasIB ||
+        hasNonEmptyString(user.specialPrize2AP) ||
+        user.isRepeting ||
+        hasNonEmptyString(user.phone)
+      )
+    },
     changeView (step) {
       this.currentStep = step
     },
     isStepActive (stepNum) {
-      return stepNum <= this.currentStep.number;
-//    },
-//    updateUnsavedChanges(value) {
-//      this.hasUnsavedChanges = value;
+      return stepNum <= this.currentStep.number
+      //    },
+      //    updateUnsavedChanges(value) {
+      //      this.hasUnsavedChanges = value;
     }
   }
 }
@@ -92,6 +224,54 @@ export default {
 div.form-content {
   padding-top: 100px;
   position: relative;
+
+  .draft-banner-wrap {
+    margin-top: -40px;
+    margin-bottom: 20px;
+  }
+
+  .draft-banner {
+    background: #fff3e7;
+    border: 1px solid #f55c23;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    position: relative;
+
+    .draft-banner-message {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .draft-banner-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      .button {
+        margin: 0;
+      }
+    }
+
+    .delete {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-right: 40px;
+
+      .delete {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+      }
+    }
+  }
 
   .header-text {
     display: flex;
@@ -144,7 +324,7 @@ div.form-content {
         color: #ec6767;
       }
       .loader-block-parallelogram {
-        
+
         transform: skew(20deg);
         height: 30px;
         background-color: #f7c1c1;
@@ -170,6 +350,15 @@ div.form-content {
 
     @media (max-width: 900px) {
       display: block;
+    }
+  }
+
+  .bootstrap-loading {
+    text-align: center;
+    padding-bottom: 40px;
+
+    h2 {
+      font-weight: normal;
     }
   }
 

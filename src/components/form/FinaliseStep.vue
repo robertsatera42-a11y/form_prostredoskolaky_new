@@ -49,10 +49,6 @@
         <p>Start-up roku: </p>
         <p>{{ specialPrize1 }}</p>
       </div>
-      <div class="info-row">
-        <p> Sportovec roku: </p>
-        <p>{{ specialPrize2 }}</p>
-      </div>
       <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět k úpravám</a>
     </div>
 
@@ -71,13 +67,17 @@
     <a class="button a-orange" @click="goToEditActivities">Zpět k úpravám</a>
 
     <div class="consent">
-      <b-checkbox v-model="isAgree">Souhlasím s <a href="https://storage.googleapis.com/ps-others/Pravidla_Stredoskolak_roku_2025.pdf" target="_blank">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1WjInvNkWEZj1uKoG4UCgwI-8_3i_t-5G/view?pli=1" target="_blank">souhlas se zpracováním osobních údajů</a>.
-      <br> Zároveň potvrzuji, že jsem si přečetl/a dokument <a style="color: #1dbcb9" href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" target="_blank">Jak na přihlášku</a>.
+      <b-checkbox v-model="isAgree">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1WjInvNkWEZj1uKoG4UCgwI-8_3i_t-5G/view?usp=sharing" target="_blank">souhlas se zpracováním osobních údajů</a>.
+    </b-checkbox>
+    </div>
+
+    <div class="newsletter_consent">
+      <b-checkbox v-model="sendNewsletter">Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit a dalších informací do svého e-mailu</a>.
     </b-checkbox>
     </div>
 
     <div class="help-link">
-      <p>POZOR! Přihláška se uloží až ve třetím kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
+      <p>POZOR! Přihláška se uloží až ve čtvrtém kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
       <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
     </div>
 
@@ -90,9 +90,9 @@
     <!--</div>-->
     <div class="submit-block">
       <div class="submit-actions content">
-        <a  class="button a-orange" @click="goToEditActivities">Zpět na 3. krok</a>
+        <a  class="button a-orange" @click="goToSpecialPrizeStep">Zpět na 3. krok</a>
         <a  class="button a-orange-full" @click="submit">Uložit přihlášku</a>
-        <!-- <small v-if="user.lastSaved && !showSuccess">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small> -->
+        <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
   </section>
@@ -115,7 +115,7 @@ export default {
   name: 'finalise-step',
   description: `Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.`,
   number: 4,
-  loaderBlockName: "čtvrtý krok - kontrola a uložení",
+  loaderBlockName: 'čtvrtý krok - kontrola a uložení',
   data () {
     return {
       isLoading: false,
@@ -140,19 +140,17 @@ export default {
       user: 'user',
       activities: 'user.activities'
     }),
-    specialPrize1() {
-      
+    specialPrize1 () {
       if (this.user.specialPrize1text) {
-        return "Vyplněno";
-      } else return "Nevyplněno";
+        return 'Vyplněno'
+      } else return 'Nevyplněno'
     },
-    specialPrize2() {
-
+    specialPrize2 () {
       if (this.user.specialPrize2foreignStudy || this.user.specialPrize2doesSport) {
-        return "Vyplněno";
-      } else return "Nevyplněno";
+        return 'Vyplněno'
+      } else return 'Nevyplněno'
     }
-    
+
   },
   watch: {
     isAgree: function () {
@@ -167,7 +165,7 @@ export default {
         if (this.isAgree) {
           this.isLoading = true
 
-          let imageType = undefined
+          let imageType
           if (this.user.image) {
             const image = this.user.image
             const typeList = image.name.split('.')
@@ -177,7 +175,7 @@ export default {
           const preparedActivities = this.user.activities.map(a => {
             return {
               ...a,
-              isIndividual: a.isIndividual === 'Týmové' ? false : true
+              isIndividual: a.isIndividual !== 'Týmové'
             }
           })
           const preparedUser = {
@@ -233,20 +231,20 @@ export default {
     transformDate (dateString) {
       return transformerUtils.transformDate(dateString)
     },
-    async uploadToGCP(file, signedUrl) {
+    async uploadToGCP (file, signedUrl) {
       try {
         const response = await fetch(signedUrl, {
           method: 'PUT',
-          body: file,
-        });
+          body: file
+        })
 
         if (response.ok) {
-          console.log('Image uploaded successfully!');
+          console.log('Image uploaded successfully!')
         } else {
-          console.error('Failed to upload image:', response.statusText);
+          console.error('Failed to upload image:', response.statusText)
         }
-      } catch(err) {
-        console.error('Error uploading image:', error);
+      } catch (err) {
+        console.error('Error uploading image:', error)
       }
     }
   }
@@ -445,6 +443,11 @@ section.finalise-step {
   }
 
   .consent {
+    text-align: center;
+    padding: 20px 0 20px 0;
+  }
+
+  .newsletter_consent {
     text-align: center;
     padding: 20px 0 20px 0;
   }

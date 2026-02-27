@@ -1,7 +1,8 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import client from "./client/client";
-import { getField, updateField } from "vuex-map-fields";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
+import client from './client/client'
+import { getField, updateField } from 'vuex-map-fields'
 import {
   EVENTS,
   SET_EVENTS,
@@ -19,88 +20,188 @@ import {
   SET_USER,
   SET_USER_PROFILE,
   DELETE_USER,
-  USER,
-} from "./types";
-import tracking from "./utils/tracking";
-import transformerUtils from "./utils/transformerUtils";
-import fb from "./firebase.js";
+  USER
+} from './types'
+import tracking from './utils/tracking'
+import transformerUtils from './utils/transformerUtils'
+import fb from './firebase.js'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
+
+const SET_USER_BOOTSTRAP_READY = 'setUserBootstrapReady'
+
+const createInitialUserState = () => ({
+  occupation: null,
+  firstName: '',
+  lastName: '',
+  email: '',
+  grade: null,
+  dob: undefined,
+  region: null,
+  school: '',
+  linkedin: '',
+  interests: [],
+  activities: [],
+  knowledge: null,
+  lastSaved: '',
+  role: '',
+  createdAt: '',
+  lastLogin: '',
+  sendNewsletter: false,
+  schoolContact: '',
+  hasRegistration: false,
+  summary: '',
+  specialPrize1text: '',
+  specialPrize2doesSport: false,
+  specialPrize2sportAmbitions: '',
+  specialPrize2sportSuccess: '',
+  specialPrize2sportObstacle: '',
+  specialPrize2foreignStudy: false,
+  specialPrize2foreignReason: '',
+  specialPrize2foreignUniversity: '',
+  specialPrize2foreignunique: '',
+  specialPrize2foreignScary: '',
+  specialPrize2englishB2: false,
+  specialPrize2hasIB: false,
+  specialPrize2AP: '',
+  isRepeting: false,
+  phone: '',
+  image: undefined
+})
+
+const FORM_DRAFT_FIELDS = [
+  'firstName',
+  'lastName',
+  'grade',
+  'dob',
+  'region',
+  'school',
+  'linkedin',
+  'interests',
+  'activities',
+  'knowledge',
+  'summary',
+  'specialPrize1text',
+  'specialPrize2doesSport',
+  'specialPrize2sportAmbitions',
+  'specialPrize2sportSuccess',
+  'specialPrize2sportObstacle',
+  'specialPrize2foreignStudy',
+  'specialPrize2foreignReason',
+  'specialPrize2foreignUniversity',
+  'specialPrize2foreignunique',
+  'specialPrize2foreignScary',
+  'specialPrize2englishB2',
+  'specialPrize2hasIB',
+  'specialPrize2AP',
+  'isRepeting',
+  'phone'
+]
+
+const FORM_DRAFT_PATHS = FORM_DRAFT_FIELDS.map((field) => `user.${field}`)
+
+const DRAFT_MEANINGFUL_FIELDS = FORM_DRAFT_FIELDS.filter(
+  (field) => !['firstName', 'lastName', 'dob'].includes(field)
+)
+
+const isMeaningfulDraftValue = (value) => {
+  if (Array.isArray(value)) {
+    return value.length > 0
+  }
+  if (typeof value === 'string') {
+    return value.trim().length > 0
+  }
+  if (typeof value === 'boolean') {
+    return value
+  }
+  return value !== null && value !== undefined
+}
+
+const hasMeaningfulDraftData = (userState = {}) =>
+  DRAFT_MEANINGFUL_FIELDS.some((field) =>
+    isMeaningfulDraftValue(userState[field])
+  )
+
+const getClearedDraftUserPayload = () => {
+  const initialUserState = createInitialUserState()
+  return FORM_DRAFT_FIELDS.reduce((payload, field) => {
+    payload[field] = initialUserState[field]
+    return payload
+  }, {})
+}
+
+const createDraftPersistenceSubscriber = (store) => (handler) => {
+  store.subscribe(handler)
+  store.watch(
+    (state) => state.user,
+    () => {
+      handler({ type: '__draft_watch__' }, store.state)
+    },
+    { deep: true }
+  )
+}
 
 fb.auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    const role = await fb.getRole();
-    const hasRegistration = await client.hasRegistration();
-    user.role = role;
-    user.hasRegistration = hasRegistration;
-    store.commit(SET_USER, user);
-  } else {
-    store.commit(EMPTY_USER);
+  try {
+    if (user) {
+      const role = await fb.getRole()
+      const hasRegistration = await client.hasRegistration()
+      user.role = role
+      user.hasRegistration = hasRegistration
+      store.commit(SET_USER, user)
+    } else {
+      store.commit(EMPTY_USER)
+    }
+  } catch (err) {
+    console.log(err)
+    if (user) {
+      store.commit(SET_USER, user)
+    } else {
+      store.commit(EMPTY_USER)
+    }
+  } finally {
+    store.commit(SET_USER_BOOTSTRAP_READY, true)
   }
-});
+})
 
 const store = new Vuex.Store({
   state: {
-    user: {
-      occupation: null,
-      firstName: "",
-      lastName: "",
-      email: "",
-      grade: null,
-      dob: undefined,
-      region: null,
-      school: "",
-      linkedin: "",
-      interests: [],
-      activities: [],
-      knowledge: null,
-      lastSaved: "",
-      role: "",
-      createdAt: "",
-      lastLogin: "",
-      sendNewsletter: false,
-      schoolContact: "",
-      hasRegistration: false,
-      summary: "",
-      specialPrize1text: "",
-      specialPrize2doesSport: false,
-      specialPrize2sportAmbitions: "",
-      specialPrize2sportSuccess: "",
-      specialPrize2sportObstacle: "",
-      specialPrize2foreignStudy: false,
-      specialPrize2foreignReason: "",
-      specialPrize2foreignUniversity: "",
-      specialPrize2foreignunique: "",
-      specialPrize2foreignScary: "",
-      specialPrize2englishB2: false,
-      specialPrize2hasIB: false,
-      specialPrize2AP: "",
-      isRepeting: false,
-      phone: "",
-      image: undefined,
-    },
+    user: createInitialUserState(),
     events: [
       {
-        eventName: "",
-        description: "",
-        eventUrl: "",
+        eventName: '',
+        description: '',
+        eventUrl: '',
         categories: [],
         types: [],
-        contact: "",
+        contact: '',
         deadlines: [],
-        logo: "",
+        logo: '',
         ageGroup: [],
         isForeign: false,
-        group: [],
-      },
+        group: []
+      }
     ],
     totalPages: null,
     totalEvents: null,
     actualPage: null,
-    search: "",
+    search: '',
+    isUserBootstrapReady: false,
     checkedCategories: [],
-    checkedTypes: [],
+    checkedTypes: []
   },
+  plugins: [
+    createPersistedState({
+      key: 'form-draft',
+      paths: FORM_DRAFT_PATHS,
+      subscriber: createDraftPersistenceSubscriber,
+      rehydrated: (store) => {
+        if (store.state.user && store.state.user.dob) {
+          store.state.user.dob = new Date(store.state.user.dob)
+        }
+      }
+    })
+  ],
   getters: {
     getField,
     [EVENTS]: (state) => state.events,
@@ -109,122 +210,169 @@ const store = new Vuex.Store({
     [ACTUAL_PAGE]: (state) => state.actualPage,
     [USER]: (state) => state.user,
     [IS_LOGGED_IN]: (state) => state.user.email,
+    isUserBootstrapReady: (state) => state.isUserBootstrapReady
   },
   mutations: {
     updateField,
 
+    [SET_USER_BOOTSTRAP_READY] (state, isReady) {
+      state.isUserBootstrapReady = isReady
+    },
+
     // event
-    [SET_EVENTS](state, events) {
-      state.events = [...events];
+    [SET_EVENTS] (state, events) {
+      state.events = [...events]
     },
-    [SET_TOTAL_PAGES](state, totalPages) {
-      state.totalPages = totalPages;
+    [SET_TOTAL_PAGES] (state, totalPages) {
+      state.totalPages = totalPages
     },
-    [SET_TOTAL_EVENTS](state, totalEvents) {
-      state.totalEvents = totalEvents;
+    [SET_TOTAL_EVENTS] (state, totalEvents) {
+      state.totalEvents = totalEvents
     },
-    [SET_ACTUAL_PAGE](state, page) {
-      state.actualPage = page;
+    [SET_ACTUAL_PAGE] (state, page) {
+      state.actualPage = page
     },
 
     // user
-    [SET_USER_PROFILE](state, user) {
-      state.user.firstName = user.firstName;
-      state.user.lastName = user.lastName;
-      state.user.email = user.email;
-      state.user.occupation = user.occupation;
-      state.user.sendNewsletter = user.sendNewsletter;
+    [SET_USER_PROFILE] (state, user) {
+      state.user.firstName = user.firstName
+      state.user.lastName = user.lastName
+      state.user.email = user.email
+      state.user.occupation = user.occupation
+      state.user.sendNewsletter = user.sendNewsletter
     },
-    [SET_USER](state, user) {
-      state.user = {
+    [SET_USER] (state, user) {
+      const firstNameFromPayload =
+        user && user.displayName
+          ? user.displayName.split(' ')[0]
+          : user.firstName
+      const lastNameFromPayload =
+        user && user.displayName
+          ? user.displayName.split(' ')[1]
+          : user.lastName
+      const mappedUser = {
         occupation: user.occupation || null,
-        firstName:
-          user && user.displayName
-            ? user.displayName.split(" ")[0]
-            : user.firstName,
-        lastName:
-          user && user.displayName
-            ? user.displayName.split(" ")[1]
-            : user.lastName,
-        email: user.email || "",
+        firstName: firstNameFromPayload,
+        lastName: lastNameFromPayload,
+        email: user.email || '',
         grade: user.grade || null,
-        dob: user.dob ? new Date(user.dob) : new Date("Jan 1 2000"),
+        dob: user.dob ? new Date(user.dob) : new Date('Jan 1 2000'),
         region: user.region || null,
-        school: user.school || "",
-        linkedin: user.linkedinUrl || "",
+        school: user.school || '',
+        linkedin: user.linkedinUrl || '',
         interests: user.interests ? user.interests : [],
         activities: user.activities
           ? user.activities.map((a) => {
-              return {
-                ...a,
-                isIndividual: a.isIndividual ? "Individuální" : "Týmové",
-              };
-            })
+            return {
+              ...a,
+              isIndividual: a.isIndividual ? 'Individuální' : 'Týmové'
+            }
+          })
           : [],
         knowledge: user.knowledge || null,
         lastSaved: user.updatedAt ? new Date(user.updatedAt) : undefined,
-        role: user.role || "",
-        schoolContact: user.schoolContact || "",
+        role: user.role || '',
+        schoolContact: user.schoolContact || '',
         hasRegistration: user.hasRegistration || false,
-        summary: user.summary || "",
-        specialPrize1text: user.specialPrize1text || "",
+        summary: user.summary || '',
+        specialPrize1text: user.specialPrize1text || '',
         specialPrize2doesSport: user.specialPrize2doesSport || false,
-        specialPrize2sportAmbitions: user.specialPrize2sportAmbitions || "",
-        specialPrize2sportSuccess: user.specialPrize2sportSuccess || "",
-        specialPrize2sportObstacle: user.specialPrize2sportObstacle || "",
+        specialPrize2sportAmbitions: user.specialPrize2sportAmbitions || '',
+        specialPrize2sportSuccess: user.specialPrize2sportSuccess || '',
+        specialPrize2sportObstacle: user.specialPrize2sportObstacle || '',
         specialPrize2foreignStudy: user.specialPrize2foreignStudy || false,
-        specialPrize2foreignReason: user.specialPrize2foreignReason || "",
-        specialPrize2foreignUniversity: user.specialPrize2foreignUniversity || "",
-        specialPrize2foreignunique: user.specialPrize2foreignunique || "",
-        specialPrize2foreignScary: user.specialPrize2foreignScary || "",
+        specialPrize2foreignReason: user.specialPrize2foreignReason || '',
+        specialPrize2foreignUniversity: user.specialPrize2foreignUniversity || '',
+        specialPrize2foreignunique: user.specialPrize2foreignunique || '',
+        specialPrize2foreignScary: user.specialPrize2foreignScary || '',
         specialPrize2englishB2: user.specialPrize2englishB2 || false,
         specialPrize2hasIB: user.specialPrize2hasIB || false,
-        specialPrize2AP: user.specialPrize2AP || "",
-        isRepeting: user.isFirstTime === true ? false : true,
-        phone: user.phone || "",
-      };
+        specialPrize2AP: user.specialPrize2AP || '',
+        isRepeting: typeof user.isFirstTime === 'boolean' ? !user.isFirstTime : false,
+        phone: user.phone || ''
+      }
+      const shouldPreserveLocalDraft =
+        hasMeaningfulDraftData(state.user) && !user.__forceRemote
+
+      if (shouldPreserveLocalDraft) {
+        const preservedDraftFields = FORM_DRAFT_FIELDS.reduce((draft, field) => {
+          draft[field] = state.user[field]
+          return draft
+        }, {})
+
+        state.user = {
+          ...mappedUser,
+          ...preservedDraftFields
+        }
+      } else {
+        state.user = mappedUser
+      }
       if (user.sendNewsletter) {
         state.user = {
           ...state.user,
-          sendNewsletter: user.sendNewsletter,
-        };
+          sendNewsletter: user.sendNewsletter
+        }
       }
     },
-    [UPDATE_USER](state, user) {
+    [UPDATE_USER] (state, user) {
       state.user = {
-        ...user,
-      };
+        ...user
+      }
     },
-    [EMPTY_USER](state) {
+    [EMPTY_USER] (state) {
       state.user = {
-        firstName: "",
-        lastName: "",
-        email: "",
-      };
+        firstName: '',
+        lastName: '',
+        email: ''
+      }
     },
+    clearDraft (state) {
+      state.user = {
+        ...state.user,
+        ...getClearedDraftUserPayload()
+      }
+    }
   },
   actions: {
     // user
-    [FETCH_USER]: async ({ commit }, content) => {
+    [FETCH_USER]: async ({ commit }, payload) => {
       try {
-        const user = await client.getUser(content);
-        content === "profile"
-          ? commit(SET_USER_PROFILE, user)
-          : commit(SET_USER, user);
+        const options =
+          typeof payload === 'string'
+            ? { content: payload, forceRemote: false }
+            : {
+              content: payload && payload.content ? payload.content : 'full',
+              forceRemote: Boolean(payload && payload.forceRemote)
+            }
+        const user = await client.getUser(options.content)
+        const userPayload = options.forceRemote ? { ...user, __forceRemote: true } : user
+
+        options.content === 'profile'
+          ? commit(SET_USER_PROFILE, userPayload)
+          : commit(SET_USER, userPayload)
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     },
 
     [DELETE_USER]: async ({ commit, state }) => {
       try {
-        await client.deleteUser();
-        commit(EMPTY_USER);
+        await client.deleteUser()
+        commit(EMPTY_USER)
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     },
-  },
-});
+    clearDraft: ({ commit }) => {
+      commit('clearDraft')
+    },
+    revertToSaved: async ({ dispatch }) => {
+      await dispatch(FETCH_USER, { content: 'full', forceRemote: true })
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem('form-draft')
+      }
+    }
+  }
+})
 
-export default store;
+export default store

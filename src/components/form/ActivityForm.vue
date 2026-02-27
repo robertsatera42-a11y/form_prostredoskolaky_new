@@ -19,7 +19,7 @@
             placeholder="např. Středoškolská odborná činnost"></b-input>
       </b-field>
       <b-field
-          label="Webová stránka aktivity">
+          label="Webová stránka aktivity (Odkaz)">
         <b-input
             v-model="activity.link"
             v-focus="focusedLink"
@@ -55,7 +55,7 @@
             v-focus="focusedResult"
             @focus="focusedResult = true"
             @blur="focusedResult = false"
-            placeholder="Krátce aktivitu popiš, včetně výsledků, kterých jsi v ní dosáhl/a.">
+            placeholder="Krátce aktivitu popiš, včetně výsledků, kterých jsi v ní dosáhl/a (např. Tento rok jsem se zúčastnil fyzikální olympiády... Dosáhl jsem prvního místa v celostátním kole).">
         </b-input>
       </b-field>
       <b-field
@@ -85,7 +85,7 @@
             v-focus="focusedStart"
             @focus="focusedStart = true"
             @blur="focusedStart = false"
-            placeholder="Napiš, kolik času jsi aktivitě věnoval či věnuješ.">
+            placeholder="Napiš, kolik času jsi aktivitě věnoval či věnuješ (např. 3 měsíce 4 hodiny denně).">
         </b-input>
       </b-field>
       <b-field
@@ -121,7 +121,7 @@
         </b-select>
       </b-field>
       <b-field
-          label="Reference"
+          label="Reference (Kontakt)"
           style="padding-top: 15px;"
           >
         <b-input
@@ -131,7 +131,7 @@
             v-focus="focusedReference"
             @focus="focusedReference = true"
             @blur="focusedReference = false"
-            placeholder="Napiš kontakt na osobu, která Ti může případně aktivitu potvrdit">
+            placeholder="Napiš kontakt na osobu, která Ti může aktivitu potvrdit (např. Josef Novák, email: josef.novak@...)">
         </b-input>
       </b-field>
 

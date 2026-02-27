@@ -2,8 +2,7 @@
   <section class="special-prize-step">
     <div class="content form">
       <h3>Speciální ceny</h3>
-      <label>Vyplnění následujících sekcí tě zařadí do soutěže o speciální ceny našich partnerů. Účast je <b>zcela dobrovolná</b>.</label>
-
+      <label style="font-size: 1.2rem;">Vyplnění následujících sekcí tě zařadí do soutěže o speciální ceny našich partnerů. Účast je <b>zcela dobrovolná a tvé hodnocení v hlavní soutěži nijak neovlivní</b>.</label>
       <div class="form-block">
         <h4 class="blue">Start up roku – <a href="https://startit.csob.cz/">Start it @ČSOB</a></h4>
         <b-field
@@ -16,43 +15,25 @@
           </b-input>
         </b-field>
       </div>
+
+       <!--
+      <div class="form-block"> 
+        <h4 class="blue">Inovátor nové generace – <a href="https://www.microsoft.com/cs-cz">Microsoft</a></h4>
+        <b-checkbox style="padding-bottom: 22px;" v-model="user.bestinnovator"><b>Považuješ se za inovátora?</b></b-checkbox>
+        <b-field
+          label="V čem si pomohl této ?">
+          <b-input
+            :disabled="!user.bestinnovator" 
+              maxlength="1000"
+              type="textarea"
+              v-model="user.specialPrize1text"
+              placeholder="Popiš.">
+          </b-input>
+          </b-field>
+      </div>
+      -->
+
       <div class="form-block">
-        <h4 class="blue">Sportovec roku – <a href="https://www.usfutures.cz/">usFutures</a></h4>
-
-        <b-checkbox style="padding-bottom: 22px;" v-model="user.specialPrize2doesSport"><b>Děláš nějaký sport závodně?</b></b-checkbox>
-
-        <b-field
-        label="Jaké ambice se sportem máš?"
->
-        <b-input
-              :disabled="!user.specialPrize2doesSport"
-              maxlength="600"
-              type="textarea"
-              v-model="user.specialPrize2sportAmbitions"
-              placeholder="Popiš své sportovní ambice.">
-          </b-input>
-        </b-field>
-        <b-field
-        label="Co považuješ za svůj největší dosavadní sportovní a životní úspěch a proč?">
-        <b-input
-              :disabled="!user.specialPrize2doesSport"
-              maxlength="600"
-              type="textarea"
-              v-model="user.specialPrize2sportSuccess "
-              placeholder="Popiš své sportovní úspěchy">
-          </b-input>
-        </b-field>
-        <b-field
-        label="Co byla ta největší sportovní překážka, kterou si musel/a překonat a jak si k ní přistoupil?">
-        <b-input
-              :disabled="!user.specialPrize2doesSport"
-              maxlength="900"
-              type="textarea"
-              v-model="user.specialPrize2sportObstacle"
-              placeholder="Popiš svou největší překážku.">
-          </b-input>
-        </b-field>
-
         <b-checkbox style="padding-bottom: 22px;" v-model="user.specialPrize2foreignStudy"><b>Zajímá tě studium v zahraničí?</b></b-checkbox>
 
         <b-field
@@ -121,8 +102,9 @@
 
     <div class="submit-block">
       <div class="submit-actions content">
-        <a class="button a-orange" @click="goToFirstStep">Přejít na 1. krok</a>
-        <a class="button a-orange" @click="goToActivities">Přejít na 3. krok</a>
+        <a class="button a-orange" @click="goToActivities">Zpět na 2. krok</a>
+        <a class="button a-orange" @click="goToFinalise">Přejít na 4. krok</a>
+        <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
    </div>
@@ -130,7 +112,7 @@
 </template>
 <script>
 import ActivitiesStep from './ActivitiesStep'
-import FirstStep from './FirstStep'
+import FinaliseStep from './FinaliseStep'
 import config from '../../config/default'
 import ValidationUtils from '../../utils/validationUtils'
 import transformerUtils from '../../utils/transformerUtils'
@@ -146,13 +128,13 @@ import { FETCH_USER } from '../../types'
 export default {
   name: 'special-prize-step',
   description: `Zvaž zapojení do soutěže o <b>speciální ceny</b>. Účast je dobrovolná a tvé hodnocení v hlavní soutěži nijak neovlivní.`,
-  number: 2,
-  loaderBlockName: "druhý krok - speciální ceny",
-  components: { FirstStep, ActivitiesStep },
+  number: 3,
+  loaderBlockName: 'třetí krok - speciální ceny',
+  components: { FinaliseStep, ActivitiesStep },
   mixins: [focusMixin],
   data () {
     return {
-      devPassphrase: "",
+      devPassphrase: '',
       selected: '',
       specialPrize1: true,
       specialPrize2: true,
@@ -177,7 +159,7 @@ export default {
       focusedRegion: '',
       focusedSummary: '',
       focusedPhone: '',
-      submitStatus: '',
+      submitStatus: ''
     }
   },
   async mounted () {
@@ -190,11 +172,11 @@ export default {
   },
   methods: {
     ...mapActions({ fetchUser: FETCH_USER }),
-    goToFirstStep () {
-      this.$emit('changeView', FirstStep)
-    },
     goToActivities () {
       this.$emit('changeView', ActivitiesStep)
+    },
+    goToFinalise () {
+      this.$emit('changeView', FinaliseStep)
     },
     getFilteredInterests (text) {
       this.consts.interests = config.consts.interests.filter(option => {

@@ -2,7 +2,7 @@
   <section class="first-step">
     <div v-if="finished" class="content form">
       <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2026</span></h3>
-      <!-- <br><input type="text" v-model="devPassphrase" style="width: 50px;"> -->
+      <br><input type="text" v-model="devPassphrase" style="width: 50px;">
     </div>
     <div v-else class="content form">
       <h3>Základní údaje</h3>
@@ -213,10 +213,10 @@
             placeholder="Popiš se v několika větách ve třetí osobě.">
         </b-input>
       </b-field>
-      <div style="padding-bottom: 30px; font-style: italic; margin-top:-25px; text-align:right"> Tvůj medailonek budeme číst na vyhlášení TOP100. Nevíš, jak na medailonek? Přečti si <a href="https://storage.googleapis.com/ps-others/Jak_na_prihlasku.pdf" class="orange">Jak na přihlášku</a></div>
+      <div style="padding-bottom: 30px; font-style: italic; margin-top:-25px; text-align:right"> Tvůj medailonek budeme číst na vyhlášení TOP100. Nevíš si rady? Přečti si dokument <a style="color: #1dbcb9" href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a>. </div>
 
       <!-- Image upload disabled -->
-      <div hidden> 
+      <div hidden>
         <b-field class="file is-primary" :class="{'has-name': !!user.image}">
           <b-upload style="display: block;" v-model="user.image" class="file-label" accept="image/jpeg, image/png, image/jpg" validationMessage="Prosím vyberte soubor">
               <span class="file-cta">
@@ -230,20 +230,28 @@
         <div style="padding-bottom: 25px; font-style: italic;">Nahrání je volitelné. V případě tvého umístění bude fotografie použita během Slavnostního Galavečera. Podporovány jsou .png, .jpg a .jpeg formáty.</div>
       </div>
 
-      <b-checkbox style="padding-bottom: 22px;" v-model="user.isRepeting"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
-
+      <div style="display: flex; flex-direction: column;">
         <b-field
-          label="Jak ses dozvěděl/a o soutěži Středoškolák roku?"
+          :type="errorsAgree.type"
+          :message="errorsAgree.message"
         >
-          <b-select
-            v-model="user.knowledge"
-            placeholder="vyber z možností"
-          >
+          <b-checkbox style="padding-bottom: 22px;" v-model="isAgree">
+            <strong> Potvrzuji, že jsem si přečetl/a dokument <a style="color: #1dbcb9" href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a>. * </strong>
+          </b-checkbox>
+        </b-field>
+
+        <b-checkbox style="padding-bottom: 22px; margin-left: 0;" v-model="user.isRepeting"><b>Už jsem se soutěže Středoškolák roku účastnil</b></b-checkbox>
+
+        <b-field label="Jak ses dozvěděl/a o soutěži Středoškolák roku?">
+          <b-select v-model="user.knowledge" placeholder="vyber z možností">
             <option v-for="option in consts.knowledge" :value="option" :key="option">{{ option }}</option>
           </b-select>
         </b-field>
+
         <div style="padding-top: 20px;"><i>* povinné pole</i></div>
       </div>
+      </div>
+
       <div class="help-link">
         <p>POZOR! Přihláška se uloží až ve čtvrtém kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
         <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
@@ -270,26 +278,27 @@ import ValidationUtils from '../../utils/validationUtils'
 import transformerUtils from '../../utils/transformerUtils'
 import client from '../../client/client'
 import { mapFields } from 'vuex-map-fields'
-import { required, email } from 'vuelidate/lib/validators'
+import { required, email, sameAs } from 'vuelidate/lib/validators'
 import { mixin as focusMixin } from 'vue-focus'
 import { debounce } from 'debounce'
 import tracking from '../../utils/tracking'
 import { mapActions } from 'vuex'
 import { FETCH_USER } from '../../types'
-import SpecialPrizeStep from './SpecialPrizeStep.vue'
+import ActivitiesStep from './ActivitiesStep.vue'
 
 export default {
   name: 'first-step',
   description: `Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>`,
   number: 1,
-  loaderBlockName: "první krok - základní údaje",
-  components: { SpecialPrizeStep },
+  loaderBlockName: 'první krok - základní údaje',
+  components: { ActivitiesStep },
   mixins: [focusMixin],
   data () {
     return {
+      isAgree: false,
       // when contest is finished, dont show form
       finished: true,
-      devPassphrase: "",
+      devPassphrase: '',
       selected: '',
       schools: [],
       consts: {
@@ -312,7 +321,7 @@ export default {
       focusedRegion: '',
       focusedSummary: '',
       focusedPhone: '',
-      submitStatus: '',
+      submitStatus: ''
     }
   },
   async mounted () {
@@ -380,21 +389,32 @@ export default {
       this.$v.user.summary.$invalid
       this.submitStatus
       return ValidationUtils.validate(this, 'summary', 'focusedSummary')
+    },
+    errorsAgree: function () {
+      this.$v.isAgree.$invalid
+      this.submitStatus
+      if (!this.$v.isAgree.$invalid) {
+        return { message: '', type: '' }
+      }
+      if (this.submitStatus === 'ERROR') {
+        return { message: 'Potvrzení je povinné.', type: config.errors.type }
+      }
+      return { message: '', type: '' }
     }
   },
   watch: {
-    devPassphrase(val) {
-      if (val === "ba080dc590db6d718e59fe031b41648846f01d012b9e8c9a5be4df053ffd1e83") this.finished = false;
+    devPassphrase (val) {
+      if (val === 'h4qVDW90T') this.finished = false
     }
   },
   methods: {
     ...mapActions({ fetchUser: FETCH_USER }),
     goToSpecialPrize () {
-      if (this.$v.user.$invalid) {
+      if (this.$v.user.$invalid || this.$v.isAgree.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
         this.submitStatus = 'OK'
-        this.$emit('changeView', SpecialPrizeStep)
+        this.$emit('changeView', ActivitiesStep)
       }
     },
     getFilteredInterests (text) {
@@ -462,6 +482,9 @@ export default {
       summary: {
         required
       }
+    },
+    isAgree: {
+      mustBeTrue: sameAs(() => true)
     }
   }
 }

@@ -51,8 +51,8 @@
 
     <div class="submit-block">
       <div class="submit-actions content">
-        <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět na 2. krok</a>
-        <a class="button a-orange" @click="goToFinalise">Přejít ke kontrole a uložení</a>
+        <a class="button a-orange" @click="goToFirstStep">Zpět na 1. krok</a>
+        <a class="button a-orange" @click="goToSpecialPrizeStep">Přejít na 3. krok</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
@@ -61,8 +61,8 @@
 </template>
 <script>
 import SpecialPrizeStep from './SpecialPrizeStep' 
+import FirstStep from './FirstStep'
 import ActivityForm from './ActivityForm'
-import FinaliseStep from './FinaliseStep'
 import ErrorMessage from '../common/ErrorMessage'
 import config from '../../config/default'
 import { mapFields } from 'vuex-map-fields'
@@ -74,8 +74,8 @@ import transformerUtils from '../../utils/transformerUtils'
 export default {
   name: 'activities-step',
   description: `Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.`,
-  number: 3,
-  loaderBlockName: "třetí krok - aktivity",
+  number: 2,
+  loaderBlockName: "druhý krok - aktivity",
   data () {
     return {
       showActivityForm: false,
@@ -86,7 +86,7 @@ export default {
     window.scrollTo(0, 0)
     tracking.track('competition', 'entrance_page', 'form_activities')
   },
-  components: { SpecialPrizeStep, ActivityForm, FinaliseStep, ErrorMessage },
+  components: { SpecialPrizeStep, FirstStep, ActivityForm, ErrorMessage },
   computed: {
     ...mapFields({
       activities: 'user.activities'
@@ -99,12 +99,12 @@ export default {
     }
   },
   methods: {
-    goToSpecialPrizeStep () {
-      this.$emit('changeView', SpecialPrizeStep)
+    goToFirstStep () {
+      this.$emit('changeView', FirstStep)
     },
-    goToFinalise () {
+    goToSpecialPrizeStep () {
       if (this.activities && this.activities.length > 0) {
-        this.$emit('changeView', FinaliseStep)
+        this.$emit('changeView', SpecialPrizeStep)
       } else this.error = config.errors.requiredActivity
     },
     addItem () {
