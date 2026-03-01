@@ -49,6 +49,10 @@
           <p>Start-up roku:</p>
           <p>{{ specialPrize1 }}</p>
         </div>
+        <div class="info-row">
+          <p>Inovátor nové generace (Microsoft):</p>
+          <p>{{ specialPrize2 }}</p>
+        </div>
         <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět k úpravám</a>
       </div>
 
@@ -154,6 +158,12 @@ export default {
         return 'Vyplněno'
       }
       return 'Nevyplněno'
+    },
+    specialPrize2 () {
+      if (this.user.specialPrize2Interested) {
+        return 'Mám zájem'
+      }
+      return 'Nemám zájem'
     }
   },
   watch: {

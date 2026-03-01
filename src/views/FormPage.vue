@@ -115,6 +115,7 @@ export default {
         knowledge: this.user.knowledge,
         summary: this.user.summary,
         specialPrize1text: this.user.specialPrize1text,
+        specialPrize2Interested: this.user.specialPrize2Interested,
         isRepeting: this.user.isRepeting,
         isAgree: this.user.isAgree,
         readGuideConfirmed: this.user.readGuideConfirmed,
@@ -169,6 +170,7 @@ export default {
         user.knowledge !== null ||
         hasNonEmptyString(user.summary) ||
         hasNonEmptyString(user.specialPrize1text) ||
+        user.specialPrize2Interested ||
         user.isRepeting ||
         user.isAgree ||
         user.readGuideConfirmed ||

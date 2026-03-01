@@ -28,6 +28,9 @@
           přemýšlíš, jak by mohly fungovat lépe? Tahle cena je pro tebe - bez ohledu na obor nebo technické znalosti.
           Oceňujeme odvahu ptát se „a co kdyby…?" a chuť věci měnit k lepšímu.
         </p>
+        <b-checkbox v-model="user.specialPrize2Interested" class="microsoft-interest">
+          Mám o tuto cenu zájem.
+        </b-checkbox>
       </div>
 
       <div class="prize-gallery">
@@ -147,6 +150,10 @@ section.special-prize-step {
         margin: 12px 0 0;
         max-width: 900px;
         line-height: 1.7;
+      }
+
+      .microsoft-interest {
+        margin-top: 16px;
       }
 
       @media (max-width: 700px) {
