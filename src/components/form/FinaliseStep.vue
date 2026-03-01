@@ -67,7 +67,7 @@
     <a class="button a-orange" @click="goToEditActivities">Zpět k úpravám</a>
 
     <div class="consent">
-      <b-checkbox v-model="user.isAgree">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1WjInvNkWEZj1uKoG4UCgwI-8_3i_t-5G/view?usp=sharing" target="_blank">souhlas se zpracováním osobních údajů</a>.
+      <b-checkbox v-model="user.isAgree">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank">souhlas se zpracováním osobních údajů</a>.
     </b-checkbox>
     </div>
 

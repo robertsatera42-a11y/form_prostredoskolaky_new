@@ -26,7 +26,7 @@ export default {
       'Jazyky',
       'IT & robotika',
       'Občanská participace',
-      'Finance/podnikání',
+      'Finance',
       'Dobrovolnictví',
       'Práce s dětmi',
       'Psaní',
