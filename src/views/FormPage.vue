@@ -210,6 +210,19 @@ div.form-content {
   .draft-banner-wrap {
     margin-top: -40px;
     margin-bottom: 20px;
+
+    @media (max-width: 800px) {
+      margin-top: -20px;
+      margin-bottom: 12px;
+
+      .draft-banner-actions {
+        width: 100%;
+
+        .button {
+          width: 100%;
+        }
+      }
+    }
   }
 
   .draft-banner {
