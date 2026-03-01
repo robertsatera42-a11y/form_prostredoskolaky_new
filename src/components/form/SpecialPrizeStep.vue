@@ -29,7 +29,7 @@
           Oceňujeme odvahu ptát se „a co kdyby…?" a chuť věci měnit k lepšímu.
         </p>
         <b-checkbox v-model="user.specialPrize2Interested" class="microsoft-interest">
-          Mám o tuto cenu zájem.
+          Chci být zahrnut*a do výběru.
         </b-checkbox>
       </div>
 
