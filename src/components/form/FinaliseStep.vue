@@ -2,101 +2,111 @@
   <section class="finalise-step" id="finalise-step">
     <div class="content">
       <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"></b-loading>
-    <div class="basic-info">
-      <h3>Základní údaje</h3>
-      <div class="info-row">
-        <p>Jméno:</p>
-        <p>{{ user.firstName }}</p>
-      </div>
-      <div class="info-row">
-        <p>Příjmení:</p>
-        <p>{{ user.lastName }}</p>
-      </div>
-      <div class="info-row">
-        <p>E-mail:</p>
-        <p>{{ user.email }}</p>
-      </div>
-      <div class="info-row">
-        <p>Škola:</p>
-        <p>{{ user.school }}</p>
-      </div>
-      <div class="info-row">
-        <p>Ročník střední školy:</p>
-        <p>{{ year[0] }}. ročník {{ year[1] }}letého studia</p>
-      </div>
-      <div class="info-row">
-        <p>Kraj:</p>
-        <p>{{ user.region }}</p>
-      </div>
-      <div class="info-row">
-        <p>Datum narození:</p>
-        <p>{{ birthDate.getDate() }}. {{ birthDate.getMonth() + 1 }}. {{ birthDate.getFullYear() }}</p>
-      </div>
-      <div class="info-row">
-        <p>Link na LinkedIn:</p>
-        <p>{{ user.linkedin }}</p>
-      </div>
-      <div class="info-row">
-        <p>Jak ses o soutěži dozvěděl/a? </p>
-        <p>{{ user.knowledge }}</p>
-      </div>
-      <a class="button a-orange" @click="goToFirstStep">Zpět k úpravám</a>
-    </div>
-
-    <div class="basic-info">
-      <h3>Speciální ceny</h3>
-      <div class="info-row">
-        <p>Start-up roku: </p>
-        <p>{{ specialPrize1 }}</p>
-      </div>
-      <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět k úpravám</a>
-    </div>
-
-    <h3>Aktivity</h3>
-    <div class="activities">
-      <slot v-for="(activity, index) in activities">
-        <div :class="['activity activity-' + index]" :key="index">
-          <div class="activity-info">
-            <span class="activity-name" v-line-clamp:40="2">{{ activity.name }}</span>
-            <div class="activity-description" v-line-clamp:40="3">{{ activity.result }}</div>
-            <div class="activity-link" v-line-clamp:20="1">{{ activity.link }}</div>
-          </div>
+      <div class="basic-info">
+        <h3>Základní údaje</h3>
+        <div class="info-row">
+          <p>Jméno:</p>
+          <p>{{ user.firstName }}</p>
         </div>
-      </slot>
-    </div>
-    <a class="button a-orange" @click="goToEditActivities">Zpět k úpravám</a>
+        <div class="info-row">
+          <p>Příjmení:</p>
+          <p>{{ user.lastName }}</p>
+        </div>
+        <div class="info-row">
+          <p>E-mail:</p>
+          <p>{{ user.email }}</p>
+        </div>
+        <div class="info-row">
+          <p>Škola:</p>
+          <p>{{ user.school }}</p>
+        </div>
+        <div class="info-row">
+          <p>Ročník střední školy:</p>
+          <p>{{ year[0] }}. ročník {{ year[1] }}letého studia</p>
+        </div>
+        <div class="info-row">
+          <p>Kraj:</p>
+          <p>{{ user.region }}</p>
+        </div>
+        <div class="info-row">
+          <p>Datum narození:</p>
+          <p>{{ birthDate.getDate() }}. {{ birthDate.getMonth() + 1 }}. {{ birthDate.getFullYear() }}</p>
+        </div>
+        <div class="info-row">
+          <p>Link na LinkedIn:</p>
+          <p>{{ user.linkedin }}</p>
+        </div>
+        <div class="info-row">
+          <p>Jak ses o soutěži dozvěděl/a?</p>
+          <p>{{ user.knowledge }}</p>
+        </div>
+        <a class="button a-orange" @click="goToFirstStep">Zpět k úpravám</a>
+      </div>
 
-    <div class="consent">
-      <b-checkbox v-model="user.isAgree">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank">souhlas se zpracováním osobních údajů</a>.
-    </b-checkbox>
+      <div class="basic-info">
+        <h3>Speciální ceny</h3>
+        <div class="info-row">
+          <p>Start-up roku:</p>
+          <p>{{ specialPrize1 }}</p>
+        </div>
+        <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět k úpravám</a>
+      </div>
+
+      <h3>Aktivity</h3>
+      <div class="activities">
+        <slot v-for="(activity, index) in activities">
+          <div :class="['activity activity-' + index]" :key="index">
+            <div class="activity-info">
+              <span class="activity-name" v-line-clamp:40="2">{{ activity.name }}</span>
+              <div class="activity-description" v-line-clamp:40="3">{{ activity.result }}</div>
+              <div class="activity-link" v-line-clamp:20="1">{{ activity.link }}</div>
+            </div>
+          </div>
+        </slot>
+      </div>
+      <a class="button a-orange" @click="goToEditActivities">Zpět k úpravám</a>
+
+      <div class="consent">
+        <b-checkbox v-model="user.isAgree">
+          Souhlasím s
+          <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank">pravidly soutěže</a>
+          a uděluji
+          <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank">souhlas se zpracováním osobních údajů</a>.
+        </b-checkbox>
+      </div>
+
+      <div class="newsletter_consent">
+        <b-checkbox v-model="user.sendNewsletter">
+          Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit a dalších informací do svého e-mailu.
+        </b-checkbox>
+      </div>
+
+      <div class="help-link">
+        <p>
+          POZOR! Přihláška se uloží až ve čtvrtém kroku po kliknutí na "Uložit přihlášku".<br>
+          K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.
+        </p>
+        <p>
+          Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na
+          <span class="orange">info@prostredoskolaky.cz</span>.
+        </p>
+      </div>
     </div>
 
-    <div class="newsletter_consent">
-      <b-checkbox v-model="user.sendNewsletter">Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit a dalších informací do svého e-mailu.
-    </b-checkbox>
-    </div>
-
-    <div class="help-link">
-      <p>POZOR! Přihláška se uloží až ve čtvrtém kroku po kliknutí na "Uložit přihlášku".<br> K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
-      <p>Pokud jsi zaznamenal/a potíže s přihláškou, dej nám prosím vědět na <span class="orange">info@prostredoskolaky.cz</span>.</p>
-    </div>
-
-    </div>
     <div class="error-message">
       <error-message :message="error"/>
     </div>
-    <!--<div v-if="error">-->
-    <!--<p>{{ error }}</p>-->
-    <!--</div>-->
+
     <div class="submit-block">
       <div class="submit-actions content">
-        <a  class="button a-orange" @click="goToSpecialPrizeStep">Zpět na 3. krok</a>
-        <a  class="button a-orange-full" @click="submit">Uložit přihlášku</a>
+        <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět na 3. krok</a>
+        <a class="button a-orange-full" @click="submit">Uložit přihlášku</a>
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
   </section>
 </template>
+
 <script>
 import ActivitiesStep from './ActivitiesStep'
 import SuccessStep from './SuccessStep'
@@ -113,7 +123,7 @@ import fb from '../../firebase'
 
 export default {
   name: 'finalise-step',
-  description: `Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.`,
+  description: 'Nyní si zkontroluj všechny uvedené údaje a aktivity. Po uložení se můžeš k přihlášce až do uzávěrky kdykoliv vrátit a upravovat ji.',
   number: 4,
   loaderBlockName: 'čtvrtý krok - kontrola a uložení',
   data () {
@@ -142,14 +152,9 @@ export default {
     specialPrize1 () {
       if (this.user.specialPrize1text) {
         return 'Vyplněno'
-      } else return 'Nevyplněno'
-    },
-    specialPrize2 () {
-      if (this.user.specialPrize2foreignStudy) {
-        return 'Vyplněno'
-      } else return 'Nevyplněno'
+      }
+      return 'Nevyplněno'
     }
-
   },
   watch: {
     'user.isAgree': function () {
@@ -245,13 +250,12 @@ export default {
           console.error('Failed to upload image:', response.statusText)
         }
       } catch (err) {
-        console.error('Error uploading image:', error)
+        console.error('Error uploading image:', err)
       }
     }
   }
 }
 </script>
-
 <style scoped lang="scss">
 .content {
   width: 80%;

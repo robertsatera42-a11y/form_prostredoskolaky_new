@@ -2,10 +2,10 @@
   <div class="form-content">
     <div v-if="showDraftBanner" class="draft-banner-wrap">
       <div class="content draft-banner">
-        <span class="draft-banner-message">Chcete nahrát uloženou verzi?</span>
+        <span class="draft-banner-message">Byla zachráněna neuložená verze:</span>
         <div class="draft-banner-actions">
-          <button class="button a-orange" @click="keepDraft">Ne, pokračovat s touto verzí (doporučeno)</button>
-          <button class="button a-gray" @click="startOverFromDraft">Ano, vrátit se k uložené verzi</button>
+          <button class="button a-orange" @click="keepDraft">Zachránit a pokračovat s touto verzí (doporučeno)</button>
+          <button class="button a-gray" @click="startOverFromDraft">Zahodit a vrátit se k naposledy oficiálně uložené verzi</button>
         </div>
         <button class="delete" aria-label="close" @click="dismissDraftBanner"></button>
       </div>
@@ -115,14 +115,6 @@ export default {
         knowledge: this.user.knowledge,
         summary: this.user.summary,
         specialPrize1text: this.user.specialPrize1text,
-        specialPrize2foreignStudy: this.user.specialPrize2foreignStudy,
-        specialPrize2foreignReason: this.user.specialPrize2foreignReason,
-        specialPrize2foreignUniversity: this.user.specialPrize2foreignUniversity,
-        specialPrize2foreignunique: this.user.specialPrize2foreignunique,
-        specialPrize2foreignScary: this.user.specialPrize2foreignScary,
-        specialPrize2englishB2: this.user.specialPrize2englishB2,
-        specialPrize2hasIB: this.user.specialPrize2hasIB,
-        specialPrize2AP: this.user.specialPrize2AP,
         isRepeting: this.user.isRepeting,
         isAgree: this.user.isAgree,
         readGuideConfirmed: this.user.readGuideConfirmed,
@@ -177,14 +169,6 @@ export default {
         user.knowledge !== null ||
         hasNonEmptyString(user.summary) ||
         hasNonEmptyString(user.specialPrize1text) ||
-        user.specialPrize2foreignStudy ||
-        hasNonEmptyString(user.specialPrize2foreignReason) ||
-        hasNonEmptyString(user.specialPrize2foreignUniversity) ||
-        hasNonEmptyString(user.specialPrize2foreignunique) ||
-        hasNonEmptyString(user.specialPrize2foreignScary) ||
-        user.specialPrize2englishB2 ||
-        user.specialPrize2hasIB ||
-        hasNonEmptyString(user.specialPrize2AP) ||
         user.isRepeting ||
         user.isAgree ||
         user.readGuideConfirmed ||

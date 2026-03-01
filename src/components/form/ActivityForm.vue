@@ -19,13 +19,13 @@
             placeholder="např. Středoškolská odborná činnost"></b-input>
       </b-field>
       <b-field
-          label="Webová stránka aktivity (Odkaz)">
+          label="Webová stránka aktivity – ideálně uveď konkrétnější odkaz (např. na výsledkovou listinu na webu aktivity)">
         <b-input
             v-model="activity.link"
             v-focus="focusedLink"
             @focus="focusedLink = true"
             @blur="focusedLink = false"
-            placeholder="např. http://www.soc.cz">
+            placeholder="https://www.soc.cz/dokumenty/vysledkove_listiny/2023-24.pdf">
         </b-input>
       </b-field>
       <b-field
