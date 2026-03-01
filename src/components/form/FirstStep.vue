@@ -1,13 +1,15 @@
 <template>
   <section class="first-step">
     
-    <!--
+    <!-- Finished tab intentionally disabled in production.
     <div v-if="finished" class="content form">
       <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2026</span></h3>
       <br><input type="text" v-model="devPassphrase" style="width: 50px;">
     </div>
+
+    
     -->
-    <div v-else class="content form">
+    <div class="content form">
       <h3>Základní údaje</h3>
 
       <div class="form-block">
@@ -265,7 +267,7 @@
       <!--<pre>$xv: {{ $v.user }}</pre>-->
     </div>
 
-    <div v-if="!finished" class="submit-block">
+    <div class="submit-block">
       <div class="submit-actions content">
         <router-link class="button a-gray" to="https://prostredoskolaky.cz/">Zavřít</router-link>
         <a class="button a-orange" @click="goToSpecialPrize">Přejít na 2. krok</a>
@@ -298,9 +300,7 @@ export default {
   mixins: [focusMixin],
   data () {
     return {
-      // when contest is finished, dont show form
-      finished: false,
-      devPassphrase: '',
+      // Old dev passphrase (disabled): h4qVDW90T
       selected: '',
       schools: [],
       consts: {
@@ -402,11 +402,6 @@ export default {
         return { message: 'Potvrzení je povinné.', type: config.errors.type }
       }
       return { message: '', type: '' }
-    }
-  },
-  watch: {
-    devPassphrase (val) {
-      if (val === 'h4qVDW90T') this.finished = false
     }
   },
   methods: {
