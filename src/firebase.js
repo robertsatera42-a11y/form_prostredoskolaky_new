@@ -1,17 +1,17 @@
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  sendPasswordResetEmail, 
-  updateProfile, 
-  EmailAuthProvider, 
-  reauthenticateWithCredential, 
-  getIdToken as getIdTokenFirebase, 
-  getIdTokenResult, 
+import { initializeApp } from 'firebase/app'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  updateProfile,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  getIdToken as getIdTokenFirebase,
+  getIdTokenResult,
   sendEmailVerification // Import sendEmailVerification
-} from 'firebase/auth';
+} from 'firebase/auth'
 import client from './client/client.js'
 import transformerUtils from './utils/transformerUtils'
 
@@ -25,44 +25,44 @@ var firebaseConfig = {
   appId: '1:408860937046:web:e46a3b696ecd93a57be4f7'
 }
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
 
 const createUser = async (user, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, user.email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, user.email, password)
     await updateProfile(userCredential.user, {
       displayName: user.firstName + ' ' + user.lastName
-    });
-    await client.createUser(user);
-    await sendEmailVerification(userCredential.user); // This will now work
-    return 'OK';
+    })
+    await client.createUser(user)
+    await sendEmailVerification(userCredential.user) // This will now work
+    return 'OK'
   } catch (err) {
-    console.log(err);
-    return transformerUtils.mapLoginErrorCodes(err.code);
+    console.log(err)
+    return transformerUtils.mapLoginErrorCodes(err.code)
   }
 }
 
 const loginUser = async (email, password) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
 
     // Check if the user's email is verified
     if (!userCredential.user.emailVerified) {
-      await signOut(auth); // Sign out the user if the email is not verified
-      return transformerUtils.mapLoginErrorCodes('auth/email-not-verified');
+      await signOut(auth) // Sign out the user if the email is not verified
+      return transformerUtils.mapLoginErrorCodes('auth/email-not-verified')
     }
 
-    return 'OK';
+    return 'OK'
   } catch (err) {
-    console.log(err);
-    return transformerUtils.mapLoginErrorCodes(err.code);
+    console.log(err)
+    return transformerUtils.mapLoginErrorCodes(err.code)
   }
-};
+}
 
 const logoutUser = async () => {
   try {
-    await signOut(auth);
+    await signOut(auth)
   } catch (err) {
     console.log(err)
   }
@@ -70,7 +70,7 @@ const logoutUser = async () => {
 
 const renewPassword = async email => {
   try {
-    await sendPasswordResetEmail(auth, email);
+    await sendPasswordResetEmail(auth, email)
     return 'OK'
   } catch (err) {
     console.log(err)
@@ -107,9 +107,9 @@ const changePassword = async (email, password, newPassword) => {
       password
     )
     if (auth.currentUser) {
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await auth.currentUser.updatePassword(newPassword);
-      return 'OK';
+      await reauthenticateWithCredential(auth.currentUser, credential)
+      await auth.currentUser.updatePassword(newPassword)
+      return 'OK'
     }
   } catch (err) {
     console.log(err)
@@ -120,7 +120,7 @@ const changePassword = async (email, password, newPassword) => {
 const getIdToken = async () => {
   try {
     if (auth.currentUser) {
-      return await getIdTokenFirebase(auth.currentUser, /* forceRefresh */ true);
+      return await getIdTokenFirebase(auth.currentUser, /* forceRefresh */ true)
     }
   } catch (err) {
     console.log(err)
@@ -130,9 +130,9 @@ const getIdToken = async () => {
 const getRole = async () => {
   try {
     if (auth.currentUser) {
-      const result = await getIdTokenResult(auth.currentUser);
-      const role = result && result.claims && result.claims.role;
-      return role;
+      const result = await getIdTokenResult(auth.currentUser)
+      const role = result && result.claims && result.claims.role
+      return role
     }
   } catch (err) {
     console.log(err)
@@ -141,10 +141,10 @@ const getRole = async () => {
 
 const reauthenticate = async (email, password) => {
   try {
-    const credential = EmailAuthProvider.credential(email, password);
+    const credential = EmailAuthProvider.credential(email, password)
     if (auth.currentUser) {
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      return 'OK';
+      await reauthenticateWithCredential(auth.currentUser, credential)
+      return 'OK'
     }
     return 'OK'
   } catch (err) {

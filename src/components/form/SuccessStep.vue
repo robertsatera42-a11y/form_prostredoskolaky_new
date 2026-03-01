@@ -16,17 +16,16 @@
 <script>
 import { mapFields } from 'vuex-map-fields'
 
-    export default {
-        name: 'success-step',
-        number: 0,
-        computed: {
-            ...mapFields({
-            user: 'user'
-        }),
-            
-        
-  },
-    }
+export default {
+  name: 'success-step',
+  number: 0,
+  computed: {
+    ...mapFields({
+      user: 'user'
+    })
+
+  }
+}
 </script>
 
 <style scoped lang="scss">

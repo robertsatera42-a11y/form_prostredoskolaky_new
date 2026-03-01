@@ -17,13 +17,13 @@
       </div>
 
        <!--
-      <div class="form-block"> 
+      <div class="form-block">
         <h4 class="blue">Inovátor nové generace – <a href="https://www.microsoft.com/cs-cz">Microsoft</a></h4>
         <b-checkbox style="padding-bottom: 22px;" v-model="user.bestinnovator"><b>Považuješ se za inovátora?</b></b-checkbox>
         <b-field
           label="V čem si pomohl této ?">
           <b-input
-            :disabled="!user.bestinnovator" 
+            :disabled="!user.bestinnovator"
               maxlength="1000"
               type="textarea"
               v-model="user.specialPrize1text"

@@ -56,11 +56,11 @@
         <small v-if="user.lastSaved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</small>
       </div>
     </div>
- 
+
   </section>
 </template>
 <script>
-import SpecialPrizeStep from './SpecialPrizeStep' 
+import SpecialPrizeStep from './SpecialPrizeStep'
 import FirstStep from './FirstStep'
 import ActivityForm from './ActivityForm'
 import ErrorMessage from '../common/ErrorMessage'
@@ -75,7 +75,7 @@ export default {
   name: 'activities-step',
   description: `Uveď aktivity, kterých ses zúčastnil/a. Můžeš jich přidat maximálně deset.`,
   number: 2,
-  loaderBlockName: "druhý krok - aktivity",
+  loaderBlockName: 'druhý krok - aktivity',
   data () {
     return {
       showActivityForm: false,
@@ -133,7 +133,7 @@ export default {
             field: index !== null ? this.activities && this.activities[index] && this.activities[index].field : '',
             reference: index !== null ? this.activities && this.activities[index] && this.activities[index].reference : '',
             isIndividual: index !== null ? this.activities && this.activities[index] && this.activities[index].isIndividual : '',
-            interest: index !== null ? this.activities && this.activities[index] && this.activities[index].interest : '',
+            interest: index !== null ? this.activities && this.activities[index] && this.activities[index].interest : ''
           }
         }
       })

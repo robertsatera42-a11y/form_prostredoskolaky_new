@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="wrapper">
     <div v-if="showSuccess" class="login-wrapper">
       <div class="success-message">
@@ -80,7 +80,7 @@
             @focus="focusedPasswdRetype = true"
             @blur="focusedPasswdRetype = false"></b-input>
       </b-field>
-      <b-checkbox v-model="sendNewsletter" class="newsletter">Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit do svého e-mailu.</b-checkbox>
+      <b-checkbox v-model="newsletterPreference" class="newsletter">Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit do svého e-mailu.</b-checkbox>
       <b-checkbox v-model="giveConsent" style="margin-left:0" class="newsletter">Souhlasím se zpracováním svých <a href="https://drive.google.com/file/d/1-MDM8wdW7xctBT3kmrq6FSI_48nl-2BB/view?usp=sharing" target="_blank">osobních údajů</a>.</b-checkbox>
       <message type="error" :message="message"/>
       <button class="button is-primary" @click="signUp">Zaregistrovat se</button>
@@ -94,6 +94,7 @@ import ValidationUtils from '../../utils/validationUtils'
 import { required, email, sameAs } from 'vuelidate/lib/validators'
 import { UPDATE_USER } from '../../types'
 import { mapMutations } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 import { mixin as focusMixin } from 'vue-focus'
 import Message from '../common/Message'
 import config from '../../config/default'
@@ -110,7 +111,6 @@ export default {
         lastName: '',
         email: ''
       },
-      sendNewsletter: true,
       giveConsent: false,
       passwd: '',
       focusedFirstName: '',
@@ -125,7 +125,15 @@ export default {
       jobs: config.consts.jobs
     }
   },
+  mounted () {
+    if (!fb.auth.currentUser) {
+      this.newsletterPreference = true
+    }
+  },
   computed: {
+    ...mapFields({
+      newsletterPreference: 'user.sendNewsletter'
+    }),
     errorsFirstName: function () {
       this.focusedFirstName
       this.$v.user.firstName.$invalid
@@ -172,7 +180,7 @@ export default {
           firstName: this.user.firstName,
           lastName: this.user.lastName,
           email: this.user.email,
-          sendNewsletter: this.sendNewsletter
+          sendNewsletter: this.newsletterPreference
         }, this.passwd)
         if (status !== 'OK') {
           this.message = status
@@ -180,7 +188,8 @@ export default {
           this.updateUser({
             firstName: this.user.firstName,
             lastName: this.user.lastName,
-            email: this.user.email
+            email: this.user.email,
+            sendNewsletter: this.newsletterPreference
           })
           this.cleanForm()
           this.showSuccess = true
@@ -197,7 +206,6 @@ export default {
       this.user.email = ''
       this.passwd = ''
       this.passwdRetype = ''
-      this.sendNewsletter = false
       this.focusedFirstName = ''
       this.focusedLastName = ''
       this.focusedEmail = ''
@@ -286,3 +294,4 @@ export default {
 
 }
 </style>
+

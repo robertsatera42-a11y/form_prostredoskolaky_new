@@ -152,10 +152,9 @@
 
 <script>
 import { mapFields } from 'vuex-map-fields'
-import { required } from 'vuelidate/lib/validators'
+import { required, requiredIf } from 'vuelidate/lib/validators'
 import { mixin as focusMixin } from 'vue-focus'
 import config from '../../config/default'
-import { requiredIf } from "vuelidate/lib/validators";
 
 export default {
   name: 'activity-form',
@@ -207,7 +206,7 @@ export default {
     if (this.index !== null) {
       this.activity = { ...this.act }
     }
-    this.$watch('activity', this.trackChanges, { deep: true });
+    this.$watch('activity', this.trackChanges, { deep: true })
   },
   computed: {
     ...mapFields({
@@ -277,16 +276,16 @@ export default {
       } else if (this.submitStatus === 'ERROR') {
         return { message: config.errors.required, type: config.errors.type }
       } else return { message: '', type: '' }
-},
-    confirmClose() {
+    },
+    confirmClose () {
       if (this.isModified && confirm('Opravdu chcete zavřít upravování aktivity bez uložení?')) {
-        this.$parent.close();
+        this.$parent.close()
       } else if (!this.isModified) {
-        this.$parent.close();
+        this.$parent.close()
       }
     },
-    trackChanges() {
-      this.isModified = true;
+    trackChanges () {
+      this.isModified = true
     }
   },
   validations: {

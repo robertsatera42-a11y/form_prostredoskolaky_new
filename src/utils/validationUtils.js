@@ -33,6 +33,9 @@ const ValidationUtils = {
 
   getError (error) {
     if (error) {
+      if (error.data && error.data.errorMessage) {
+        return error.data.errorMessage
+      }
       const message = config.errorMapping[error.status]
       return message || config.defaultErrorMessage
     }

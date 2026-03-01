@@ -52,10 +52,6 @@ const createInitialUserState = () => ({
   hasRegistration: false,
   summary: '',
   specialPrize1text: '',
-  specialPrize2doesSport: false,
-  specialPrize2sportAmbitions: '',
-  specialPrize2sportSuccess: '',
-  specialPrize2sportObstacle: '',
   specialPrize2foreignStudy: false,
   specialPrize2foreignReason: '',
   specialPrize2foreignUniversity: '',
@@ -65,6 +61,8 @@ const createInitialUserState = () => ({
   specialPrize2hasIB: false,
   specialPrize2AP: '',
   isRepeting: false,
+  isAgree: false,
+  readGuideConfirmed: false,
   phone: '',
   image: undefined
 })
@@ -82,10 +80,6 @@ const FORM_DRAFT_FIELDS = [
   'knowledge',
   'summary',
   'specialPrize1text',
-  'specialPrize2doesSport',
-  'specialPrize2sportAmbitions',
-  'specialPrize2sportSuccess',
-  'specialPrize2sportObstacle',
   'specialPrize2foreignStudy',
   'specialPrize2foreignReason',
   'specialPrize2foreignUniversity',
@@ -95,6 +89,8 @@ const FORM_DRAFT_FIELDS = [
   'specialPrize2hasIB',
   'specialPrize2AP',
   'isRepeting',
+  'isAgree',
+  'readGuideConfirmed',
   'phone'
 ]
 
@@ -272,14 +268,11 @@ const store = new Vuex.Store({
         knowledge: user.knowledge || null,
         lastSaved: user.updatedAt ? new Date(user.updatedAt) : undefined,
         role: user.role || '',
+        sendNewsletter: user.sendNewsletter || false,
         schoolContact: user.schoolContact || '',
         hasRegistration: user.hasRegistration || false,
         summary: user.summary || '',
         specialPrize1text: user.specialPrize1text || '',
-        specialPrize2doesSport: user.specialPrize2doesSport || false,
-        specialPrize2sportAmbitions: user.specialPrize2sportAmbitions || '',
-        specialPrize2sportSuccess: user.specialPrize2sportSuccess || '',
-        specialPrize2sportObstacle: user.specialPrize2sportObstacle || '',
         specialPrize2foreignStudy: user.specialPrize2foreignStudy || false,
         specialPrize2foreignReason: user.specialPrize2foreignReason || '',
         specialPrize2foreignUniversity: user.specialPrize2foreignUniversity || '',
@@ -289,6 +282,8 @@ const store = new Vuex.Store({
         specialPrize2hasIB: user.specialPrize2hasIB || false,
         specialPrize2AP: user.specialPrize2AP || '',
         isRepeting: typeof user.isFirstTime === 'boolean' ? !user.isFirstTime : false,
+        isAgree: user.isAgree || false,
+        readGuideConfirmed: user.readGuideConfirmed || false,
         phone: user.phone || ''
       }
       const shouldPreserveLocalDraft =
@@ -306,12 +301,6 @@ const store = new Vuex.Store({
         }
       } else {
         state.user = mappedUser
-      }
-      if (user.sendNewsletter) {
-        state.user = {
-          ...state.user,
-          sendNewsletter: user.sendNewsletter
-        }
       }
     },
     [UPDATE_USER] (state, user) {

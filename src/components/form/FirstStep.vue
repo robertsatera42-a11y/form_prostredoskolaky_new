@@ -1,9 +1,12 @@
 <template>
   <section class="first-step">
+    
+    <!--
     <div v-if="finished" class="content form">
       <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2026</span></h3>
       <br><input type="text" v-model="devPassphrase" style="width: 50px;">
     </div>
+    -->
     <div v-else class="content form">
       <h3>Základní údaje</h3>
 
@@ -235,7 +238,7 @@
           :type="errorsAgree.type"
           :message="errorsAgree.message"
         >
-          <b-checkbox style="padding-bottom: 22px;" v-model="isAgree">
+          <b-checkbox style="padding-bottom: 22px;" v-model="user.readGuideConfirmed">
             <strong> Potvrzuji, že jsem si přečetl/a dokument <a style="color: #1dbcb9" href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a>. * </strong>
           </b-checkbox>
         </b-field>
@@ -295,9 +298,8 @@ export default {
   mixins: [focusMixin],
   data () {
     return {
-      isAgree: false,
       // when contest is finished, dont show form
-      finished: true,
+      finished: false,
       devPassphrase: '',
       selected: '',
       schools: [],
@@ -391,9 +393,9 @@ export default {
       return ValidationUtils.validate(this, 'summary', 'focusedSummary')
     },
     errorsAgree: function () {
-      this.$v.isAgree.$invalid
+      this.$v.user.readGuideConfirmed.$invalid
       this.submitStatus
-      if (!this.$v.isAgree.$invalid) {
+      if (!this.$v.user.readGuideConfirmed.$invalid) {
         return { message: '', type: '' }
       }
       if (this.submitStatus === 'ERROR') {
@@ -410,7 +412,7 @@ export default {
   methods: {
     ...mapActions({ fetchUser: FETCH_USER }),
     goToSpecialPrize () {
-      if (this.$v.user.$invalid || this.$v.isAgree.$invalid) {
+      if (this.$v.user.$invalid || this.$v.user.readGuideConfirmed.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
         this.submitStatus = 'OK'
@@ -481,10 +483,10 @@ export default {
       },
       summary: {
         required
+      },
+      readGuideConfirmed: {
+        mustBeTrue: sameAs(() => true)
       }
-    },
-    isAgree: {
-      mustBeTrue: sameAs(() => true)
     }
   }
 }

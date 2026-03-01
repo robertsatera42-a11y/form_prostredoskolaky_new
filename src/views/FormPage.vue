@@ -2,10 +2,10 @@
   <div class="form-content">
     <div v-if="showDraftBanner" class="draft-banner-wrap">
       <div class="content draft-banner">
-        <span class="draft-banner-message">Nalezený byl dříve uložený návrh. Chcete pokračovat tam, kde jste skončili?</span>
+        <span class="draft-banner-message">Chcete nahrát uloženou verzi?</span>
         <div class="draft-banner-actions">
-          <button class="button a-orange" @click="keepDraft">Ano, pokračovat</button>
-          <button class="button a-gray" @click="startOverFromDraft">Ne, vrátit se k uložené verzi</button>
+          <button class="button a-orange" @click="keepDraft">Ne, pokračovat s touto verzí (doporučeno)</button>
+          <button class="button a-gray" @click="startOverFromDraft">Ano, vrátit se k uložené verzi</button>
         </div>
         <button class="delete" aria-label="close" @click="dismissDraftBanner"></button>
       </div>
@@ -115,10 +115,6 @@ export default {
         knowledge: this.user.knowledge,
         summary: this.user.summary,
         specialPrize1text: this.user.specialPrize1text,
-        specialPrize2doesSport: this.user.specialPrize2doesSport,
-        specialPrize2sportAmbitions: this.user.specialPrize2sportAmbitions,
-        specialPrize2sportSuccess: this.user.specialPrize2sportSuccess,
-        specialPrize2sportObstacle: this.user.specialPrize2sportObstacle,
         specialPrize2foreignStudy: this.user.specialPrize2foreignStudy,
         specialPrize2foreignReason: this.user.specialPrize2foreignReason,
         specialPrize2foreignUniversity: this.user.specialPrize2foreignUniversity,
@@ -128,6 +124,8 @@ export default {
         specialPrize2hasIB: this.user.specialPrize2hasIB,
         specialPrize2AP: this.user.specialPrize2AP,
         isRepeting: this.user.isRepeting,
+        isAgree: this.user.isAgree,
+        readGuideConfirmed: this.user.readGuideConfirmed,
         phone: this.user.phone
       })
     },
@@ -179,10 +177,6 @@ export default {
         user.knowledge !== null ||
         hasNonEmptyString(user.summary) ||
         hasNonEmptyString(user.specialPrize1text) ||
-        user.specialPrize2doesSport ||
-        hasNonEmptyString(user.specialPrize2sportAmbitions) ||
-        hasNonEmptyString(user.specialPrize2sportSuccess) ||
-        hasNonEmptyString(user.specialPrize2sportObstacle) ||
         user.specialPrize2foreignStudy ||
         hasNonEmptyString(user.specialPrize2foreignReason) ||
         hasNonEmptyString(user.specialPrize2foreignUniversity) ||
@@ -192,6 +186,8 @@ export default {
         user.specialPrize2hasIB ||
         hasNonEmptyString(user.specialPrize2AP) ||
         user.isRepeting ||
+        user.isAgree ||
+        user.readGuideConfirmed ||
         hasNonEmptyString(user.phone)
       )
     },
