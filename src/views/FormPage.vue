@@ -218,10 +218,19 @@ div.form-content {
       margin-bottom: 12px;
 
       .draft-banner-actions {
+        display: flex;
+        flex-direction: column;
         width: 100%;
 
         .button {
           width: 100%;
+          max-width: 100%;
+          white-space: normal;
+          height: auto;
+          min-height: 0;
+          line-height: 1.35;
+          padding: 10px 12px;
+          text-align: left;
         }
       }
     }
@@ -449,13 +458,31 @@ div.form-content {
   .header_links {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
     justify-content: flex-start;
     font-weight: 600;
 
     .button {
-      margin-right: 15px;
+      margin-right: 0;
       border: 3px solid #f55c23;
       font-weight: bold;
+    }
+
+    a {
+      display: inline-block;
+      width: 100%;
+      white-space: normal;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      .button {
+        width: 100%;
+      }
     }
   }
 }
