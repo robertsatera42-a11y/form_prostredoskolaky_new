@@ -9,24 +9,33 @@
 
       <div class="form-block">
         <h4 class="blue">Start up roku - <a href="https://startit.csob.cz/">Start it @ČSOB</a></h4>
+        <b-checkbox v-model="user.specialPrize1Interested" class="startup-interest">
+          <strong>Chci být zahrnut*a do výběru.</strong>
+        </b-checkbox>
         <b-field
-          label="V jakém startupu jsi zapojen, čím se zabývá, jak velký je tým, jakou v něm máš roli a v jaké fázi startup je (nápad, prototyp, MVP, investice)?">
+          label="V jakém startupu jsi zapojen, čím se zabývá, jak velký je tým, jakou v něm máš roli a v jaké fázi startup je (nápad, prototyp, MVP, investice)?"
+          :type="specialPrize1Error ? 'is-danger' : null"
+          :message="specialPrize1Error">
           <b-input
             maxlength="2000"
             type="textarea"
             v-model="user.specialPrize1text"
+            :disabled="!user.specialPrize1Interested"
+            :class="{ 'startup-text-disabled': !user.specialPrize1Interested }"
             placeholder="Popiš svůj start-up.">
           </b-input>
         </b-field>
+      </div>
+
+      <div class="prize-gallery">
+        <img class="prize-image" :src="startUpPrizeImage" alt="Start up roku - Start it @ČSOB">
       </div>
 
       <div class="form-block">
         <h4 class="blue">„Inovátor nové generace" - <a href="https://www.microsoft.com/cs-cz">Microsoft</a></h4>
         <p class="prize-description">Pro studenta, který se nebojí přemýšlet jinak.</p>
         <p class="prize-description">
-          Máš nápad, jak zlepšit něco, co ostatní berou jako samozřejmost? Vidíš problémy, které ostatní přehlíží, a
-          přemýšlíš, jak by mohly fungovat lépe? Tahle cena je pro tebe - bez ohledu na obor nebo technické znalosti.
-          Oceňujeme odvahu ptát se „a co kdyby…?" a chuť věci měnit k lepšímu.
+          Pro studenta, který přichází s odvážnými nápady a (ne výlučně) technologickými řešeními. Vyzdvihuje kreativitu, odvahu a schopnost měnit budoucnost pomocí inovací.
         </p>
         <b-checkbox v-model="user.specialPrize2Interested" class="microsoft-interest">
           <strong>Chci být zahrnut*a do výběru. </strong>
@@ -34,7 +43,6 @@
       </div>
 
       <div class="prize-gallery">
-        <img class="prize-image" :src="startUpPrizeImage" alt="Start up roku - Start it @ČSOB">
         <img class="prize-image" :src="innovatorPrizeImage" alt="Inovátor nové generace - Microsoft">
       </div>
 
@@ -77,7 +85,20 @@ export default {
   data () {
     return {
       startUpPrizeImage,
-      innovatorPrizeImage
+      innovatorPrizeImage,
+      specialPrize1Error: ''
+    }
+  },
+  watch: {
+    'user.specialPrize1Interested': function (isInterested) {
+      if (!isInterested) {
+        this.specialPrize1Error = ''
+      }
+    },
+    'user.specialPrize1text': function () {
+      if (this.specialPrize1Error) {
+        this.validateSpecialPrize1()
+      }
     }
   },
   mounted () {
@@ -93,7 +114,17 @@ export default {
       this.$emit('changeView', ActivitiesStep)
     },
     goToFinalise () {
+      if (!this.validateSpecialPrize1()) {
+        return
+      }
       this.$emit('changeView', FinaliseStep)
+    },
+    validateSpecialPrize1 () {
+      const specialPrize1text = typeof this.user.specialPrize1text === 'string' ? this.user.specialPrize1text.trim() : ''
+      const isValid = !this.user.specialPrize1Interested || specialPrize1text.length > 0
+
+      this.specialPrize1Error = isValid ? '' : 'Pole je povinné'
+      return isValid
     },
     transformDate (dateString) {
       return transformerUtils.transformDate(dateString)
@@ -154,6 +185,18 @@ section.special-prize-step {
 
       .microsoft-interest {
         margin-top: 16px;
+      }
+
+      .startup-interest {
+        margin-top: 16px;
+      }
+
+      .startup-text-disabled {
+        .textarea {
+          background-color: #f0f0f0;
+          color: #7a7a7a;
+          cursor: not-allowed;
+        }
       }
 
       @media (max-width: 700px) {

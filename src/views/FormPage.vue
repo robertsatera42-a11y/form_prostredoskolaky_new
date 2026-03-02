@@ -114,6 +114,7 @@ export default {
         activities: this.user.activities,
         knowledge: this.user.knowledge,
         summary: this.user.summary,
+        specialPrize1Interested: this.user.specialPrize1Interested,
         specialPrize1text: this.user.specialPrize1text,
         specialPrize2Interested: this.user.specialPrize2Interested,
         isRepeting: this.user.isRepeting,
@@ -169,6 +170,7 @@ export default {
         (Array.isArray(user.activities) && user.activities.length > 0) ||
         user.knowledge !== null ||
         hasNonEmptyString(user.summary) ||
+        user.specialPrize1Interested ||
         hasNonEmptyString(user.specialPrize1text) ||
         user.specialPrize2Interested ||
         user.isRepeting ||

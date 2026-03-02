@@ -154,10 +154,10 @@ export default {
       activities: 'user.activities'
     }),
     specialPrize1 () {
-      if (this.user.specialPrize1text) {
-        return 'Vyplněno'
+      if (this.user.specialPrize1Interested) {
+        return 'Mám zájem'
       }
-      return 'Nevyplněno'
+      return 'Nemám zájem'
     },
     specialPrize2 () {
       if (this.user.specialPrize2Interested) {
