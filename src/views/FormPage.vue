@@ -117,6 +117,8 @@ export default {
         specialPrize1Interested: this.user.specialPrize1Interested,
         specialPrize1text: this.user.specialPrize1text,
         specialPrize2Interested: this.user.specialPrize2Interested,
+        specialPrize3Interested: this.user.specialPrize3Interested,
+        specialPrize3text: this.user.specialPrize3text,
         isRepeting: this.user.isRepeting,
         isAgree: this.user.isAgree,
         readGuideConfirmed: this.user.readGuideConfirmed,
@@ -173,6 +175,8 @@ export default {
         user.specialPrize1Interested ||
         hasNonEmptyString(user.specialPrize1text) ||
         user.specialPrize2Interested ||
+        user.specialPrize3Interested ||
+        hasNonEmptyString(user.specialPrize3text) ||
         user.isRepeting ||
         user.isAgree ||
         user.readGuideConfirmed ||

@@ -53,6 +53,10 @@
           <p>Inovátor nové generace (Microsoft):</p>
           <p>{{ specialPrize2 }}</p>
         </div>
+        <div class="info-row">
+          <p>Cena MATTONI TALENTS 2026 (Mattoni 1873):</p>
+          <p>{{ specialPrize3 }}</p>
+        </div>
         <a class="button a-orange" @click="goToSpecialPrizeStep">Zpět k úpravám</a>
       </div>
 
@@ -161,6 +165,12 @@ export default {
     },
     specialPrize2 () {
       if (this.user.specialPrize2Interested) {
+        return 'Mám zájem'
+      }
+      return 'Nemám zájem'
+    },
+    specialPrize3 () {
+      if (this.user.specialPrize3Interested) {
         return 'Mám zájem'
       }
       return 'Nemám zájem'

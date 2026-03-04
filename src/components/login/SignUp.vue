@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="wrapper">
     <div v-if="showSuccess" class="login-wrapper">
       <div class="success-message">
@@ -294,4 +294,3 @@ export default {
 
 }
 </style>
-

@@ -1,13 +1,12 @@
 <template>
   <section class="first-step">
-    
+
     <!-- Finished tab intentionally disabled in production.
     <div v-if="finished" class="content form">
       <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2026</span></h3>
       <br><input type="text" v-model="devPassphrase" style="width: 50px;">
     </div>
 
-    
     -->
     <div class="content form">
       <h3>Základní údaje</h3>

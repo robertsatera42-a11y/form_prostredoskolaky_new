@@ -46,6 +46,39 @@
         <img class="prize-image" :src="innovatorPrizeImage" alt="Inovátor nové generace - Microsoft">
       </div>
 
+      <div class="form-block">
+        <h4 class="blue">Cena MATTONI TALENTS 2026 - <a href="https://www.mattoni1873.cz/">Mattoni 1873</a></h4>
+        <p class="prize-description">Co můžeš vyhrát:</p>
+        <ul class="prize-description prize-list">
+          <li>1. místo: Jistá účast v prestižním výběrovém dvoutýdenním vzdělávacím programu Mattoni Eagles 2026 - v termínu 17. – 28. srpna (uložte do kalendáře).</li>
+            <ul>
+              <li>Výhoda na startu kariéry, intenzivní vzdělávací program a networking s vybranými 15 vysokoškoláky z celé ČR.</li>
+              <li>Plně hrazeno Mattoni 1873. <a href="https://www.mattoni1873.cz/mattoni-eagles/" target="_blank" rel="noopener">https://www.mattoni1873.cz/mattoni-eagles/</a></li>
+            </ul>
+          <li>2. místo: Exkluzivní vstup na akci Mattoni Bridge v rámci KVIFF.</li>
+        </ul>
+        <b-checkbox v-model="user.specialPrize3Interested" class="mattoni-interest">
+          <strong>Mám zájem o zařazení do výběru a čas 17. – 28. srpna 2026.</strong>
+        </b-checkbox>
+        <b-field
+          label="Napište, jaká inovativní řešení konkrétních problémů jste přivedli do reality."
+          :type="specialPrize3Error ? 'is-danger' : null"
+          :message="specialPrize3Error">
+          <b-input
+            maxlength="2000"
+            type="textarea"
+            v-model="user.specialPrize3text"
+            :disabled="!user.specialPrize3Interested"
+            :class="{ 'startup-text-disabled': !user.specialPrize3Interested }"
+            placeholder="Popište inovativní řešení, která jste přivedli do reality.">
+          </b-input>
+        </b-field>
+      </div>
+
+      <div class="prize-gallery">
+        <img class="prize-image" :src="mattoniTalentsPrizeImage" alt="Cena MATTONI TALENTS 2026 - Mattoni 1873">
+      </div>
+
       <div class="help-link">
         <p>
           POZOR! Přihláška se uloží až ve čtvrtém kroku po kliknutí na "Uložit přihlášku".<br>
@@ -75,6 +108,7 @@ import transformerUtils from '../../utils/transformerUtils'
 import { mapFields } from 'vuex-map-fields'
 import startUpPrizeImage from '../../assets/start_up_roku.png'
 import innovatorPrizeImage from '../../assets/inovátor_nové_generace.png'
+import mattoniTalentsPrizeImage from '../../assets/mattoni_talents_cena.jpeg'
 
 export default {
   name: 'special-prize-step',
@@ -86,7 +120,9 @@ export default {
     return {
       startUpPrizeImage,
       innovatorPrizeImage,
-      specialPrize1Error: ''
+      mattoniTalentsPrizeImage,
+      specialPrize1Error: '',
+      specialPrize3Error: ''
     }
   },
   watch: {
@@ -98,6 +134,16 @@ export default {
     'user.specialPrize1text': function () {
       if (this.specialPrize1Error) {
         this.validateSpecialPrize1()
+      }
+    },
+    'user.specialPrize3Interested': function (isInterested) {
+      if (!isInterested) {
+        this.specialPrize3Error = ''
+      }
+    },
+    'user.specialPrize3text': function () {
+      if (this.specialPrize3Error) {
+        this.validateSpecialPrize3()
       }
     }
   },
@@ -114,7 +160,7 @@ export default {
       this.$emit('changeView', ActivitiesStep)
     },
     goToFinalise () {
-      if (!this.validateSpecialPrize1()) {
+      if (!this.validateSpecialPrize1() || !this.validateSpecialPrize3()) {
         return
       }
       this.$emit('changeView', FinaliseStep)
@@ -124,6 +170,13 @@ export default {
       const isValid = !this.user.specialPrize1Interested || specialPrize1text.length > 0
 
       this.specialPrize1Error = isValid ? '' : 'Pole je povinné'
+      return isValid
+    },
+    validateSpecialPrize3 () {
+      const specialPrize3text = typeof this.user.specialPrize3text === 'string' ? this.user.specialPrize3text.trim() : ''
+      const isValid = !this.user.specialPrize3Interested || specialPrize3text.length > 0
+
+      this.specialPrize3Error = isValid ? '' : 'Pole je povinné'
       return isValid
     },
     transformDate (dateString) {
@@ -187,8 +240,20 @@ section.special-prize-step {
         margin-top: 16px;
       }
 
+      .mattoni-interest {
+        margin-top: 16px;
+      }
+
       .startup-interest {
         margin-top: 16px;
+      }
+
+      .prize-list {
+        margin-left: 16px;
+
+        li {
+          margin-top: 8px;
+        }
       }
 
       .startup-text-disabled {
