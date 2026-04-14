@@ -108,7 +108,7 @@ import transformerUtils from '../../utils/transformerUtils'
 import { mapFields } from 'vuex-map-fields'
 import startUpPrizeImage from '../../assets/start_up_roku.png'
 import innovatorPrizeImage from '../../assets/inovátor_nové_generace.png'
-import mattoniTalentsPrizeImage from '../../assets/mattoni_talents_cena.jpeg'
+import mattoniTalentsPrizeImage from '../../assets/mattoni_talents_cena.jpg'
 
 export default {
   name: 'special-prize-step',
