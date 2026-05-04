@@ -24,10 +24,10 @@
         <h2 v-html="currentStep.description"></h2>
       </div>
     </div>
-    <div class="content step">
+    <div v-if="!formFinished" class="content step">
       <h2>Krok <span class="orange">{{ currentStep.number }}.</span> ze <span class="orange"> {{ totalSteps }}</span></h2>
     </div>
-    <div class="loader-block-row">
+    <div v-if="!formFinished" class="loader-block-row">
       <div class="loader-block-element"
               v-for="stepNumber in totalSteps" :key="stepNumber"
               :style="{width: (100/totalSteps) + '%'}">
@@ -59,6 +59,7 @@ export default {
     return {
       //      unsaved: false,
       currentStep: FirstStep,
+      formFinished: FirstStep.isFinished === true,
       competitionYear: '2026',
       totalSteps: 4,
       showDraftBanner: false,
@@ -184,6 +185,10 @@ export default {
       )
     },
     changeView (step) {
+      if (this.formFinished) {
+        this.currentStep = FirstStep
+        return
+      }
       this.currentStep = step
     },
     isStepActive (stepNum) {

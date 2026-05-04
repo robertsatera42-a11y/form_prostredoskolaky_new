@@ -1,14 +1,11 @@
 <template>
   <section class="first-step">
 
-    <!-- Finished tab intentionally disabled in production.
     <div v-if="finished" class="content form">
-      <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2026</span></h3>
-      <br><input type="text" v-model="devPassphrase" style="width: 50px;">
+      <h3>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2027</span></h3>
     </div>
 
-    -->
-    <div class="content form">
+    <div v-else class="content form">
       <h3>Základní údaje</h3>
 
       <div class="form-block">
@@ -266,7 +263,7 @@
       <!--<pre>$xv: {{ $v.user }}</pre>-->
     </div>
 
-    <div class="submit-block">
+    <div v-if="!finished" class="submit-block">
       <div class="submit-actions content">
         <router-link class="button a-gray" to="https://prostredoskolaky.cz/">Zavřít</router-link>
         <a class="button a-orange" @click="goToSpecialPrize">Přejít na 2. krok</a>
@@ -290,16 +287,23 @@ import { mapActions } from 'vuex'
 import { FETCH_USER } from '../../types'
 import ActivitiesStep from './ActivitiesStep.vue'
 
+const REGISTRATION_FINISHED = true
+const REGISTRATION_FINISHED_MESSAGE = 'Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2027</span>.'
+
 export default {
   name: 'first-step',
-  description: `Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>`,
+  description: REGISTRATION_FINISHED
+    ? REGISTRATION_FINISHED_MESSAGE
+    : `Začni vyplněním svých základních údajů. <b>Přihlášku uložíš v posledním kroku. Po uložení se můžeš k přihlášce až do deadlinu kdykoliv vrátit a upravovat ji.</b>`,
   number: 1,
   loaderBlockName: 'první krok - základní údaje',
+  isFinished: REGISTRATION_FINISHED,
   components: { ActivitiesStep },
   mixins: [focusMixin],
   data () {
     return {
       // Old dev passphrase (disabled): h4qVDW90T
+      finished: REGISTRATION_FINISHED,
       selected: '',
       schools: [],
       consts: {
@@ -406,6 +410,9 @@ export default {
   methods: {
     ...mapActions({ fetchUser: FETCH_USER }),
     goToSpecialPrize () {
+      if (this.finished) {
+        return
+      }
       if (this.$v.user.$invalid || this.$v.user.readGuideConfirmed.$invalid) {
         this.submitStatus = 'ERROR'
       } else {
