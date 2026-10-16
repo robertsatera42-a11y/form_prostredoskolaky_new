@@ -1,114 +1,67 @@
 <template>
-  <section class="success-step" id="success-step">
-    <div class="header-text">
-        <h2>
-            Děkujeme za tvou přihlášku! Dotazník byl uložen a na {{ user.email }} zaslán potvrzovací email. Přihlášku můžeš až do deadlinu kdykoliv otevřít a upravit ji.
-        </h2>
+  <section id="success-step" class="success-step" aria-labelledby="success-heading">
+    <div class="success-confirmation">
+      <span class="success-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><span class="sr-only">Uložení potvrzeno.</span></span>
+      <h2 id="success-heading" ref="heading" tabindex="-1">Přihláška je uložená</h2>
+      <p class="success-lead">Děkujeme za tvou přihlášku do soutěže Středoškolák roku.</p>
+      <p class="success-detail">Až do uzávěrky ji můžeš znovu otevřít a upravovat. Po každé úpravě ji nezapomeň znovu odeslat ve čtvrtém kroku.</p>
+      <nav class="success-actions" aria-label="Co dál s přihláškou">
+        <a class="success-button success-primary" href="https://prihlaska.stredoskolakroku.cz/">Znovu otevřít přihlášku<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m14 5 7 7-7 7M21 12H3"></path></svg></a>
+        <a class="success-button success-secondary" href="https://stredoskolakroku.cz/">Zavřít</a>
+      </nav>
     </div>
-    <div class="submit-block">
-      <div class="submit-actions content">
-        <a class="button a-gray" href="https://stredoskolakroku.cz/">Zavřít</a>
-        <a class="button a-orange-full" href="https://prihlaska.stredoskolakroku.cz/">Znovu otevřít přihlášku</a>
-      </div>
-    </div>
+    <p class="success-support">Potřebuješ s přihláškou pomoct? Napiš nám na <a href="mailto:info@prostredoskolaky.cz">info@prostredoskolaky.cz</a>.</p>
   </section>
 </template>
-<script>
-import { mapFields } from 'vuex-map-fields'
 
+<script>
 export default {
   name: 'success-step',
   number: 0,
-  computed: {
-    ...mapFields({
-      user: 'user'
-    })
-
+  mounted () {
+    window.scrollTo(0, 0)
+    this.$nextTick(() => this.$refs.heading.focus({ preventScroll: true }))
   }
 }
 </script>
 
 <style scoped lang="scss">
-.content {
-  width: 80%;
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 40px 40px 0;
-
-  @media (max-width: 800px) {
-    width: 90%;
-    padding: 40px 20px 0;
-  }
+.success-step {
+  width: calc(100% - 64px);
+  max-width: 1024px;
+  margin: 32px auto 0;
+  color: #071b46;
+  font: 1rem/1.5 'AvenirNextForm', 'AvenirNext', sans-serif;
+  ::selection { background: #ffe2d4; color: #071b46; }
+  a:focus-visible, h2:focus-visible { outline: 2px solid #071b46; outline-offset: 4px; }
+  a { color: #071b46; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+  a:hover { color: #ac3711; }
 }
-
-section.success-step {
-  padding-top: 50px;
-  position: relative;
-
-  .header-text {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0;
-    flex: 1;
-
-    h2 {
-      flex: .5;
-      font-size: 18px;
-      margin: 0 0 0 20px;
-      line-height: 1.2;
-      font-weight: normal;
-    //   text-align:center;
-    }
-    }
-
-  .submit-block {
-    background-color: #f9f4f4;
-
-    .submit-actions {
-      padding-bottom: 40px;
-
-      .a-orange {
-        margin-right: 20px;
-        margin-top: 0;
-        border: 1px solid #f55c23;
-        background: white;
-        color: #f55c23;
-        display: inline-flex;
-      }
-
-      .a-orange-full {
-        margin-right: 20px;
-        border: 1px solid #f55c23;
-        background: #f55c23;
-        color: #FFF;
-      }
-
-      small {
-        font-size: 15px;
-        line-height: 35px;
-        text-align: center;
-        white-space: nowrap;
-      }
-
-      @media (max-width: 450px) {
-        a {
-          margin: 0 auto 10px;
-        }
-      }
-    }
-  }
-
-  .header_links {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    font-weight: 600;
-
-    .button {
-      margin-right: 15px;
-    }
-  }
+.success-confirmation { padding: 40px 36px 36px; border: 1px solid #ffd2c5; border-radius: 8px; background: #fff; }
+.success-mark { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; margin-bottom: 24px; border-radius: 50%; background: #22866a; color: #fff; }
+.success-mark svg { width: 30px; height: 30px; }
+.success-confirmation h2 { width: fit-content; max-width: 100%; margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.25; letter-spacing: -.02em; }
+.success-confirmation h2:focus:not(:focus-visible) { outline: none; }
+.success-lead { margin: 12px 0 0; font-size: 1.125rem; }
+.success-detail { max-width: 66ch; margin: 16px 0 0; color: #556c94; }
+.success-actions { display: flex; align-items: stretch; flex-wrap: wrap; gap: 12px; margin-top: 32px; padding-top: 28px; border-top: 1px solid #e1e6ef; }
+.success-button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 3.25rem; padding: 12px 20px; border: 1px solid #8192ad; border-radius: 6px; font-size: 1rem; font-weight: 700; line-height: 1.4; text-align: center; text-decoration: none !important; transition: background-color 150ms ease-out, border-color 150ms ease-out; }
+.success-button svg { flex: 0 0 auto; width: 20px; height: 20px; }
+.success-step .success-primary { border-color: #f26427; background: #f26427; color: #fff; font-size: 1.25rem; }
+.success-step .success-primary:hover { border-color: #d94d14; background: #d94d14; color: #fff; }
+.success-step .success-primary:active { border-color: #c44716; background: #c44716; }
+.success-step .success-secondary:hover { border-color: #071b46; background: #f4f6fa; color: #071b46; }
+.success-step .success-secondary:active { background: #e6ebf3; }
+.success-support { margin: 24px 0 0; color: #556c94; text-align: center; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 767px) {
+  .success-step { width: calc(100% - 32px); margin-top: 28px; }
+  .success-confirmation { padding: 28px 20px 24px; }
+  .success-confirmation h2 { font-size: 1.75rem; }
+  .success-actions { flex-direction: column; gap: 12px; margin-top: 24px; padding-top: 24px; }
+  .success-button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .success-button { transition: none; }
 }
 </style>

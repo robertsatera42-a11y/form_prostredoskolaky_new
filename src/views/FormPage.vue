@@ -1,5 +1,5 @@
 <template>
-  <div class="form-content">
+  <div class="form-content" :class="{ 'first-step-view': hasModernShell, 'special-prize-view': isSpecialPrizeStep, 'activities-step-view': isActivitiesStep, 'finalise-step-view': isFinaliseStep, 'success-step-view': isSuccessStep }">
     <div v-if="showDraftBanner" class="draft-banner-wrap">
       <div class="content draft-banner">
         <span class="draft-banner-message">Byla zachráněna neuložená verze:</span>
@@ -10,33 +10,67 @@
         <button class="delete" aria-label="close" @click="dismissDraftBanner"></button>
       </div>
     </div>
-    <div class="content">
-      <div class="header_links">
-        <button class="button"><a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a></button>
-        <button class="button"><a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank">Jak probíhá hodnocení</a></button>
-        <button class="button"><a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank">Pravidla soutěže</a></button>
-        <!-- <a href="tel:+420-910-110-207" target="_blank" style="color: #1dbcb9">Nefunguje vám přihláška? Zavolejte na asistenci <strong>+420 910 110 207</strong></a> -->
-    </div>
-      <div class="header-text" id="headerText">
-        <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
-          <span class="orange">{{ competitionYear }}</span>
-        </h1>
-        <h2 v-html="currentStep.description"></h2>
+    <template v-if="hasModernShell">
+      <div class="first-step-intro">
+        <h1 v-if="!isFirstStep">Přihláška do soutěže Středoškolák <span class="competition-year">roku <span class="orange">{{ competitionYear }}</span></span></h1>
+        <h1 v-else>Přihláška do soutěže<br>Středoškolák <span class="competition-year">roku <span class="orange">{{ competitionYear }}</span></span></h1>
+        <details class="first-step-resources">
+          <summary>Návody a pravidla soutěže<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m5 8 5 5 5-5"></path></svg></summary>
+          <nav aria-label="Pomoc s přihláškou">
+          <a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>
+          <a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>
+          <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank" rel="noopener noreferrer">Pravidla soutěže</a>
+          </nav>
+        </details>
       </div>
-    </div>
-    <div v-if="!formFinished" class="content step">
-      <h2>Krok <span class="orange">{{ currentStep.number }}.</span> ze <span class="orange"> {{ totalSteps }}</span></h2>
-    </div>
-    <div v-if="!formFinished" class="loader-block-row">
-      <div class="loader-block-element"
-              v-for="stepNumber in totalSteps" :key="stepNumber"
-              :style="{width: (100/totalSteps) + '%'}">
-        <h3 :class="{active: isStepActive(stepNumber)}">{{ loaderBlockNames[stepNumber-1] }}</h3>
-        <div class="loader-block-parallelogram" :class="{activeP: isStepActive(stepNumber)}"></div>
+      <nav v-if="!formFinished && !isSuccessStep" class="first-step-progress" aria-label="Průběh přihlášky">
+        <ol class="progress-steps">
+          <li v-for="(label, index) in firstStepLabels" :key="label" :class="{ 'is-complete': isProgressComplete(index + 1) }" :aria-current="index + 1 === currentStep.number ? 'step' : null">
+            <span class="progress-number">
+              <template v-if="isProgressComplete(index + 1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+                <span class="progress-completion">{{ index + 1 }}. krok dokončen</span>
+              </template>
+              <template v-else>{{ index + 1 }}</template>
+            </span>
+            <span class="progress-label">{{ label }}</span>
+          </li>
+        </ol>
+        <div class="progress-mobile">
+          <p>Krok {{ currentStep.number }} ze {{ totalSteps }} · {{ firstStepLabels[currentStep.number - 1] }}</p>
+          <div class="progress-segments" aria-hidden="true"><span v-for="stepNumber in totalSteps" :key="stepNumber" :class="{ 'is-complete': isProgressComplete(stepNumber), 'is-current': stepNumber === currentStep.number }"></span></div>
+        </div>
+      </nav>
+  </template>
+    <template v-else>
+      <div class="content">
+        <div class="header_links">
+          <button class="button"><a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a></button>
+          <button class="button"><a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank">Jak probíhá hodnocení</a></button>
+          <button class="button"><a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank">Pravidla soutěže</a></button>
+          <!-- <a href="tel:+420-910-110-207" target="_blank" style="color: #1dbcb9">Nefunguje vám přihláška? Zavolejte na asistenci <strong>+420 910 110 207</strong></a> -->
       </div>
-    </div>
+        <div class="header-text" id="headerText">
+          <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
+            <span class="orange">{{ competitionYear }}</span>
+          </h1>
+          <h2 v-html="currentStep.description"></h2>
+        </div>
+      </div>
+      <div v-if="!formFinished" class="content step">
+        <h2>Krok <span class="orange">{{ currentStep.number }}.</span> ze <span class="orange"> {{ totalSteps }}</span></h2>
+      </div>
+      <div v-if="!formFinished" class="loader-block-row">
+        <div class="loader-block-element"
+                v-for="stepNumber in totalSteps" :key="stepNumber"
+                :style="{width: (100/totalSteps) + '%'}">
+          <h3 :class="{active: isStepActive(stepNumber)}">{{ loaderBlockNames[stepNumber-1] }}</h3>
+          <div class="loader-block-parallelogram" :class="{activeP: isStepActive(stepNumber)}"></div>
+        </div>
+      </div>
+    </template>
     <keep-alive v-if="isUserBootstrapReady">
-      <component :is="currentStep" @changeView="changeView"/>
+      <component :is="currentStep" @changeView="changeView" @review-validity="updateReviewValidity"/>
     </keep-alive>
     <div v-else class="content bootstrap-loading">
       <h2>Načítám přihlášku...</h2>
@@ -49,12 +83,13 @@ import FirstStep from '../components/form/FirstStep'
 import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
 import ActivitiesStep from '../components/form/ActivitiesStep'
 import FinaliseStep from '../components/form/FinaliseStep'
+import SuccessStep from '../components/form/SuccessStep'
 import { IS_LOGGED_IN, USER, SET_USER } from '../types'
 import { mapGetters } from 'vuex'
 import router from '../router'
 
 export default {
-  components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep },
+  components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep, SuccessStep },
   data () {
     return {
       //      unsaved: false,
@@ -62,6 +97,8 @@ export default {
       formFinished: FirstStep.isFinished === true,
       competitionYear: '2026',
       totalSteps: 4,
+      firstStepLabels: ['O tobě', 'Aktivity', 'Speciální ceny', 'Kontrola a odeslání'],
+      reviewValidity: null,
       showDraftBanner: false,
       baselineDraftSignature: '',
       unsubscribeStore: null,
@@ -95,7 +132,30 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([IS_LOGGED_IN, USER, 'isUserBootstrapReady'])
+    ...mapGetters([IS_LOGGED_IN, USER, 'isUserBootstrapReady']),
+    isFirstStep () {
+      const step = this.currentStep.options || this.currentStep
+      return step.name === FirstStep.name
+    },
+    isSpecialPrizeStep () {
+      const step = this.currentStep.options || this.currentStep
+      return step.name === SpecialPrizeStep.name
+    },
+    isActivitiesStep () {
+      const step = this.currentStep.options || this.currentStep
+      return step.name === ActivitiesStep.name
+    },
+    isFinaliseStep () {
+      const step = this.currentStep.options || this.currentStep
+      return step.name === FinaliseStep.name
+    },
+    isSuccessStep () {
+      const step = this.currentStep.options || this.currentStep
+      return step.name === SuccessStep.name
+    },
+    hasModernShell () {
+      return this.isFirstStep || this.isSpecialPrizeStep || this.isActivitiesStep || this.isFinaliseStep || this.isSuccessStep
+    }
   },
   watch: {
     isLoggedIn () {
@@ -105,6 +165,16 @@ export default {
     }
   },
   methods: {
+    updateReviewValidity (validity) {
+      this.reviewValidity = validity
+    },
+    isProgressComplete (stepNumber) {
+      if (this.isFinaliseStep) {
+        const validity = this.reviewValidity || {}
+        return [validity.basic, validity.activities, validity.prizes && validity.prizesSelected, false][stepNumber - 1] === true
+      }
+      return stepNumber < this.currentStep.number
+    },
     getDraftSignature () {
       return JSON.stringify({
         grade: this.user.grade,
@@ -188,6 +258,11 @@ export default {
       if (this.formFinished) {
         this.currentStep = FirstStep
         return
+      }
+      const target = step.options || step
+      if (target.name === SuccessStep.name && this.user.hasRegistration) {
+        this.setBaselineDraftSignature()
+        this.showDraftBanner = false
       }
       this.currentStep = step
     },
@@ -493,6 +568,274 @@ div.form-content {
         width: 100%;
       }
     }
+  }
+}
+
+/* Shared by the redesigned form steps. */
+div.form-content.first-step-view {
+  padding-top: 120px;
+  padding-bottom: 48px;
+  background: #fff;
+  color: #071b46;
+  font-family: 'AvenirNextForm', 'AvenirNext', sans-serif;
+
+  .draft-banner-wrap {
+    margin-top: 0;
+
+    .content {
+      width: calc(100% - 64px);
+      max-width: 1024px;
+      margin: 0 auto 24px;
+    }
+  }
+
+  .first-step-intro,
+  .first-step-progress {
+    width: calc(100% - 64px);
+    max-width: 1024px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .first-step-intro h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .competition-year {
+    white-space: nowrap;
+  }
+
+  .first-step-resources {
+    margin-top: 16px;
+
+    summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      color: #556c94;
+      font-size: 1rem;
+      list-style: none;
+      cursor: pointer;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &:hover {
+        color: #071b46;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #071b46;
+        outline-offset: 3px;
+      }
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &[open] svg {
+      transform: rotate(180deg);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 24px;
+    }
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: #556c94;
+      font-size: 1rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+
+      &:hover {
+        color: #071b46;
+      }
+
+      &:focus-visible {
+        outline: 2px solid #071b46;
+        outline-offset: 3px;
+      }
+    }
+  }
+
+  .first-step-progress {
+    margin-top: 28px;
+    margin-bottom: 32px;
+  }
+
+  .progress-steps {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    &::before {
+      position: absolute;
+      top: 22px;
+      right: 12.5%;
+      left: 12.5%;
+      height: 1px;
+      background: #b9c5d7;
+      content: '';
+    }
+
+    li {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      color: #556c94;
+      font-size: 1rem;
+      text-align: center;
+
+      &[aria-current='step'] {
+        color: #071b46;
+        font-weight: 700;
+
+        .progress-number {
+          border-color: #f26427;
+          background: #f26427;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .progress-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #8192ad;
+    border-radius: 50%;
+    background: #fff;
+    color: #071b46;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .progress-mobile {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    padding-top: 108px;
+    padding-bottom: 24px;
+
+    .first-step-intro,
+    .first-step-progress,
+    .draft-banner-wrap .content {
+      width: calc(100% - 32px);
+    }
+
+    .first-step-intro h1 {
+      font-size: 2rem;
+    }
+
+    .first-step-resources {
+      margin-top: 12px;
+
+      nav {
+        column-gap: 16px;
+      }
+    }
+
+    .first-step-progress {
+      margin-top: 24px;
+      margin-bottom: 28px;
+    }
+
+    .progress-steps {
+      display: none;
+    }
+
+    .progress-mobile {
+      display: block;
+
+      p {
+        margin: 0 0 12px;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+    }
+
+    .progress-segments {
+      display: flex;
+      gap: 8px;
+
+      span {
+        flex: 1;
+        height: 8px;
+        border-radius: 4px;
+        background: #e1e6ef;
+
+        &:first-child {
+          background: #f26427;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 359px) {
+    .first-step-intro h1 {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+.progress-completion {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+div.form-content.first-step-view.special-prize-view,
+div.form-content.first-step-view.activities-step-view,
+div.form-content.first-step-view.finalise-step-view,
+div.form-content.first-step-view.success-step-view {
+  .first-step-intro h1 { font-size: 2rem; }
+  .progress-number { width: 2.75rem; height: 2.75rem; }
+  .progress-number svg { width: 1.5rem; height: 1.5rem; }
+  .progress-steps::before { top: 1.375rem; }
+  .progress-steps li { gap: .5rem; }
+
+  .progress-steps li.is-complete {
+    color: #071b46;
+    .progress-number { border-color: #22866a; background: #22866a; color: #fff; }
+  }
+
+  .progress-steps li[aria-current='step'] .progress-number {
+    border-color: #c44716;
+    background: #c44716;
+  }
+
+  .progress-segments span.is-complete { background: #22866a; }
+  .progress-segments span.is-current { background: #f26427; }
+
+  @media (max-width: 767px) {
+    .first-step-intro h1 { font-size: 1.5rem; }
   }
 }
 </style>
