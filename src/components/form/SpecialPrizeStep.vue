@@ -278,7 +278,7 @@ export default {
 
 .prize-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: 188px minmax(0, 1fr);
   align-items: start;
   gap: 16px 28px;
   padding: 24px;
@@ -291,7 +291,6 @@ export default {
 }
 
 .prize-brand {
-  grid-column: 1 / -1;
   align-self: start;
   width: 188px;
   max-width: 100%;
@@ -370,7 +369,7 @@ export default {
 .prize-response {
   grid-column: 1 / -1;
   min-width: 0;
-  margin-top: 16px;
+  margin-top: 0;
   padding-top: 20px;
   border-top: 1px solid #eaded5;
   textarea {
@@ -454,12 +453,6 @@ export default {
 .prize-reveal-enter-active, .prize-reveal-leave-active { transition: opacity 160ms ease-out; }
 .prize-reveal-enter, .prize-reveal-leave-to { opacity: 0; }
 
-@media (min-width: 1100px) {
-  .prize-card.prize-with-response.is-selected {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    .prize-response { grid-column: 2; grid-row: 2; margin-top: 0; padding-top: 0; border-top: 0; }
-  }
-}
 @media (max-width: 767px) {
   .special-prize-step { width: calc(100% - 32px); }
   .step-intro h2 { font-size: 1.75rem; }

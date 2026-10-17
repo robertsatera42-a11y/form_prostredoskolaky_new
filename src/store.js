@@ -6,7 +6,6 @@ import { getField, updateField } from 'vuex-map-fields'
 import {
   EVENTS,
   SET_EVENTS,
-  FETCH_EVENTS,
   TOTAL_PAGES,
   SET_TOTAL_PAGES,
   TOTAL_EVENTS,
@@ -22,8 +21,6 @@ import {
   DELETE_USER,
   USER
 } from './types'
-import tracking from './utils/tracking'
-import transformerUtils from './utils/transformerUtils'
 import fb from './firebase.js'
 
 Vue.use(Vuex)
@@ -343,10 +340,21 @@ const store = new Vuex.Store({
     clearDraft: ({ commit }) => {
       commit('clearDraft')
     },
-    revertToSaved: async ({ dispatch }) => {
-      await dispatch(FETCH_USER, { content: 'full', forceRemote: true })
-      if (typeof window !== 'undefined' && window.localStorage) {
-        window.localStorage.removeItem('form-draft')
+    revertToSaved: async ({ commit, getters }, request = {}) => {
+      const owner = (getters[USER].email || '').trim().toLowerCase()
+      const user = await client.getUser('full')
+      const responseOwner = user && typeof user.email === 'string' ? user.email.trim().toLowerCase() : ''
+      const currentOwner = (getters[USER].email || '').trim().toLowerCase()
+      if (request.cancelled || !owner || currentOwner !== owner || responseOwner !== owner) {
+        throw new Error('Uloženou přihlášku se nepodařilo načíst.')
+      }
+      commit(SET_USER, { ...user, __forceRemote: true })
+      if (typeof window !== 'undefined') {
+        try {
+          window.localStorage.removeItem('form-draft')
+        } catch (_) {
+          // Loading succeeded; unavailable browser storage must not report a failed restore.
+        }
       }
     }
   }

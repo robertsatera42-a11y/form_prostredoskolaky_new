@@ -1,14 +1,29 @@
 <template>
   <div class="form-content" :class="{ 'first-step-view': hasModernShell, 'special-prize-view': isSpecialPrizeStep, 'activities-step-view': isActivitiesStep, 'finalise-step-view': isFinaliseStep, 'success-step-view': isSuccessStep }">
     <div v-if="showDraftBanner" class="draft-banner-wrap">
-      <div class="content draft-banner">
-        <span class="draft-banner-message">Byla zachráněna neuložená verze:</span>
-        <div class="draft-banner-actions">
-          <button class="button a-orange" @click="keepDraft">Zachránit a pokračovat s touto verzí (doporučeno)</button>
-          <button class="button a-gray" @click="startOverFromDraft">Zahodit a vrátit se k naposledy oficiálně uložené verzi</button>
+      <section class="draft-notice" aria-labelledby="draft-notice-title" :aria-busy="isRestoringDraft ? 'true' : 'false'">
+        <div class="draft-notice-heading">
+          <div>
+            <h2 id="draft-notice-title">Rozpracovaná přihláška</h2>
+            <p>Můžeš pokračovat v rozpracované verzi, nebo {{ hasSavedApplication ? 'se vrátit k uložené přihlášce.' : 'začít znovu.' }}</p>
+          </div>
+          <button type="button" class="draft-close" aria-label="Zavřít oznámení a ponechat rozpracovanou verzi" :disabled="isRestoringDraft" @click="dismissDraftBanner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg></button>
         </div>
-        <button class="delete" aria-label="close" @click="dismissDraftBanner"></button>
-      </div>
+        <div v-if="!draftRestoreConfirming" class="draft-actions">
+          <button type="button" class="draft-action draft-primary draft-keep" @click="keepDraft">Pokračovat v rozpracované</button>
+          <button ref="draftRestoreTrigger" type="button" class="draft-action draft-restore" @click="requestDraftRestore">{{ hasSavedApplication ? 'Obnovit uloženou verzi' : 'Začít znovu' }}</button>
+        </div>
+        <div v-else class="draft-confirmation" role="group" aria-labelledby="draft-confirm-title">
+          <h3 id="draft-confirm-title">{{ hasSavedApplication ? 'Obnovit uloženou verzi?' : 'Začít znovu?' }}</h3>
+          <p>{{ hasSavedApplication ? 'Neuložené změny v tomto prohlížeči se nahradí uloženými údaji.' : 'Dosavadní rozpracované změny v tomto prohlížeči se zahodí.' }}</p>
+          <p v-if="draftRestoreError" id="draft-restore-error" ref="draftRestoreError" class="draft-error" role="alert" tabindex="-1">{{ draftRestoreError }}</p>
+          <p v-if="isRestoringDraft" class="draft-status" role="status">Načítám uložené údaje…</p>
+          <div class="draft-actions">
+            <button ref="draftRestoreCancel" type="button" class="draft-action draft-cancel-restore" :disabled="isRestoringDraft" @click="cancelDraftRestore">Zrušit</button>
+            <button type="button" class="draft-action draft-primary draft-confirm-restore" :disabled="isRestoringDraft" :aria-describedby="draftRestoreError ? 'draft-restore-error' : null" @click="startOverFromDraft">{{ isRestoringDraft ? 'Obnovuji přihlášku…' : draftRestoreError ? 'Zkusit znovu' : hasSavedApplication ? 'Obnovit uloženou verzi' : 'Začít znovu' }}</button>
+          </div>
+        </div>
+      </section>
     </div>
     <template v-if="hasModernShell">
       <div class="first-step-intro">
@@ -70,7 +85,7 @@
       </div>
     </template>
     <keep-alive v-if="isUserBootstrapReady">
-      <component :is="currentStep" @changeView="changeView" @review-validity="updateReviewValidity"/>
+      <component :is="currentStep" :inert="isRestoringDraft ? '' : null" @changeView="changeView" @review-validity="updateReviewValidity"/>
     </keep-alive>
     <div v-else class="content bootstrap-loading">
       <h2>Načítám přihlášku...</h2>
@@ -100,6 +115,10 @@ export default {
       firstStepLabels: ['O tobě', 'Aktivity', 'Speciální ceny', 'Kontrola a odeslání'],
       reviewValidity: null,
       showDraftBanner: false,
+      draftRestoreConfirming: false,
+      isRestoringDraft: false,
+      draftRestoreError: '',
+      draftRestoreRequest: null,
       baselineDraftSignature: '',
       unsubscribeStore: null,
       loaderBlockNames: [ FirstStep.loaderBlockName, ActivitiesStep.loaderBlockName, SpecialPrizeStep.loaderBlockName, FinaliseStep.loaderBlockName ],
@@ -119,6 +138,7 @@ export default {
     window.addEventListener('beforeunload', this.handleBeforeUnload)
   },
   beforeDestroy () {
+    if (this.draftRestoreRequest) this.draftRestoreRequest.cancelled = true
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
     if (this.unsubscribeStore) {
       this.unsubscribeStore()
@@ -133,6 +153,9 @@ export default {
   },
   computed: {
     ...mapGetters([IS_LOGGED_IN, USER, 'isUserBootstrapReady']),
+    hasSavedApplication () {
+      return Boolean(this.user && (this.user.hasRegistration || this.user.lastSaved))
+    },
     isFirstStep () {
       const step = this.currentStep.options || this.currentStep
       return step.name === FirstStep.name
@@ -216,15 +239,59 @@ export default {
       event.returnValue = ''
     },
     keepDraft () {
+      if (this.isRestoringDraft) return
       this.showDraftBanner = false
+      this.draftRestoreConfirming = false
+      this.draftRestoreError = ''
+      this.focusFormHeading()
+    },
+    focusFormHeading () {
+      this.$nextTick(() => {
+        const heading = this.$el.querySelector('.first-step-intro h1')
+        if (heading) {
+          heading.setAttribute('tabindex', '-1')
+          heading.focus({ preventScroll: true })
+        }
+      })
+    },
+    requestDraftRestore () {
+      this.draftRestoreError = ''
+      this.draftRestoreConfirming = true
+      this.$nextTick(() => this.$refs.draftRestoreCancel.focus())
+    },
+    cancelDraftRestore () {
+      if (this.isRestoringDraft) return
+      this.draftRestoreConfirming = false
+      this.draftRestoreError = ''
+      this.$nextTick(() => this.$refs.draftRestoreTrigger.focus())
     },
     async startOverFromDraft () {
-      await this.$store.dispatch('revertToSaved')
-      this.currentStep = FirstStep
-      this.showDraftBanner = false
+      if (this.isRestoringDraft || !this.draftRestoreConfirming) return
+      this.isRestoringDraft = true
+      this.draftRestoreError = ''
+      const request = { cancelled: false }
+      this.draftRestoreRequest = request
+      try {
+        await this.$store.dispatch('revertToSaved', request)
+        if (request.cancelled) return
+        this.currentStep = FirstStep
+        this.setBaselineDraftSignature()
+        this.showDraftBanner = false
+        this.draftRestoreConfirming = false
+        this.focusFormHeading()
+      } catch (_) {
+        if (request.cancelled) return
+        this.draftRestoreError = 'Uložené údaje se nepodařilo načíst. Rozpracované změny zůstaly zachované. Zkus to znovu, nebo je ponech.'
+        this.$nextTick(() => {
+          if (this.$refs.draftRestoreError) this.$refs.draftRestoreError.focus()
+        })
+      } finally {
+        this.isRestoringDraft = false
+        this.draftRestoreRequest = null
+      }
     },
     dismissDraftBanner () {
-      this.showDraftBanner = false
+      this.keepDraft()
     },
     hasMeaningfulDraft () {
       const user = this.user
@@ -277,6 +344,65 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.draft-notice {
+  --draft-ink: #071b46;
+  --draft-muted: #556c94;
+  --draft-action: #c44716;
+  padding: 20px 24px;
+  border: 1px solid #d6deea;
+  border-radius: 12px;
+  background: #f7f9fc;
+  color: var(--draft-ink);
+  font: 1rem/1.5 'AvenirNextForm', 'AvenirNext', sans-serif;
+  button { font-family: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  button:focus-visible { outline: 2px solid var(--draft-ink); outline-offset: 3px; }
+  button:disabled { cursor: wait; }
+}
+.draft-notice-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.draft-notice h2 { margin: 0; font-size: 1.25rem; font-weight: 700; line-height: 1.3; letter-spacing: -.01em; }
+.draft-notice p { max-width: 72ch; margin: 8px 0 0; color: var(--draft-muted); font-size: .9375rem; overflow-wrap: anywhere; }
+.draft-close {
+  display: inline-flex; align-items: center; justify-content: center; flex: 0 0 44px; width: 44px; height: 44px;
+  margin: -8px -12px 0 0; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--draft-ink);
+  transition: background-color 140ms ease-out;
+  svg { width: 22px; height: 22px; }
+  &:hover:not(:disabled) { background: #e5eaf2; }
+  &:active:not(:disabled) { background: #d5deeb; transition: none; }
+  &:disabled { color: #657591; }
+}
+.draft-actions { display: flex; align-items: stretch; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.draft-action {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 11px 18px;
+  border: 1px solid #8192ad; border-radius: 6px; background: #fff; color: var(--draft-ink);
+  font-size: 1rem; font-weight: 700; line-height: 1.4; text-align: center;
+  transition: background-color 140ms ease-out, border-color 140ms ease-out;
+  &:hover:not(:disabled) { background: #f0f3f8; border-color: var(--draft-ink); }
+  &:active:not(:disabled) { background: #e1e7f0; transition: none; }
+  &:disabled { border-color: #d6dde8; background: #e9edf4; color: #657591; }
+}
+.draft-primary {
+  background: var(--draft-action); border-color: var(--draft-action); color: #fff;
+  &:hover:not(:disabled) { background: #a63810; border-color: #a63810; }
+  &:active:not(:disabled) { background: #8e300e; border-color: #8e300e; }
+}
+.draft-confirmation { margin-top: 16px; padding-top: 16px; border-top: 1px solid #d6deea; }
+.draft-confirmation h3 { margin: 0; font-size: 1rem; font-weight: 700; line-height: 1.5; }
+.draft-confirmation .draft-error { color: #b42318; }
+.draft-error:focus { outline: 2px solid var(--draft-ink); outline-offset: 4px; }
+@media (max-width: 767px) {
+  .draft-notice { padding: 20px; }
+  .draft-close { margin-right: -8px; }
+}
+@media (max-width: 599px) {
+  .draft-actions { flex-direction: column; }
+  .draft-action { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .draft-notice * { transition: none !important; scroll-behavior: auto !important; }
+}
+@media (prefers-contrast: more) {
+  .draft-notice { border-color: var(--draft-ink); background: #fff; }
+}
 .content {
   width: 80%;
   max-width: 1200px;
@@ -294,73 +420,9 @@ div.form-content {
   position: relative;
 
   .draft-banner-wrap {
-    margin-top: -40px;
-    margin-bottom: 20px;
-
-    @media (max-width: 800px) {
-      margin-top: -20px;
-      margin-bottom: 12px;
-
-      .draft-banner-actions {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-
-        .button {
-          width: 100%;
-          max-width: 100%;
-          white-space: normal;
-          height: auto;
-          min-height: 0;
-          line-height: 1.35;
-          padding: 10px 12px;
-          text-align: left;
-        }
-      }
-    }
-  }
-
-  .draft-banner {
-    background: #fff3e7;
-    border: 1px solid #f55c23;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 14px 16px;
-    position: relative;
-
-    .draft-banner-message {
-      flex: 1;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .draft-banner-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-
-      .button {
-        margin: 0;
-      }
-    }
-
-    .delete {
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-
-    @media (max-width: 800px) {
-      flex-direction: column;
-      align-items: flex-start;
-      padding-right: 40px;
-
-      .delete {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-      }
-    }
+    width: calc(100% - 64px);
+    max-width: 1024px;
+    margin: 0 auto 24px;
   }
 
   .header-text {
@@ -581,12 +643,6 @@ div.form-content.first-step-view {
 
   .draft-banner-wrap {
     margin-top: 0;
-
-    .content {
-      width: calc(100% - 64px);
-      max-width: 1024px;
-      margin: 0 auto 24px;
-    }
   }
 
   .first-step-intro,
@@ -743,7 +799,7 @@ div.form-content.first-step-view {
 
     .first-step-intro,
     .first-step-progress,
-    .draft-banner-wrap .content {
+    .draft-banner-wrap {
       width: calc(100% - 32px);
     }
 

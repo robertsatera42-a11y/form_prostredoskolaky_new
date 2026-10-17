@@ -3,13 +3,12 @@
     <header class="app-header" v-bind:class="{
       sticky: this.stickyHeader,
       'open-menu': this.mobileOpen,
-      white: this.$route.path !== '/',
       hidden: this.$route.path === '/abffd7'
     }">
       <div class="content">
-        <div @click="goToHome" class="logo">
+        <button type="button" @click="goToHome" class="logo" aria-label="Středoškolák roku – úvod přihlášky">
           <img src="~@/assets/logo.png" alt="Prostředoškoláky">
-        </div>
+        </button>
 
         <!-- <span
           @click="toggleMenu"
@@ -46,22 +45,22 @@
             <span class="link-underline"/>
           </div> -->
           <div v-if="isLoggedIn">
-            <b-dropdown hoverable aria-role="list">
-                <button class="button login-button" slot="trigger">
+            <b-dropdown ref="accountMenu" hoverable position="is-bottom-left" aria-role="list" @keydown.esc.native.prevent.stop="closeAccountMenu" @mouseenter.native="$refs.accountMenu.isHoverable = true">
+                <button ref="accountTrigger" type="button" class="button login-button" slot="trigger" :aria-label="'Účet: ' + user.firstName" :title="user.firstName">
                     <span>{{user.firstName}}</span>
-                    <b-icon icon="menu-down"></b-icon>
+                    <svg class="account-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m4 6 4 4 4-4"></path></svg>
                 </button>
 
-                <b-dropdown-item @click="goToProfile" aria-role="listitem">Profil</b-dropdown-item>
+                <b-dropdown-item @click="goToProfile" @keydown.enter.native.prevent="$event.target.click()" @keydown.space.native.prevent="$event.target.click()" aria-role="listitem">Profil</b-dropdown-item>
                 <!-- <b-dropdown-item v-if="user.hasRegistration" @click="changeRegistration(); closeMenu()" aria-role="listitem">Upravit přihlášku</b-dropdown-item> -->
                 <!-- <b-dropdown-item v-if="user.role==='admin' || user.role === 'manager'" @click="showUsers(); closeMenu()" aria-role="listitem">Zobrazit uživatele</b-dropdown-item>
                 <b-dropdown-item v-if="user.role==='admin' || user.role === 'manager'" @click="showCompetition(); closeMenu()" aria-role="listitem">Zobrazit soutěžící</b-dropdown-item>
                 <b-dropdown-item v-if="user.role==='admin' || user.role === 'manager'" @click="showDatabase(); closeMenu()" aria-role="listitem">Správa databáze</b-dropdown-item> -->
-                <b-dropdown-item @click="logout(); closeMenu()" aria-role="listitem">Odhlásit se</b-dropdown-item>
+                <b-dropdown-item @click="logout(); closeMenu()" @keydown.enter.native.prevent="$event.target.click()" @keydown.space.native.prevent="$event.target.click()" aria-role="listitem">Odhlásit se</b-dropdown-item>
             </b-dropdown>
           </div>
           <div v-else>
-            <a href="https://stredoskolakroku.cz/" class="button login-button">Zpět na homepage</a>
+            <a href="https://stredoskolakroku.cz/" class="button login-button"><span>Zpět na homepage</span></a>
           </div>
         </nav>
       </div>
@@ -104,6 +103,14 @@ export default {
     },
     closeMenu () {
       this.mobileOpen = false
+    },
+    closeAccountMenu () {
+      const menu = this.$refs.accountMenu
+      if (menu) {
+        menu.isActive = false
+        menu.isHoverable = false
+      }
+      if (this.$refs.accountTrigger) this.$refs.accountTrigger.focus({ preventScroll: true })
     },
     goToHome () {
       router.push('/')
@@ -260,7 +267,11 @@ export default {
 
   .app-header {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e1e6ef;
     transition: .3s;
     z-index: 9; /* due to modal box */
 
@@ -307,18 +318,27 @@ export default {
       width: 100%;
       max-width: 1200px;
       margin: auto;
-      overflow: hidden;
+      overflow: visible;
       padding: 20px 40px;
       display: flex;
       flex: 1;
+      align-items: center;
+      gap: 16px;
       justify-content: space-between;
 
       .logo {
+        flex: 0 1 170px;
+        min-width: 100px;
+        min-height: 44px;
         align-items: center;
         display: flex;
+        padding: 0;
+        border: 0;
+        background: transparent;
         cursor: pointer;
 
         img {
+          width: 100%;
           max-width: 170px;
           height: auto;
           vertical-align: middle;
@@ -339,27 +359,7 @@ export default {
       nav {
         align-items: center;
         display: flex;
-
-        @media (max-width: 1050px) {
-          display: none;
-
-          &.mobile-open {
-            display: flex;
-            position: absolute;
-            transition: .3s;
-            background: rgba(255, 255, 255, 0.9);
-            width: 100%;
-            height: calc(100vh - 83px);
-            left: 0;
-            top: 83px;
-            flex-direction: column;
-            justify-content: center;
-
-            > div {
-              margin-right: 0;
-            }
-          }
-        }
+        min-width: 0;
 
         .menu-bottom-link {
           position: relative;
@@ -391,11 +391,46 @@ export default {
           }
         }
 
-        // TODO: udelat poradne
+        .dropdown-menu {
+          right: 0;
+          left: auto;
+          min-width: 200px;
+          max-width: calc(100vw - 32px);
+        }
         .dropdown-content {
-          position: fixed;
+          position: static;
+          border-radius: 8px;
+          box-shadow: 0 12px 32px rgba(7, 27, 70, .16);
+        }
+        .dropdown-item { min-height: 44px; color: #071b46; }
+        .login-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          max-width: min(40vw, 180px);
+          min-height: 44px;
+          height: auto;
+          padding: 10px 14px;
+          border-color: #8192ad;
+          border-radius: 6px;
+          color: #071b46;
+          font-size: 1rem;
+          line-height: 1.4;
+          span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+          .account-chevron { flex: 0 0 16px; width: 16px; height: 16px; }
+          &:hover { border-color: #071b46; background: #f4f6fa; }
+          &:active { background: #e6ebf3; }
         }
       }
+    }
+    button:focus-visible, a:focus-visible { outline: 2px solid #071b46; outline-offset: 3px; }
+    @media (max-width: 600px) {
+      .content, &.sticky .content { padding: 12px 16px; gap: 12px; }
+      .content .logo { flex-basis: 140px; }
+      .content nav .login-button { padding: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      &, * { transition: none !important; }
     }
   }
 
