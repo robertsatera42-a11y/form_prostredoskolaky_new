@@ -309,9 +309,9 @@
               :aria-describedby="errorsAgree.message ? 'guide-error' : null"
             >
             <label for="first-step-guide">Potvrzuji, že jsem si přečetl/a dokumenty:
-                <a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>,
-                <a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>,
-                <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank" rel="noopener noreferrer">Pravidla soutěže</a>.
+                <a href="https://drive.google.com/file/d/1UVUG5ivOKPc6szZJIS0r11C6sgF7-vsU/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>,
+                <a href="https://drive.google.com/file/d/1Rd2zE5s4MFZdA7C0X03zdu9oQFmFMjge/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>,
+                <a href="https://drive.google.com/file/d/1Mk6u34cJalviooAW4f2XlpeLIld-f02j/view?usp=sharing" target="_blank" rel="noopener noreferrer">Pravidla soutěže</a>.
                 <span class="required-marker" aria-hidden="true">*</span></label>
           </div>
           <p v-if="errorsAgree.message" id="guide-error" class="field-error" role="alert">{{ errorsAgree.message }}</p>
