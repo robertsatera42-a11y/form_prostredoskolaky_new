@@ -1,7 +1,7 @@
 <template>
   <section class="first-step">
     <div v-if="finished" class="registration-closed">
-      <h2>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2027</span></h2>
+      <h2>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">listopadu 2027</span></h2>
     </div>
 
     <div v-else class="first-step-panel">
@@ -308,7 +308,11 @@
               :aria-invalid="!!errorsAgree.message"
               :aria-describedby="errorsAgree.message ? 'guide-error' : null"
             >
-            <label for="first-step-guide">Potvrzuji, že jsem si přečetl/a dokument <a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>. <span class="required-marker" aria-hidden="true">*</span></label>
+            <label for="first-step-guide">Potvrzuji, že jsem si přečetl/a dokumenty:
+                <a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>,
+                <a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>,
+                <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank" rel="noopener noreferrer">Pravidla soutěže</a>.
+                <span class="required-marker" aria-hidden="true">*</span></label>
           </div>
           <p v-if="errorsAgree.message" id="guide-error" class="field-error" role="alert">{{ errorsAgree.message }}</p>
         </div>
@@ -316,6 +320,11 @@
         <div class="confirmation-row">
           <input id="first-step-repeating" v-model="user.isRepeting" type="checkbox">
           <label for="first-step-repeating">Už jsem se soutěže Středoškolák roku účastnil/a.</label>
+        </div>
+
+        <div class="confirmation-row">
+          <input id="first-step-repeating" v-model="user.isRepeting" type="checkbox">
+          <label for="first-step-repeating">Měl/a bych čas se zúčastnit Víkendu TOP25 4.–6. 6. 2027.</label>
         </div>
 
         <div class="form-field knowledge-field">
@@ -361,7 +370,7 @@ import { FETCH_USER } from '../../types'
 import ActivitiesStep from './ActivitiesStep.vue'
 
 const REGISTRATION_FINISHED = false // true, for when it should be closed
-const REGISTRATION_FINISHED_MESSAGE = 'Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">březnu 2027</span>.'
+const REGISTRATION_FINISHED_MESSAGE = 'Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">listopadu 2027</span>.'
 
 export default {
   name: 'first-step',

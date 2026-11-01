@@ -7,7 +7,7 @@
     }">
       <div class="content">
         <button type="button" @click="goToHome" class="logo" aria-label="Středoškolák roku – úvod přihlášky">
-          <img src="~@/assets/logo.png" alt="Prostředoškoláky">
+          <img src="~@/assets/logo.svg" alt="Prostředoškoláky">
         </button>
 
         <!-- <span
@@ -220,7 +220,21 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: $dark;
+
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
   }
+
+  #app {
+    font-family: "EuclidCircularB", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: $dark;
+
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
+  }
+
 
   .orange {
     color: $primary;

@@ -1,5 +1,7 @@
 export default {
   consts: {
+    // Publish prizes incrementally with: 'startup', 'microsoft', 'mattoni'.
+    publishedSpecialPrizeIds: [],
     activityTypes: [
       'Soutěž',
       'Kurz',

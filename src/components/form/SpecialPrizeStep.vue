@@ -2,15 +2,16 @@
   <section class="special-prize-step" aria-labelledby="special-prize-heading">
     <header class="step-intro">
       <h2 id="special-prize-heading">Speciální ceny</h2>
-      <p>
+      <p v-if="publishedPrizeIds.length">
         Vyplnění následujících sekcí tě zařadí do soutěže o speciální ceny našich partnerů.
         Účast je <strong>zcela dobrovolná</strong> a tvé hodnocení v hlavní soutěži nijak neovlivní.
       </p>
     </header>
 
     <form novalidate @submit.prevent="goToFinalise">
-      <div class="prize-list">
-        <article class="prize-card prize-with-response" :class="{ 'is-selected': user.specialPrize1Interested }" aria-labelledby="startup-heading">
+      <SpecialPrizeNotice v-if="!publishedPrizeIds.length" />
+      <div v-else class="prize-list">
+        <article v-if="publishedPrizeIds.includes('startup')" class="prize-card prize-with-response" :class="{ 'is-selected': user.specialPrize1Interested }" aria-labelledby="startup-heading">
           <div class="prize-brand">
             <img :src="startUpPrizeImage" width="786" height="624" alt="Start up roku - Start it @ČSOB">
           </div>
@@ -47,7 +48,7 @@
           </transition>
         </article>
 
-        <article class="prize-card" :class="{ 'is-selected': user.specialPrize2Interested }" aria-labelledby="innovator-heading">
+        <article v-if="publishedPrizeIds.includes('microsoft')" class="prize-card" :class="{ 'is-selected': user.specialPrize2Interested }" aria-labelledby="innovator-heading">
           <div class="prize-brand">
             <img :src="innovatorPrizeImage" width="1014" height="624" alt="Inovátor nové generace - Microsoft">
           </div>
@@ -65,7 +66,7 @@
           </div>
         </article>
 
-        <article class="prize-card prize-with-response" :class="{ 'is-selected': user.specialPrize3Interested }" aria-labelledby="mattoni-heading">
+        <article v-if="publishedPrizeIds.includes('mattoni')" class="prize-card prize-with-response" :class="{ 'is-selected': user.specialPrize3Interested }" aria-labelledby="mattoni-heading">
           <div class="prize-brand prize-brand-mattoni">
             <img :src="mattoniTalentsPrizeImage" width="2000" height="922" alt="Cena MATTONI TALENTS 2026 - Mattoni 1873">
           </div>
@@ -90,7 +91,7 @@
             </details>
             <label class="prize-choice">
               <input v-model="user.specialPrize3Interested" type="checkbox" name="specialPrize3Interested" :aria-controls="user.specialPrize3Interested ? 'mattoni-response' : null">
-              <span>Mám zájem o zařazení do výběru a čas 17. – 28. srpna 2026.<span class="visually-hidden"> Cena MATTONI TALENTS</span></span>
+              <span>Mám zájem o zařazení do výběru a mám čas 17. – 28. srpna 2027.<span class="visually-hidden"> Cena MATTONI TALENTS</span></span>
             </label>
           </div>
           <transition name="prize-reveal">
@@ -143,6 +144,8 @@
 
 <script>
 import ActivitiesStep from './ActivitiesStep'
+import SpecialPrizeNotice from './SpecialPrizeNotice'
+import config from '../../config/default'
 import FinaliseStep from './FinaliseStep'
 import transformerUtils from '../../utils/transformerUtils'
 import { mapFields } from 'vuex-map-fields'
@@ -155,7 +158,7 @@ export default {
   description: 'Zvaž zapojení do soutěže o <b>speciální ceny</b>. Účast je dobrovolná a tvé hodnocení v hlavní soutěži nijak neovlivní.',
   number: 3,
   loaderBlockName: 'třetí krok - speciální ceny',
-  components: { FinaliseStep, ActivitiesStep },
+  components: { FinaliseStep, ActivitiesStep, SpecialPrizeNotice },
   data () {
     return {
       startUpPrizeImage,
@@ -184,6 +187,9 @@ export default {
   },
   computed: {
     ...mapFields({ user: 'user' }),
+    publishedPrizeIds () {
+      return config.consts.publishedSpecialPrizeIds
+    },
     specialPrize1Length () {
       return typeof this.user.specialPrize1text === 'string' ? this.user.specialPrize1text.length : 0
     },
@@ -209,13 +215,13 @@ export default {
     },
     validateSpecialPrize1 () {
       const text = typeof this.user.specialPrize1text === 'string' ? this.user.specialPrize1text.trim() : ''
-      const isValid = !this.user.specialPrize1Interested || text.length > 0
+      const isValid = !this.publishedPrizeIds.includes('startup') || !this.user.specialPrize1Interested || text.length > 0
       this.specialPrize1Error = isValid ? '' : 'Popiš svůj start-up, nebo zruš výběr této ceny.'
       return isValid
     },
     validateSpecialPrize3 () {
       const text = typeof this.user.specialPrize3text === 'string' ? this.user.specialPrize3text.trim() : ''
-      const isValid = !this.user.specialPrize3Interested || text.length > 0
+      const isValid = !this.publishedPrizeIds.includes('mattoni') || !this.user.specialPrize3Interested || text.length > 0
       this.specialPrize3Error = isValid ? '' : 'Popiš svá inovativní řešení, nebo zruš výběr této ceny.'
       return isValid
     },

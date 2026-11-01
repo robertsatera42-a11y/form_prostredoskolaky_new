@@ -19,7 +19,7 @@ const validActivity = {
   result: 'Navrhli jsme funkční prototyp.',
   start: 'Tři měsíce, čtyři hodiny týdně.',
   link: '',
-  reference: ''
+  reference: 'Mentor, mentor@example.test'
 }
 
 const classifications = [
@@ -104,7 +104,7 @@ describe('ActivityForm', () => {
   for (const [type, hasField, hasIndividual] of classifications) {
     it(`preserves visibility and required rules for ${type}`, async () => {
       await open()
-      Object.assign(wrapper.vm.activity, { name: 'Aktivita', result: 'Výsledek', start: 'Dva měsíce', type })
+      Object.assign(wrapper.vm.activity, { name: 'Aktivita', result: 'Výsledek', start: 'Dva měsíce', reference: validActivity.reference, type })
       await localVue.nextTick()
       expect(wrapper.find('#activity-field').exists()).toBe(hasField)
       expect(wrapper.find('#activity-interest').exists()).toBe(true)
@@ -144,12 +144,12 @@ describe('ActivityForm', () => {
     wrapper.vm.submit()
     await localVue.nextTick()
     expect(close).not.toHaveBeenCalled()
-    expect(wrapper.findAll('[aria-invalid="true"]')).toHaveLength(4)
+    expect(wrapper.findAll('[aria-invalid="true"]')).toHaveLength(5)
     expect(document.activeElement.id).toBe('activity-name')
     expect(store.state.user.activities).toEqual([])
   })
 
-  it('allows an empty website and reference while preserving the three 500-character limits', async () => {
+  it('allows an empty website while preserving the three 500-character limits', async () => {
     await open()
     Object.assign(wrapper.vm.activity, validActivity)
     await localVue.nextTick()
@@ -159,6 +159,45 @@ describe('ActivityForm', () => {
       expect(wrapper.find(`label[for="${id}"]`).exists()).toBe(true)
     }
   })
+
+  for (const reference of ['', ' \n ']) {
+    it(`requires a nonblank reference: ${JSON.stringify(reference)}`, async () => {
+      await open()
+      Object.assign(wrapper.vm.activity, validActivity, { reference })
+      await localVue.nextTick()
+      wrapper.vm.submit()
+      await localVue.nextTick()
+      expect(close).not.toHaveBeenCalled()
+      expect(store.state.user.activities).toEqual([])
+      expect(wrapper.find('#activity-reference').attributes('aria-required')).toBe('true')
+      expect(wrapper.find('#activity-reference').attributes('aria-invalid')).toBe('true')
+      expect(wrapper.find('#activity-reference-error').text()).toBeTruthy()
+      expect(document.activeElement.id).toBe('activity-reference')
+    })
+  }
+
+  for (const [field, limit, id] of [['name', 150, 'activity-name'], ['link', 300, 'activity-link']]) {
+    it(`accepts ${limit} characters in ${field} and rejects an older longer value without truncation`, async () => {
+      const longer = 'a'.repeat(limit + 1)
+      store.state.user.activities.push({ ...validActivity, [field]: longer })
+      await open(0, store.state.user.activities[0])
+      expect(wrapper.find(`#${id}`).attributes('maxlength')).toBe(String(limit))
+      expect(wrapper.find(`#${id}-count`).text()).toContain(`${limit + 1} / ${limit}`)
+      expect(wrapper.find(`#${id}`).element.value).toBe(longer)
+      wrapper.vm.submit()
+      await localVue.nextTick()
+      expect(close).not.toHaveBeenCalled()
+      expect(wrapper.find(`#${id}-error`).text()).toContain(String(limit))
+      expect(store.state.user.activities[0][field]).toBe(longer)
+      await localVue.nextTick()
+      await wrapper.find(`#${id}`).setValue('a'.repeat(limit))
+      await localVue.nextTick()
+      expect(wrapper.vm.activity[field]).toHaveLength(limit)
+      wrapper.vm.submit()
+      expect(close).toHaveBeenCalledTimes(1)
+      expect(store.state.user.activities[0][field]).toHaveLength(limit)
+    })
+  }
 
   it('keeps the description example available while an applicant writes their own text', async () => {
     await open()

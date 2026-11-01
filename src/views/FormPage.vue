@@ -110,7 +110,7 @@ export default {
       //      unsaved: false,
       currentStep: FirstStep,
       formFinished: FirstStep.isFinished === true,
-      competitionYear: '2026',
+      competitionYear: '2027',
       totalSteps: 4,
       firstStepLabels: ['O tobě', 'Aktivity', 'Speciální ceny', 'Kontrola a odeslání'],
       reviewValidity: null,

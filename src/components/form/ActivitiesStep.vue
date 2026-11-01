@@ -3,7 +3,7 @@
     <div class="activities-panel">
       <header class="activities-header">
         <div class="activities-intro">
-          <h2 id="activities-heading">Tvé aktivity</h2>
+          <h2 id="activities-heading">Tvé aktivity </h2>
           <p>Ukaž, čemu se věnuješ a čeho se ti podařilo dosáhnout. Přidej alespoň jednu aktivitu, nejvýše {{ activityLimit }}.</p>
         </div>
         <div class="activities-toolbar">

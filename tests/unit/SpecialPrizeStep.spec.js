@@ -2,6 +2,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import { getField, updateField } from 'vuex-map-fields'
 import SpecialPrizeStep from '@/components/form/SpecialPrizeStep.vue'
+import config from '@/config/default'
 
 jest.mock('@/components/form/ActivitiesStep', () => ({ name: 'activities-step', render: h => h('div') }))
 jest.mock('@/components/form/FinaliseStep', () => ({ name: 'finalise-step', render: h => h('div') }))
@@ -14,6 +15,7 @@ describe('SpecialPrizeStep', () => {
   let store
 
   beforeEach(() => {
+    config.consts.publishedSpecialPrizeIds = ['startup', 'microsoft', 'mattoni']
     window.scrollTo = jest.fn()
     store = new Vuex.Store({
       state: {
@@ -31,7 +33,43 @@ describe('SpecialPrizeStep', () => {
     wrapper = mount(SpecialPrizeStep, { localVue, store, attachTo: document.body })
   })
 
-  afterEach(() => wrapper.destroy())
+  afterEach(() => {
+    wrapper.destroy()
+    config.consts.publishedSpecialPrizeIds = []
+  })
+
+  it('shows the announcement and keeps navigation with no published prizes or valid hidden answers', async () => {
+    config.consts.publishedSpecialPrizeIds = []
+    wrapper.destroy()
+    store.state.user.specialPrize1Interested = true
+    store.state.user.specialPrize1text = '  '
+    store.state.user.specialPrize3Interested = true
+    wrapper = mount(SpecialPrizeStep, { localVue, store })
+    expect(wrapper.findAll('.prize-card')).toHaveLength(0)
+    expect(wrapper.text()).toContain('Speciální ceny připravujeme')
+    expect(wrapper.text()).toContain('do 1. března')
+    expect(wrapper.text()).toContain('e-mailem a na sociálních sítích')
+    expect(wrapper.text()).toContain('Přihlášku můžeš odeslat už teď')
+    expect(wrapper.text()).toContain('kdykoliv během přihlašování')
+    await wrapper.find('form').trigger('submit')
+    expect(wrapper.emitted().changeView[0][0].name).toBe('finalise-step')
+    await wrapper.find('.secondary-action').trigger('click')
+    expect(wrapper.emitted().changeView[1][0].name).toBe('activities-step')
+    expect(store.state.user.specialPrize1Interested).toBe(true)
+    expect(store.state.user.specialPrize1text).toBe('  ')
+  })
+
+  it('publishes one prize at a time without treating no selection as an empty offer', () => {
+    config.consts.publishedSpecialPrizeIds = ['microsoft']
+    wrapper.destroy()
+    wrapper = mount(SpecialPrizeStep, { localVue, store })
+    expect(wrapper.findAll('.prize-card')).toHaveLength(1)
+    expect(wrapper.find('#innovator-heading').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('Speciální ceny připravujeme')
+    store.state.user.specialPrize1Interested = true
+    wrapper.vm.goToFinalise()
+    expect(wrapper.emitted().changeView[0][0].name).toBe('finalise-step')
+  })
 
   it('allows continuing without selecting a prize', () => {
     wrapper.vm.goToFinalise()

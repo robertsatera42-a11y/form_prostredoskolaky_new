@@ -7,6 +7,7 @@ import FinaliseStep from '@/components/form/FinaliseStep.vue'
 import client from '@/client/client'
 import fb from '@/firebase'
 import tracking from '@/utils/tracking'
+import config from '@/config/default'
 
 jest.mock('@/client/client', () => ({ createRegistration: jest.fn() }))
 jest.mock('@/firebase', () => ({ updateProfileForCurrentUser: jest.fn() }))
@@ -72,6 +73,7 @@ describe('FinaliseStep', () => {
     await localVue.nextTick()
   }
   beforeEach(() => {
+    config.consts.publishedSpecialPrizeIds = []
     window.scrollTo = jest.fn()
     log = jest.spyOn(console, 'log').mockImplementation(() => {})
     client.createRegistration.mockReset().mockResolvedValue({ registrationId: 'test-registration' })
@@ -169,12 +171,52 @@ describe('FinaliseStep', () => {
   })
 
   it('accepts no awards but blocks a selected award with a blank response', async () => {
+    config.consts.publishedSpecialPrizeIds = ['startup']
     await open({ isAgree: true, specialPrize1Interested: true, specialPrize1text: '  ' })
     await wrapper.vm.submit()
     expect(client.createRegistration).not.toHaveBeenCalled()
     store.state.user.specialPrize1Interested = false
     await wrapper.vm.submit()
     expect(wrapper.emitted().changeView[0][0].name).toBe('success-step')
+  })
+
+  for (const changes of [{ reference: '' }, { reference: ' \n ' }, { name: 'a'.repeat(151) }, { link: 'a'.repeat(301) }]) {
+    it(`blocks final submission of an invalid saved activity: ${JSON.stringify(changes)}`, async () => {
+      await open({ isAgree: true, activities: [{ ...activity, ...changes }] })
+      await wrapper.vm.submit()
+      expect(client.createRegistration).not.toHaveBeenCalled()
+      expect(wrapper.find('[data-correction="activities"]').exists()).toBe(true)
+    })
+  }
+
+  it('accepts activity length boundaries and an optional empty website', async () => {
+    await open({ isAgree: true, activities: [{ ...activity, name: 'a'.repeat(150), link: 'a'.repeat(300) }, { ...activity, link: '' }] })
+    await wrapper.vm.submit()
+    expect(client.createRegistration).toHaveBeenCalledTimes(1)
+  })
+
+  it('hides and ignores unpublished selections without deleting them from the draft or payload', async () => {
+    await open({ isAgree: true, specialPrize1Interested: true, specialPrize1text: '  ' })
+    await wrapper.find('#review-prizes-toggle').trigger('click')
+    expect(wrapper.find('#review-prizes-panel').text()).toContain('Speciální ceny připravujeme')
+    expect(wrapper.find('#review-prize-startup').exists()).toBe(false)
+    expect(wrapper.vm.reviewSections.find(section => section.id === 'prizes').summary).toContain('Speciální ceny připravujeme')
+    await wrapper.vm.submit()
+    expect(client.createRegistration).toHaveBeenCalledTimes(1)
+    expect(client.createRegistration.mock.calls[0][0].specialPrize1Interested).toBe(true)
+    expect(store.state.user.specialPrize1text).toBe('  ')
+  })
+
+  it('reviews only published selections and offers no additional prizes when all published prizes are selected', async () => {
+    config.consts.publishedSpecialPrizeIds = ['microsoft']
+    await open({ isAgree: true, specialPrize1Interested: true, specialPrize2Interested: true })
+    await wrapper.find('#review-prizes-toggle').trigger('click')
+    expect(wrapper.find('#review-prize-microsoft').exists()).toBe(true)
+    expect(wrapper.find('#review-prize-startup').exists()).toBe(false)
+    expect(wrapper.find('.review-optional-note').exists()).toBe(false)
+    expect(wrapper.find('#review-prizes-panel').text()).not.toContain('Speciální ceny připravujeme')
+    await wrapper.vm.submit()
+    expect(client.createRegistration).toHaveBeenCalledTimes(1)
   })
 
   it('leaves the draft unchanged after a rejected registration and allows retry', async () => {

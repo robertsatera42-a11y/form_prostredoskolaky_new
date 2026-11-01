@@ -93,7 +93,8 @@
               </template>
 
               <template v-else-if="section.id === 'prizes'">
-                <div v-if="selectedPrizes.length" class="review-prize-list">
+                <SpecialPrizeNotice v-if="!publishedPrizeIds.length" />
+                <div v-else-if="selectedPrizes.length" class="review-prize-list">
                   <section v-for="prize in selectedPrizes" :key="prize.id" class="review-prize" :aria-labelledby="'review-prize-' + prize.id">
                     <div><h4 :id="'review-prize-' + prize.id">{{ prize.title }}</h4><p class="review-prize-partner">{{ prize.partner }}</p></div>
                     <p v-if="prize.needsResponse" class="review-prize-answer" :class="{ 'value-missing': !prize.answer }">{{ prize.answer || 'Odpověď zatím není vyplněná.' }}</p>
@@ -101,7 +102,7 @@
                   </section>
                 </div>
                 <p v-else class="review-empty">Žádná speciální cena nebyla vybrána. Účast je dobrovolná a hodnocení v hlavní soutěži neovlivní.</p>
-                <p v-if="selectedPrizes.length && selectedPrizes.length < 3" class="review-optional-note">Další speciální ceny nebyly vybrány.</p>
+                <p v-if="selectedPrizes.length && selectedPrizes.length < publishedPrizeIds.length" class="review-optional-note">Další speciální ceny nebyly vybrány.</p>
               </template>
 
               <template v-else>
@@ -146,6 +147,7 @@ import ActivityForm from './ActivityForm'
 import SuccessStep from './SuccessStep'
 import FirstStep from './FirstStep'
 import SpecialPrizeStep from './SpecialPrizeStep'
+import SpecialPrizeNotice from './SpecialPrizeNotice'
 import config from '../../config/default'
 import client from '../../client/client'
 import { mapFields } from 'vuex-map-fields'
@@ -159,6 +161,7 @@ export default {
   description: 'Zkontroluj své údaje a odešli přihlášku. Až do uzávěrky ji můžeš znovu otevřít a upravovat.',
   number: 4,
   loaderBlockName: 'čtvrtý krok - kontrola a odeslání',
+  components: { SpecialPrizeNotice },
   data () {
     return {
       isLoading: false,
@@ -225,12 +228,15 @@ export default {
         return interest && (interest.name || interest.full || interest.short)
       }).filter(Boolean)
     },
+    publishedPrizeIds () {
+      return config.consts.publishedSpecialPrizeIds
+    },
     selectedPrizes () {
       return [
         { id: 'startup', title: 'Start up roku', partner: 'Start it @ČSOB', selected: this.user.specialPrize1Interested, answer: this.user.specialPrize1text, needsResponse: true },
         { id: 'microsoft', title: '„Inovátor nové generace“', partner: 'Microsoft', selected: this.user.specialPrize2Interested, needsResponse: false },
-        { id: 'mattoni', title: 'Cena MATTONI TALENTS 2026', partner: 'Mattoni 1873', selected: this.user.specialPrize3Interested, answer: this.user.specialPrize3text, needsResponse: true }
-      ].filter(prize => prize.selected)
+        { id: 'mattoni', title: 'Cena MATTONI TALENTS 2027', partner: 'Mattoni 1873', selected: this.user.specialPrize3Interested, answer: this.user.specialPrize3text, needsResponse: true }
+      ].filter(prize => this.publishedPrizeIds.includes(prize.id) && prize.selected)
     },
     sectionValidity () {
       return {
@@ -247,7 +253,7 @@ export default {
       return [
         { id: 'basic', title: 'Základní údaje', valid: valid.basic, complete: valid.basic, status: valid.basic ? 'Povinné údaje vyplněny' : 'Údaje vyžadují kontrolu', summary: [this.fullName, this.user.school, this.gradeSummary].filter(Boolean).join(' · ') || 'Tvé osobní a školní informace.' },
         { id: 'activities', title: 'Aktivity', valid: valid.activities, complete: valid.activities, status: valid.activities ? 'Aktivity vyplněny' : 'Aktivity vyžadují kontrolu', summary: names ? names + more : 'Zatím žádná aktivita. Přidej alespoň jednu.' },
-        { id: 'prizes', title: 'Speciální ceny', valid: valid.prizes, complete: valid.prizes && this.selectedPrizes.length > 0, status: this.selectedPrizes.length ? (valid.prizes ? 'Výběr vyplněn' : 'Doplň odpověď k vybrané ceně') : 'Nepovinné, žádná cena nevybrána', summary: this.selectedPrizes.map(prize => prize.title).join(' · ') || 'Žádná cena nebyla vybrána. Účast je nepovinná.' },
+        { id: 'prizes', title: 'Speciální ceny', valid: valid.prizes, complete: valid.prizes && this.selectedPrizes.length > 0, status: !this.publishedPrizeIds.length ? 'Speciální ceny připravujeme' : (this.selectedPrizes.length ? (valid.prizes ? 'Výběr vyplněn' : 'Doplň odpověď k vybrané ceně') : 'Nepovinné, žádná cena nevybrána'), summary: !this.publishedPrizeIds.length ? 'Speciální ceny připravujeme. Přihlášku můžeš odeslat už teď.' : (this.selectedPrizes.map(prize => prize.title).join(' · ') || 'Žádná cena nebyla vybrána. Účast je nepovinná.') },
         { id: 'confirmation', title: 'Potvrzení a odeslání', valid: valid.confirmation, complete: valid.confirmation, status: valid.confirmation ? 'Souhlas potvrzen' : 'Čeká na povinný souhlas', summary: this.isLoading ? 'Odesílání probíhá. Počkej prosím na potvrzení.' : (valid.confirmation ? 'Souhlas je potvrzený. Přihlášku ještě odešli.' : 'Potvrď povinný souhlas a odešli přihlášku.') }
       ]
     },
@@ -258,7 +264,7 @@ export default {
         const missing = Object.keys(fields).filter(key => this.$v.user[key].$invalid).map(key => fields[key])
         issues.push({ id: 'basic', label: 'základní údaje', message: 'Doplň nebo oprav ' + missing.join(', ') + '.' })
       }
-      if (!this.sectionValidity.activities) issues.push({ id: 'activities', label: 'aktivity', message: this.activityList.length ? 'Některá aktivita nemá vyplněné povinné údaje.' : 'Přidej alespoň jednu aktivitu.' })
+      if (!this.sectionValidity.activities) issues.push({ id: 'activities', label: 'aktivity', message: this.activityList.length ? 'U aktivit doplň povinné údaje a zkontroluj limity délky názvu a webového odkazu.' : 'Přidej alespoň jednu aktivitu.' })
       if (!this.sectionValidity.prizes) issues.push({ id: 'prizes', label: 'speciální ceny', message: 'Doplň odpověď k vybrané speciální ceně, nebo její výběr zruš.' })
       if (!this.sectionValidity.confirmation) issues.push({ id: 'confirmation', label: 'souhlas', message: this.requiredTerms })
       return issues

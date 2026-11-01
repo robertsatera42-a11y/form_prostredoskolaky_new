@@ -12,8 +12,9 @@
         <div class="editor-field">
           <b-field label-for="activity-name" :type="errorsName.type">
             <template slot="label">Název aktivity <span class="required-marker" aria-hidden="true">*</span></template>
-            <b-input id="activity-name" v-model="activity.name" v-focus="focusedName" @focus="focusedName = true" @blur="focusedName = false" aria-required="true" :aria-invalid="!!errorsName.message" :aria-describedby="errorsName.message ? 'activity-name-error' : null" placeholder="např. Středoškolská odborná činnost"></b-input>
+            <b-input id="activity-name" v-model="activity.name" maxlength="150" :has-counter="false" v-focus="focusedName" @focus="focusedName = true" @blur="focusedName = false" aria-required="true" :aria-invalid="!!errorsName.message" :aria-describedby="'activity-name-count' + (errorsName.message ? ' activity-name-error' : '')" placeholder="např. Středoškolská odborná činnost"></b-input>
           </b-field>
+          <p id="activity-name-count" class="editor-counter">{{ (activity.name || '').length }} / 150 znaků</p>
           <p v-if="errorsName.message" id="activity-name-error" class="editor-error" role="alert">{{ errorsName.message }}</p>
         </div>
         <div class="editor-field">
@@ -60,11 +61,12 @@
         </div>
         </div>
         <div class="editor-field editor-wide">
-          <b-field label-for="activity-link">
+          <b-field label-for="activity-link" :type="errorsLink.type">
             <template slot="label">Webová stránka aktivity <span class="optional-label">(nepovinné)</span></template>
-            <b-input id="activity-link" v-model="activity.link" v-focus="focusedLink" @focus="focusedLink = true" @blur="focusedLink = false" aria-describedby="activity-link-hint" placeholder="https://www.soc.cz/dokumenty/vysledkove_listiny/2023-24.pdf"></b-input>
+            <b-input id="activity-link" v-model="activity.link" maxlength="300" :has-counter="false" v-focus="focusedLink" @focus="focusedLink = true" @blur="focusedLink = false" :aria-invalid="!!errorsLink.message" :aria-describedby="'activity-link-hint activity-link-count' + (errorsLink.message ? ' activity-link-error' : '')" placeholder="https://www.soc.cz/dokumenty/vysledkove_listiny/2023-24.pdf"></b-input>
           </b-field>
-          <p id="activity-link-hint" class="editor-hint">Ideálně odkaz přímo na aktivitu nebo výsledkovou listinu.</p>
+          <div class="editor-field-meta"><p id="activity-link-hint" class="editor-hint">Ideálně odkaz přímo na aktivitu nebo výsledkovou listinu.</p><span id="activity-link-count" class="editor-counter">{{ (activity.link || '').length }} / 300 znaků</span></div>
+          <p v-if="errorsLink.message" id="activity-link-error" class="editor-error" role="alert">{{ errorsLink.message }}</p>
         </div>
         <div class="editor-field editor-wide">
           <b-field label-for="activity-result" :type="errorsResult.type">
@@ -87,11 +89,12 @@
           <p v-if="errorsStart.message" id="activity-start-error" class="editor-error" role="alert">{{ errorsStart.message }}</p>
         </div>
         <div class="editor-field">
-          <b-field label-for="activity-reference">
-            <template slot="label">Reference (kontakt) <span class="optional-label">(nepovinné)</span></template>
-            <b-input id="activity-reference" type="textarea" rows="2" maxlength="500" :has-counter="false" v-model="activity.reference" v-focus="focusedReference" @focus="focusedReference = true" @blur="focusedReference = false" aria-describedby="activity-reference-hint activity-reference-count" placeholder="např. Josef Novák, e-mail: josef.novak@..."></b-input>
+          <b-field label-for="activity-reference" :type="errorsReference.type">
+            <template slot="label">Reference (kontakt) <span class="required-marker" aria-hidden="true">*</span></template>
+            <b-input id="activity-reference" type="textarea" rows="2" maxlength="500" :has-counter="false" v-model="activity.reference" v-focus="focusedReference" @focus="focusedReference = true" @blur="focusedReference = false" aria-required="true" :aria-invalid="!!errorsReference.message" :aria-describedby="'activity-reference-hint activity-reference-count' + (errorsReference.message ? ' activity-reference-error' : '')" placeholder="např. Josef Novák, e-mail: josef.novak@..."></b-input>
           </b-field>
           <div class="editor-field-meta"><p id="activity-reference-hint" class="editor-hint">Kontakt na osobu, která může tvou aktivitu potvrdit.</p><span id="activity-reference-count" class="editor-counter">{{ (activity.reference || '').length }} / 500</span></div>
+          <p v-if="errorsReference.message" id="activity-reference-error" class="editor-error" role="alert">{{ errorsReference.message }}</p>
         </div>
       </div>
     </form>
@@ -107,7 +110,7 @@
 
 <script>
 import { mapFields } from 'vuex-map-fields'
-import { required, requiredIf } from 'vuelidate/lib/validators'
+import { required, requiredIf, maxLength } from 'vuelidate/lib/validators'
 import { mixin as focusMixin } from 'vue-focus'
 import config from '../../config/default'
 
@@ -195,6 +198,12 @@ export default {
       this.submitStatus
       return this.validate('name', 'focusedName')
     },
+    errorsLink () {
+      return this.validate('link', 'focusedLink')
+    },
+    errorsReference () {
+      return this.validate('reference', 'focusedReference')
+    },
     errorsResult: function () {
       this.focusedResult
       this.$v.activity.result.$invalid
@@ -260,10 +269,15 @@ export default {
       if (!this.$v.activity[input].$invalid) {
         return { message: '', type: '' }
       }
-      if (this[focused] === false && this.$v.activity[input].$invalid) {
-        return { message: config.errors.required, type: config.errors.type }
-      } else if (this.submitStatus === 'ERROR') {
-        return { message: config.errors.required, type: config.errors.type }
+      if (this[focused] === false || this.submitStatus === 'ERROR') {
+        let message = config.errors.required
+        if (this.$v.activity[input].maxLength === false) {
+          const limit = this.$v.activity[input].$params.maxLength.max
+          message = `Zkrať ${input === 'name' ? 'název aktivity' : 'odkaz'} na nejvýše ${limit} znaků.`
+        } else if (input === 'reference') {
+          message = 'Doplň kontakt na osobu, která může tvou aktivitu potvrdit.'
+        }
+        return { message, type: config.errors.type }
       } else return { message: '', type: '' }
     },
     confirmClose () {
@@ -298,6 +312,13 @@ export default {
   validations: {
     activity: {
       name: {
+        required,
+        maxLength: maxLength(150)
+      },
+      link: {
+        maxLength: maxLength(300)
+      },
+      reference: {
         required
       },
       result: {
