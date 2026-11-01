@@ -234,7 +234,7 @@ export default {
 .activity-feedback { margin: 0; color: #196d55; overflow-wrap: anywhere; }
 .activity-feedback:not(:empty) { margin-top: 16px; }
 .limit-message { margin: 16px 0 0; color: var(--activity-muted); }
-.activities-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+.activities-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
 .activity-card { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 20px 20px 12px; border: 1px solid #c5cfdf; border-radius: 8px; overflow-wrap: anywhere; }
 .activity-type { max-width: 100%; margin-bottom: 12px; padding: 4px 10px; border-radius: 5px; background: #fff0e9; color: #a4370d; font-size: .875rem; line-height: 1.5; }
 .activity-card h3 { margin: 0 0 8px; color: var(--activity-ink); font-size: 1.25rem; font-weight: 700; line-height: 1.35; letter-spacing: -.01em; }
@@ -269,6 +269,10 @@ export default {
 .next-button span { text-wrap: balance; }
 .activities-help { margin: 24px auto 0; color: var(--activity-muted); text-align: center; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .activities-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 @media (max-width: 767px) {
   .activities-step { width: calc(100% - 32px); }

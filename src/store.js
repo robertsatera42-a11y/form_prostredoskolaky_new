@@ -22,10 +22,26 @@ import {
   USER
 } from './types'
 import fb from './firebase.js'
+import { FORM_DRAFT_STORAGE_KEY } from './config/default'
 
 Vue.use(Vuex)
 
 const SET_USER_BOOTSTRAP_READY = 'setUserBootstrapReady'
+
+const withDraftStorage = (operation) => {
+  try {
+    return operation(window.localStorage)
+  } catch (_) {
+    // Drafts are optional when browser storage is blocked or full.
+    return null
+  }
+}
+
+const draftStorage = {
+  getItem: (key) => withDraftStorage(storage => storage.getItem(key)),
+  setItem: (key, value) => withDraftStorage(storage => storage.setItem(key, value)),
+  removeItem: (key) => withDraftStorage(storage => storage.removeItem(key))
+}
 
 const createInitialUserState = () => ({
   occupation: null,
@@ -54,6 +70,7 @@ const createInitialUserState = () => ({
   specialPrize3Interested: false,
   specialPrize3text: '',
   isRepeting: false,
+  hasTime: false,
   isAgree: false,
   readGuideConfirmed: false,
   phone: '',
@@ -78,6 +95,7 @@ const FORM_DRAFT_FIELDS = [
   'specialPrize3Interested',
   'specialPrize3text',
   'isRepeting',
+  'hasTime',
   'isAgree',
   'readGuideConfirmed',
   'phone'
@@ -149,6 +167,9 @@ fb.auth.onAuthStateChanged(async (user) => {
   }
 })
 
+// Unversioned drafts belong to earlier forms and must never be restored.
+draftStorage.removeItem('form-draft')
+
 const store = new Vuex.Store({
   state: {
     user: createInitialUserState(),
@@ -177,10 +198,12 @@ const store = new Vuex.Store({
   },
   plugins: [
     createPersistedState({
-      key: 'form-draft',
+      key: FORM_DRAFT_STORAGE_KEY,
+      storage: draftStorage,
       paths: FORM_DRAFT_PATHS,
       subscriber: createDraftPersistenceSubscriber,
       rehydrated: (store) => {
+        if (store.state.user) store.state.user.hasTime = store.state.user.hasTime === true
         if (store.state.user && store.state.user.dob) {
           store.state.user.dob = new Date(store.state.user.dob)
         }
@@ -267,6 +290,7 @@ const store = new Vuex.Store({
         specialPrize3Interested: user.specialPrize3Interested || false,
         specialPrize3text: user.specialPrize3text || '',
         isRepeting: typeof user.isFirstTime === 'boolean' ? !user.isFirstTime : false,
+        hasTime: user.hasTime === true,
         isAgree: user.isAgree || false,
         readGuideConfirmed: user.readGuideConfirmed || false,
         phone: user.phone || ''
@@ -276,7 +300,7 @@ const store = new Vuex.Store({
 
       if (shouldPreserveLocalDraft) {
         const preservedDraftFields = FORM_DRAFT_FIELDS.reduce((draft, field) => {
-          draft[field] = state.user[field]
+          draft[field] = field === 'hasTime' ? state.user[field] === true : state.user[field]
           return draft
         }, {})
 
@@ -349,13 +373,7 @@ const store = new Vuex.Store({
         throw new Error('Uloženou přihlášku se nepodařilo načíst.')
       }
       commit(SET_USER, { ...user, __forceRemote: true })
-      if (typeof window !== 'undefined') {
-        try {
-          window.localStorage.removeItem('form-draft')
-        } catch (_) {
-          // Loading succeeded; unavailable browser storage must not report a failed restore.
-        }
-      }
+      draftStorage.removeItem(FORM_DRAFT_STORAGE_KEY)
     }
   }
 })

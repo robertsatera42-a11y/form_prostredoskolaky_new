@@ -69,6 +69,7 @@
                     <div class="review-prose-value"><dt>Medailonek ve 3. osobě</dt><dd :class="{ 'value-missing': !user.summary }">{{ user.summary || 'Neuvedeno' }}</dd></div>
                     <div><dt>Přečtení návodu</dt><dd>{{ user.readGuideConfirmed ? 'Potvrzeno' : 'Nepotvrzeno' }}</dd></div>
                     <div><dt>Opakovaná účast</dt><dd>{{ user.isRepeting ? 'Ano' : 'Ne' }}</dd></div>
+                    <div><dt>Víkend TOP25</dt><dd>{{ user.hasTime === true ? 'Ano' : 'Ne' }}</dd></div>
                     <div><dt>Odkud znáš soutěž</dt><dd :class="{ 'value-missing': !user.knowledge }">{{ user.knowledge || 'Neuvedeno' }}</dd></div>
                   </dl>
                 </section>
@@ -347,6 +348,7 @@ export default {
           image: undefined,
           imageType,
           isFirstTime: !this.user.isRepeting,
+          hasTime: this.user.hasTime === true,
           isAgree: !!this.user.isAgree,
           readGuideConfirmed: !!this.user.readGuideConfirmed,
           activities: this.activityList.map(activity => ({ ...activity, isIndividual: activity.isIndividual !== 'Týmové' }))

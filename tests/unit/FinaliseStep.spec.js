@@ -96,6 +96,17 @@ describe('FinaliseStep', () => {
     expect(wrapper.find('#review-confirmation-toggle').attributes('aria-expanded')).toBe('true')
   })
 
+  for (const hasTime of [true, false, undefined]) it(`reviews and submits optional availability ${hasTime}`, async () => {
+    await open({ isAgree: true, hasTime })
+    await wrapper.find('#review-basic-toggle').trigger('click')
+    const row = wrapper.findAll('#review-basic-panel dl > div').wrappers.find(item => item.find('dt').text() === 'Víkend TOP25')
+    expect(row).toBeDefined()
+    expect(row.find('dd').text()).toBe(hasTime === true ? 'Ano' : 'Ne')
+    await wrapper.vm.submit()
+    expect(client.createRegistration).toHaveBeenCalledTimes(1)
+    expect(client.createRegistration.mock.calls[0][0].hasTime).toBe(hasTime === true)
+  })
+
   it('keeps independently opened panels visible and edit separate from toggle', async () => {
     await open()
     await wrapper.find('#review-basic-toggle').trigger('click')

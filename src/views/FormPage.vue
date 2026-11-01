@@ -102,6 +102,7 @@ import SuccessStep from '../components/form/SuccessStep'
 import { IS_LOGGED_IN, USER, SET_USER } from '../types'
 import { mapGetters } from 'vuex'
 import router from '../router'
+import { COMPETITION_YEAR } from '../config/default'
 
 export default {
   components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep, SuccessStep },
@@ -110,7 +111,7 @@ export default {
       //      unsaved: false,
       currentStep: FirstStep,
       formFinished: FirstStep.isFinished === true,
-      competitionYear: '2027',
+      competitionYear: COMPETITION_YEAR,
       totalSteps: 4,
       firstStepLabels: ['O tobě', 'Aktivity', 'Speciální ceny', 'Kontrola a odeslání'],
       reviewValidity: null,
@@ -214,6 +215,7 @@ export default {
         specialPrize3Interested: this.user.specialPrize3Interested,
         specialPrize3text: this.user.specialPrize3text,
         isRepeting: this.user.isRepeting,
+        hasTime: this.user.hasTime === true,
         isAgree: this.user.isAgree,
         readGuideConfirmed: this.user.readGuideConfirmed,
         phone: this.user.phone
@@ -223,7 +225,9 @@ export default {
       this.baselineDraftSignature = this.getDraftSignature()
     },
     hasUnsavedChanges () {
-      return this.hasMeaningfulDraft() && this.getDraftSignature() !== this.baselineDraftSignature
+      const hasTimeChanged = Boolean(this.baselineDraftSignature) &&
+        JSON.parse(this.baselineDraftSignature).hasTime !== (this.user.hasTime === true)
+      return (this.hasMeaningfulDraft() || hasTimeChanged) && this.getDraftSignature() !== this.baselineDraftSignature
     },
     confirmLeaveWithoutSaving () {
       if (!this.hasUnsavedChanges()) {
@@ -316,6 +320,7 @@ export default {
         user.specialPrize3Interested ||
         hasNonEmptyString(user.specialPrize3text) ||
         user.isRepeting ||
+        user.hasTime === true ||
         user.isAgree ||
         user.readGuideConfirmed ||
         hasNonEmptyString(user.phone)

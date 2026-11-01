@@ -1,3 +1,7 @@
+export const COMPETITION_YEAR = '2027'
+export const FORM_DRAFT_VERSION = 1
+export const FORM_DRAFT_STORAGE_KEY = `form-draft-${COMPETITION_YEAR}-v${FORM_DRAFT_VERSION}`
+
 export default {
   consts: {
     // Publish prizes incrementally with: 'startup', 'microsoft', 'mattoni'.

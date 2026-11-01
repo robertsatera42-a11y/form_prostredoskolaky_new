@@ -323,8 +323,8 @@
         </div>
 
         <div class="confirmation-row">
-          <input id="first-step-repeating" v-model="user.isRepeting" type="checkbox">
-          <label for="first-step-repeating">Měl/a bych čas se zúčastnit Víkendu TOP25 4.–6. 6. 2027.</label>
+          <input id="first-step-has-time" v-model="user.hasTime" type="checkbox">
+          <label for="first-step-has-time">Měl/a bych čas se zúčastnit Víkendu TOP25 4.–6. 6. 2027.</label>
         </div>
 
         <div class="form-field knowledge-field">
@@ -1057,9 +1057,10 @@ export default {
 }
 
 .summary-help {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
+    display: flex;
+     align-items: flex-start;
+     justify-content: space-between;  /* pushes first to left, second to right */
+     gap: 0;
 
   .field-hint:first-child {
     flex: 1;
