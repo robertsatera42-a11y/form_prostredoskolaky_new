@@ -111,7 +111,7 @@
                   <div class="consent-heading">Povinný souhlas <span class="required-marker" aria-hidden="true">*</span></div>
                   <div class="consent-row">
                     <input id="finalise-consent" ref="consent" v-model="user.isAgree" type="checkbox" :disabled="isLoading" aria-required="true" :aria-invalid="validationAttempted && !user.isAgree ? 'true' : 'false'" :aria-describedby="validationAttempted && !user.isAgree ? 'consent-error' : null">
-                    <label for="finalise-consent" class="legal-wording">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank" rel="noopener noreferrer">pravidly Ceny Středoškoláka roku</a> a uděluji <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank" rel="noopener noreferrer">souhlas se zpracováním osobních údajů</a>.</label>
+                    <label for="finalise-consent" class="legal-wording">Souhlasím s <a :href="documents.rules" target="_blank" rel="noopener noreferrer">pravidly Ceny Středoškoláka roku</a> a uděluji <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank" rel="noopener noreferrer">souhlas se zpracováním osobních údajů</a>.</label>
                   </div>
                   <p v-if="validationAttempted && !user.isAgree" id="consent-error" class="consent-error" role="alert">{{ requiredTerms }}</p>
                 </div>
@@ -143,6 +143,7 @@
 </template>
 
 <script>
+import documents from '../../config/documents'
 import ActivitiesStep from './ActivitiesStep'
 import ActivityForm from './ActivityForm'
 import SuccessStep from './SuccessStep'
@@ -165,6 +166,7 @@ export default {
   components: { SpecialPrizeNotice },
   data () {
     return {
+      documents,
       isLoading: false,
       submitted: false,
       error: '',

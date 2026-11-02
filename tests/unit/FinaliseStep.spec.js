@@ -96,16 +96,18 @@ describe('FinaliseStep', () => {
     expect(wrapper.find('#review-confirmation-toggle').attributes('aria-expanded')).toBe('true')
   })
 
-  for (const hasTime of [true, false, undefined]) it(`reviews and submits optional availability ${hasTime}`, async () => {
-    await open({ isAgree: true, hasTime })
-    await wrapper.find('#review-basic-toggle').trigger('click')
-    const row = wrapper.findAll('#review-basic-panel dl > div').wrappers.find(item => item.find('dt').text() === 'Víkend TOP25')
-    expect(row).toBeDefined()
-    expect(row.find('dd').text()).toBe(hasTime === true ? 'Ano' : 'Ne')
-    await wrapper.vm.submit()
-    expect(client.createRegistration).toHaveBeenCalledTimes(1)
-    expect(client.createRegistration.mock.calls[0][0].hasTime).toBe(hasTime === true)
-  })
+  for (const hasTime of [true, false, undefined]) {
+    it(`reviews and submits optional availability ${hasTime}`, async () => {
+      await open({ isAgree: true, hasTime })
+      await wrapper.find('#review-basic-toggle').trigger('click')
+      const row = wrapper.findAll('#review-basic-panel dl > div').wrappers.find(item => item.find('dt').text() === 'Víkend TOP25')
+      expect(row).toBeDefined()
+      expect(row.find('dd').text()).toBe(hasTime === true ? 'Ano' : 'Ne')
+      await wrapper.vm.submit()
+      expect(client.createRegistration).toHaveBeenCalledTimes(1)
+      expect(client.createRegistration.mock.calls[0][0].hasTime).toBe(hasTime === true)
+    })
+  }
 
   it('keeps independently opened panels visible and edit separate from toggle', async () => {
     await open()
@@ -151,7 +153,7 @@ describe('FinaliseStep', () => {
     const wording = wrapper.find('.legal-wording')
     expect(wording.text().replace(/\s+/g, ' ').trim()).toBe('Souhlasím s pravidly Ceny Středoškoláka roku a uděluji souhlas se zpracováním osobních údajů.')
     const links = wording.findAll('a').wrappers.map(a => a.attributes('href'))
-    expect(links).toEqual(['https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing', 'https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view'])
+    expect(links.map(link => link.normalize('NFC'))).toEqual(['/documents/Pravidla Středoškolák roku 2027.pdf', 'https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view'])
     expect(wrapper.text()).toContain('Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit a dalších informací do svého e-mailu.')
   })
 

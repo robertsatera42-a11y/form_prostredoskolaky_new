@@ -41,6 +41,18 @@ describe('ActivityForm', () => {
   let background
   let originalConfirm
   let originalViewport
+  let originalWidth
+  let originalHeight
+
+  function mobileViewport () {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 800 })
+    const viewport = document.createElement('div')
+    Object.assign(viewport, { height: 800, width: 390, scale: 1 })
+    Object.defineProperty(viewport, 'offsetTop', { configurable: true, value: 0 })
+    Object.defineProperty(window, 'visualViewport', { configurable: true, value: viewport })
+    return viewport
+  }
 
   function open (index = null, act = {}) {
     wrapper = mount(ActivityForm, {
@@ -63,6 +75,8 @@ describe('ActivityForm', () => {
   beforeEach(() => {
     originalConfirm = window.confirm
     originalViewport = Object.getOwnPropertyDescriptor(window, 'visualViewport')
+    originalWidth = Object.getOwnPropertyDescriptor(window, 'innerWidth')
+    originalHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight')
     window.confirm = jest.fn(() => false)
     close = jest.fn()
     background = document.createElement('div')
@@ -84,21 +98,23 @@ describe('ActivityForm', () => {
     window.confirm = originalConfirm
     if (originalViewport) Object.defineProperty(window, 'visualViewport', originalViewport)
     else delete window.visualViewport
+    Object.defineProperty(window, 'innerWidth', originalWidth)
+    Object.defineProperty(window, 'innerHeight', originalHeight)
   })
 
   it('follows the requested keyboard reading order in the empty form', async () => {
     await open()
     const order = wrapper.findAll('input, select, textarea').wrappers.map(control => control.attributes('id'))
-    expect(order).toEqual(['activity-name', 'activity-type', 'activity-link', 'activity-result', 'activity-start', 'activity-reference'])
+    expect(order).toEqual(['activity-name', 'activity-type', 'activity-result', 'activity-link', 'activity-start', 'activity-reference'])
     expect(document.activeElement.id).toBe('activity-name')
   })
 
-  it('groups conditional classifications before the website field', async () => {
+  it('groups conditional classifications before the description field', async () => {
     await open()
     wrapper.vm.activity.type = 'Soutěž'
     await localVue.nextTick()
     const order = wrapper.findAll('input, select, textarea').wrappers.map(control => control.attributes('id'))
-    expect(order.slice(0, 6)).toEqual(['activity-name', 'activity-type', 'activity-field', 'activity-interest', 'activity-individual', 'activity-link'])
+    expect(order.slice(0, 6)).toEqual(['activity-name', 'activity-type', 'activity-field', 'activity-interest', 'activity-individual', 'activity-result'])
   })
 
   for (const [type, hasField, hasIndividual] of classifications) {
@@ -242,6 +258,69 @@ describe('ActivityForm', () => {
     wrapper.vm.confirmClose()
     expect(close).toHaveBeenCalledTimes(1)
     expect(store.state.user.activities).toEqual([])
+  })
+
+  it('makes room for typing and restores the footer when the keyboard closes with the input still focused', async () => {
+    const viewport = mobileViewport()
+    await open()
+    expect(wrapper.find('footer').isVisible()).toBe(true)
+    viewport.height = 450
+    viewport.dispatchEvent(new window.Event('resize'))
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(false)
+    expect(wrapper.find('.editor-close').isVisible()).toBe(true)
+    expect(wrapper.classes()).toContain('is-keyboard-open')
+    viewport.height = 800
+    viewport.dispatchEvent(new window.Event('resize'))
+    await localVue.nextTick()
+    expect(document.activeElement.id).toBe('activity-name')
+    expect(wrapper.find('footer').isVisible()).toBe(true)
+  })
+
+  it('does not mistake address-bar changes, hardware-keyboard focus, or pinch zoom for a keyboard', async () => {
+    const viewport = mobileViewport()
+    await open()
+    viewport.height = 720
+    viewport.dispatchEvent(new window.Event('resize'))
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(true)
+    viewport.scale = 2
+    viewport.height = 400
+    viewport.dispatchEvent(new window.Event('resize'))
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(true)
+  })
+
+  it('keeps keyboard mode while switching fields and adapts to rotation and desktop resizing', async () => {
+    const viewport = mobileViewport()
+    await open()
+    viewport.height = 450
+    viewport.dispatchEvent(new window.Event('resize'))
+    wrapper.find('#activity-link').element.focus()
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(false)
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 680 })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 390 })
+    viewport.width = 680
+    viewport.height = 190
+    window.dispatchEvent(new window.Event('orientationchange'))
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(false)
+    viewport.height = 390
+    viewport.dispatchEvent(new window.Event('resize'))
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(true)
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1200 })
+    window.dispatchEvent(new window.Event('resize'))
+    await localVue.nextTick()
+    expect(wrapper.find('footer').isVisible()).toBe(true)
+  })
+
+  it('uses the scrolling-actions fallback without VisualViewport', async () => {
+    Object.defineProperty(window, 'visualViewport', { configurable: true, value: undefined })
+    await open()
+    expect(wrapper.classes()).toContain('has-no-visual-viewport')
+    expect(wrapper.find('footer').isVisible()).toBe(true)
   })
 
   it('tracks the visible viewport and releases its listeners when destroyed', async () => {

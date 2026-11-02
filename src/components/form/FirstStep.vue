@@ -274,7 +274,7 @@
               ></b-input>
             </b-field>
             <div class="summary-help">
-              <p id="summary-hint" class="field-hint">Tvůj medailonek budeme číst na vyhlášení TOP100. Nevíš si rady? Přečti si dokument <a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>.</p>
+              <p id="summary-hint" class="field-hint">Tvůj medailonek budeme číst na vyhlášení TOP100. Nevíš si rady? Přečti si dokument <a :href="documents.applicationGuide" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>.</p>
               <p id="summary-count" class="field-hint character-count">{{ (user.summary || '').length }} / 400 znaků</p>
             </div>
             <p v-if="errorsSummary.message" id="summary-error" class="field-error" role="alert">{{ errorsSummary.message }}</p>
@@ -309,9 +309,9 @@
               :aria-describedby="errorsAgree.message ? 'guide-error' : null"
             >
             <label for="first-step-guide">Potvrzuji, že jsem si přečetl/a dokumenty:
-                <a href="https://drive.google.com/file/d/1UVUG5ivOKPc6szZJIS0r11C6sgF7-vsU/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>,
-                <a href="https://drive.google.com/file/d/1Rd2zE5s4MFZdA7C0X03zdu9oQFmFMjge/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>,
-                <a href="https://drive.google.com/file/d/1Mk6u34cJalviooAW4f2XlpeLIld-f02j/view?usp=sharing" target="_blank" rel="noopener noreferrer">Pravidla Ceny Středoškoláka roku</a>.
+                <a :href="documents.applicationGuide" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>,
+                <a :href="documents.evaluationGuide" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>,
+                <a :href="documents.rules" target="_blank" rel="noopener noreferrer">Pravidla Ceny Středoškoláka roku</a>.
                 <span class="required-marker" aria-hidden="true">*</span></label>
           </div>
           <p v-if="errorsAgree.message" id="guide-error" class="field-error" role="alert">{{ errorsAgree.message }}</p>
@@ -324,7 +324,7 @@
 
         <div class="confirmation-row">
           <input id="first-step-has-time" v-model="user.hasTime" type="checkbox">
-          <label for="first-step-has-time">Měl/a bych čas se zúčastnit Víkendu TOP25 4.–6. 6. 2027.</label>
+          <label for="first-step-has-time">Měl/a bych čas se zúčastnit Víkendového Setkání pro finalisty TOP25 4.-6. června 2027</label>
         </div>
 
         <div class="form-field knowledge-field">
@@ -356,6 +356,7 @@
   </section>
 </template>
 <script>
+import documents from '../../config/documents'
 import config from '../../config/default'
 import ValidationUtils from '../../utils/validationUtils'
 import transformerUtils from '../../utils/transformerUtils'
@@ -384,6 +385,7 @@ export default {
   mixins: [focusMixin],
   data () {
     return {
+      documents,
       // Old dev passphrase (disabled): h4qVDW90T
       finished: REGISTRATION_FINISHED,
       selected: '',

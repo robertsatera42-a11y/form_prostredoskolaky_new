@@ -37,7 +37,7 @@
             <button type="button" class="card-action edit-action" :aria-label="'Upravit aktivitu: ' + activity.name" @click="editItem(index)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m15 5 4 4M4 20l5-1L20 8a2.8 2.8 0 0 0-4-4L5 15l-1 5Z"></path></svg>Upravit
             </button>
-            <button type="button" class="card-action delete-action" :aria-label="'Odstranit aktivitu: ' + activity.name" @click="deleteItem(index)">
+            <button type="button" class="card-action delete-action" :aria-label="'Odstranit aktivitu: ' + activity.name" @click="deleteItem(index, $event.currentTarget)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"></path></svg>Odstranit
             </button>
           </div>
@@ -68,6 +68,7 @@
 import SpecialPrizeStep from './SpecialPrizeStep'
 import FirstStep from './FirstStep'
 import ActivityForm from './ActivityForm'
+import ActivityRemovalConfirm from './ActivityRemovalConfirm'
 import config from '../../config/default'
 import { mapFields } from 'vuex-map-fields'
 import { mapGetters } from 'vuex'
@@ -83,11 +84,14 @@ export default {
   number: 2,
   loaderBlockName: 'druhý krok - aktivity',
   data () {
-    return { showActivityForm: false, error: '', feedback: '', activityLimit: ACTIVITY_LIMIT, expandedActivities: [] }
+    return { showActivityForm: false, showRemovalConfirmation: false, error: '', feedback: '', activityLimit: ACTIVITY_LIMIT, expandedActivities: [] }
   },
   mounted () {
     window.scrollTo(0, 0)
     tracking.track('competition', 'entrance_page', 'form_activities')
+  },
+  beforeDestroy () {
+    if (this.removalModal) this.removalModal.close()
   },
   components: { SpecialPrizeStep, FirstStep, ActivityForm },
   computed: {
@@ -117,22 +121,51 @@ export default {
     addItem () {
       if (this.activityCount < this.activityLimit) this.openModal(null)
     },
-    deleteItem (index) {
-      this.expandedActivities = this.expandedActivities.filter(activity => activity !== this.activities[index])
-      const name = this.activities[index].name
-      this.activities.splice(index, 1)
-      this.feedback = `Aktivita „${name}“ byla odstraněna z přihlášky.`
-      this.$nextTick(() => {
-        const editButtons = this.$el.querySelectorAll('.edit-action')
-        const nextFocus = editButtons[Math.min(index, editButtons.length - 1)] || this.$refs.addActivity
-        nextFocus.focus()
+    deleteItem (index, trigger) {
+      if (this.showRemovalConfirmation || this.showActivityForm) return
+      const activity = this.activities && this.activities[index]
+      if (!activity) return
+      trigger = trigger || this.$el.querySelectorAll('.delete-action')[index]
+      let removedIndex = -1
+      this.showRemovalConfirmation = true
+      const modal = this.$modal.open({
+        parent: this,
+        component: ActivityRemovalConfirm,
+        customClass: 'activity-removal-host',
+        hasModalCard: true,
+        canCancel: ['outside'],
+        animation: '',
+        props: { activityName: activity.name || '' },
+        events: {
+          confirm: () => {
+            if (removedIndex !== -1) return
+            const currentIndex = this.activities.indexOf(activity)
+            if (currentIndex === -1) return
+            this.expandedActivities = this.expandedActivities.filter(item => item !== activity)
+            this.activities.splice(currentIndex, 1)
+            removedIndex = currentIndex
+            this.feedback = `Aktivita „${activity.name}“ byla odstraněna z přihlášky.`
+          }
+        }
+      })
+      this.removalModal = modal
+      modal.$once('close', () => {
+        this.removalModal = null
+        this.showRemovalConfirmation = false
+        this.$nextTick(() => {
+          if (this._isDestroyed || this._isBeingDestroyed) return
+          const editButtons = this.$el.querySelectorAll('.edit-action')
+          const fallback = editButtons[Math.min(removedIndex === -1 ? index : removedIndex, editButtons.length - 1)] || this.$refs.addActivity
+          const nextFocus = removedIndex === -1 && trigger && trigger.isConnected && !trigger.disabled ? trigger : fallback
+          if (nextFocus) nextFocus.focus()
+        })
       })
     },
     editItem (index) {
       this.openModal(index)
     },
     openModal (index) {
-      if (this.showActivityForm) return
+      if (this.showActivityForm || this.showRemovalConfirmation) return
       const trigger = document.activeElement
       const initialCount = this.activityCount
       const previousActivity = index !== null ? JSON.stringify(this.activities[index]) : null

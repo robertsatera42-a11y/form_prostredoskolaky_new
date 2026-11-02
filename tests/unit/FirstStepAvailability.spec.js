@@ -19,7 +19,7 @@ it('keeps the two native checkbox answers and their labels independent', async (
     await localVue.nextTick()
     expect(wrapper.find('#first-step-has-time').exists()).toBe(true)
     expect(wrapper.findAll('#first-step-repeating').length).toBe(1)
-    expect(wrapper.find('label[for="first-step-has-time"]').text()).toBe('Měl/a bych čas se zúčastnit Víkendu TOP25 4.–6. 6. 2027.')
+    expect(wrapper.find('label[for="first-step-has-time"]').text()).toBe('Měl/a bych čas se zúčastnit Víkendového Setkání pro finalisty TOP25 4.-6. června 2027')
     await wrapper.find('#first-step-has-time').setChecked(true)
     expect(store.state.user.hasTime).toBe(true)
     expect(store.state.user.isRepeting).toBe(false)

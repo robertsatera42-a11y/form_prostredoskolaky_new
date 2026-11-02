@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-card activity-editor" role="dialog" aria-modal="true" aria-labelledby="activity-editor-title" aria-describedby="activity-editor-description" @keydown.esc.stop.prevent="confirmClose" @keyup.esc.stop @keydown.tab="trapFocus">
+  <div class="modal-card activity-editor" :class="{ 'is-keyboard-open': keyboardOpen, 'has-no-visual-viewport': !hasVisualViewport }" role="dialog" aria-modal="true" aria-labelledby="activity-editor-title" aria-describedby="activity-editor-description" @focusin="syncViewport" @focusout="queueViewportSync" @keydown.esc.stop.prevent="confirmClose" @keyup.esc.stop @keydown.tab="trapFocus">
     <header class="modal-card-head">
       <div>
         <h2 id="activity-editor-title">{{ index === null ? 'Přidat novou aktivitu' : 'Upravit aktivitu' }}</h2>
@@ -61,14 +61,6 @@
         </div>
         </div>
         <div class="editor-field editor-wide">
-          <b-field label-for="activity-link" :type="errorsLink.type">
-            <template slot="label">Webová stránka aktivity <span class="optional-label">(nepovinné)</span></template>
-            <b-input id="activity-link" v-model="activity.link" maxlength="300" :has-counter="false" v-focus="focusedLink" @focus="focusedLink = true" @blur="focusedLink = false" :aria-invalid="!!errorsLink.message" :aria-describedby="'activity-link-hint activity-link-count' + (errorsLink.message ? ' activity-link-error' : '')" placeholder="https://www.soc.cz/dokumenty/vysledkove_listiny/2023-24.pdf"></b-input>
-          </b-field>
-          <div class="editor-field-meta"><p id="activity-link-hint" class="editor-hint">Ideálně odkaz přímo na aktivitu nebo výsledkovou listinu.</p><span id="activity-link-count" class="editor-counter">{{ (activity.link || '').length }} / 300 znaků</span></div>
-          <p v-if="errorsLink.message" id="activity-link-error" class="editor-error" role="alert">{{ errorsLink.message }}</p>
-        </div>
-        <div class="editor-field editor-wide">
           <b-field label-for="activity-result" :type="errorsResult.type">
             <template slot="label">Krátký popis aktivity <span class="required-marker" aria-hidden="true">*</span></template>
             <b-input id="activity-result" type="textarea" rows="3" maxlength="500" :has-counter="false" v-model="activity.result" v-focus="focusedResult" @focus="focusedResult = true" @blur="focusedResult = false" aria-required="true" :aria-invalid="!!errorsResult.message" :aria-describedby="'activity-result-hint activity-result-count' + (errorsResult.message ? ' activity-result-error' : '')" placeholder="Co jsi dělal/a a čeho jsi dosáhl/a?"></b-input>
@@ -79,6 +71,14 @@
             <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>Příklad popisu</summary>
             <p>Krátce aktivitu popiš, včetně výsledků, kterých jsi v ní dosáhl/a (např. Tento rok jsem se zúčastnil fyzikální olympiády... Dosáhl jsem prvního místa v celostátním kole).</p>
           </details>
+        </div>
+        <div class="editor-field editor-wide">
+          <b-field label-for="activity-link" :type="errorsLink.type">
+            <template slot="label">Webová stránka aktivity <span class="optional-label">(nepovinné)</span></template>
+            <b-input id="activity-link" v-model="activity.link" maxlength="300" :has-counter="false" v-focus="focusedLink" @focus="focusedLink = true" @blur="focusedLink = false" :aria-invalid="!!errorsLink.message" :aria-describedby="'activity-link-hint activity-link-count' + (errorsLink.message ? ' activity-link-error' : '')" placeholder="https://www.soc.cz/dokumenty/vysledkove_listiny/2023-24.pdf"></b-input>
+          </b-field>
+          <div class="editor-field-meta"><p id="activity-link-hint" class="editor-hint">Ideálně odkaz přímo na aktivitu nebo výsledkovou listinu.</p><span id="activity-link-count" class="editor-counter">{{ (activity.link || '').length }} / 300 znaků</span></div>
+          <p v-if="errorsLink.message" id="activity-link-error" class="editor-error" role="alert">{{ errorsLink.message }}</p>
         </div>
         <div class="editor-field">
           <b-field label-for="activity-start" :type="errorsStart.type">
@@ -98,7 +98,7 @@
         </div>
       </div>
     </form>
-    <footer class="modal-card-foot">
+    <footer v-show="!keyboardOpen" class="modal-card-foot">
       <p>Celou přihlášku uložíš ve 4. kroku.</p>
       <div class="editor-actions">
         <button type="button" class="editor-button editor-cancel" @click="confirmClose">Zavřít</button>
@@ -157,7 +157,9 @@ export default {
       focusedIsIndividual: undefined,
       focusedReference: undefined,
       submitStatus: '',
-      isModified: false
+      isModified: false,
+      keyboardOpen: false,
+      hasVisualViewport: true
     }
   },
   mounted () {
@@ -172,8 +174,12 @@ export default {
     }
     this.$parent.$once('close', this.restoreBackground)
     this.visibleViewport = window.visualViewport
+    this.hasVisualViewport = !!this.visibleViewport
+    this.viewportWidth = window.innerWidth
+    this.viewportBaseline = this.visibleViewport ? this.visibleViewport.height : window.innerHeight
     this.syncViewport()
     window.addEventListener('resize', this.syncViewport)
+    window.addEventListener('orientationchange', this.syncViewport)
     if (this.visibleViewport) {
       this.visibleViewport.addEventListener('resize', this.syncViewport)
       this.visibleViewport.addEventListener('scroll', this.syncViewport)
@@ -182,6 +188,7 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.syncViewport)
+    window.removeEventListener('orientationchange', this.syncViewport)
     if (this.visibleViewport) {
       this.visibleViewport.removeEventListener('resize', this.syncViewport)
       this.visibleViewport.removeEventListener('scroll', this.syncViewport)
@@ -242,10 +249,40 @@ export default {
     }
   },
   methods: {
-    syncViewport () {
+    syncViewport (event) {
       const viewport = this.visibleViewport
-      this.$el.style.setProperty('--editor-viewport-height', `${viewport ? viewport.height : window.innerHeight}px`)
+      const height = viewport ? viewport.height : window.innerHeight
+      const normalZoom = !viewport || Math.abs((viewport.scale || 1) - 1) < 0.01
+      const active = document.activeElement
+      const isEditing = this.$el.contains(active) && active.matches('textarea, input:not([type="checkbox"]):not([type="radio"]):not([readonly]):not([disabled])')
+      const wasOpen = this.keyboardOpen
+      if (this.viewportWidth !== window.innerWidth) {
+        // Rotation changes the unoccluded layout height even if the keyboard stays open.
+        this.viewportBaseline = Math.max(document.documentElement.clientHeight || window.innerHeight, height)
+        this.viewportWidth = window.innerWidth
+      } else if (normalZoom && height > this.viewportBaseline) {
+        this.viewportBaseline = height
+      }
+      this.keyboardOpen = !!viewport && window.innerWidth < 768 && normalZoom && this.viewportBaseline - height >= 150 && (isEditing || wasOpen)
+      this.$el.style.setProperty('--editor-viewport-height', `${height}px`)
       this.$el.style.setProperty('--editor-viewport-top', `${viewport ? viewport.offsetTop : 0}px`)
+      if (isEditing && normalZoom && (height !== this.previousViewportHeight || wasOpen !== this.keyboardOpen || (event && event.type === 'focusin'))) {
+        this.$nextTick(this.keepFocusedFieldVisible)
+      }
+      this.previousViewportHeight = height
+    },
+    queueViewportSync () {
+      this.$nextTick(this.syncViewport)
+    },
+    keepFocusedFieldVisible () {
+      if (this._isDestroyed) return
+      const body = this.$el.querySelector('.modal-card-body')
+      const active = document.activeElement
+      if (!body.contains(active)) return
+      const bounds = body.getBoundingClientRect()
+      const field = active.getBoundingClientRect()
+      if (field.top < bounds.top + 12) body.scrollTop += field.top - bounds.top - 12
+      else if (field.bottom > bounds.bottom - 12) body.scrollTop += Math.min(field.bottom - bounds.bottom + 12, field.top - bounds.top - 12)
     },
     submit () {
       if (this.$v.activity.$invalid) {
@@ -557,6 +594,19 @@ export default {
   .activity-editor .modal-card-foot { padding: 12px 20px max(16px, env(safe-area-inset-bottom)); }
   .editor-actions { gap: 10px; }
   .editor-button { flex: 1 1 8rem; min-width: 0; gap: 10px; padding: 12px; }
+  .activity-editor.is-keyboard-open {
+    .modal-card-head { align-items: center; padding: max(8px, env(safe-area-inset-top)) 20px 8px; }
+    h2 { font-size: 1.125rem; }
+    .editor-close { margin-top: 0; }
+    .modal-card-head p { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    .modal-card-body { padding-top: 12px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  }
+  .activity-editor.has-no-visual-viewport {
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    .modal-card-body { overflow: visible; }
+  }
 }
 @media (max-height: 600px) {
   .activity-editor .modal-card-head { padding-top: max(12px, env(safe-area-inset-top)); padding-bottom: 12px; }

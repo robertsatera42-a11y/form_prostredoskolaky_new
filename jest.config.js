@@ -6,6 +6,7 @@ module.exports = {
     'vue'
   ],
   transform: {
+    '^.+\\.pdf$': '<rootDir>/tests/pdfTransformer.js',
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest'

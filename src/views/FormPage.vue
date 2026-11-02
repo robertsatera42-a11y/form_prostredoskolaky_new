@@ -27,14 +27,14 @@
     </div>
     <template v-if="hasModernShell">
       <div class="first-step-intro">
-        <h1 v-if="!isFirstStep">Přihláška do soutěže Středoškolák <span class="competition-year">roku <span class="orange">{{ competitionYear }}</span></span></h1>
-        <h1 v-else>Přihláška do soutěže<br>Středoškolák <span class="competition-year">roku <span class="orange">{{ competitionYear }}</span></span></h1>
+        <h1 v-if="!isFirstStep">Přihláška do Ceny Středoškolák <span class="competition-year">roku <span class="orange">{{ competitionYear }}</span></span></h1>
+        <h1 v-else>Přihláška do Ceny<br>Středoškolák <span class="competition-year">roku <span class="orange">{{ competitionYear }}</span></span></h1>
         <details class="first-step-resources">
-          <summary>Návody a pravidla soutěže<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m5 8 5 5 5-5"></path></svg></summary>
+          <summary>Návody a pravidla Ceny Středoškolák roku<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m5 8 5 5 5-5"></path></svg></summary>
           <nav aria-label="Pomoc s přihláškou">
-          <a href="https://drive.google.com/file/d/1UVUG5ivOKPc6szZJIS0r11C6sgF7-vsU/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>
-          <a href="https://drive.google.com/file/d/1Rd2zE5s4MFZdA7C0X03zdu9oQFmFMjge/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>
-          <a href="https://drive.google.com/file/d/1Mk6u34cJalviooAW4f2XlpeLIld-f02j/view?usp=sharing" target="_blank" rel="noopener noreferrer">Pravidla soutěže</a>
+          <a :href="documents.applicationGuide" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>
+          <a :href="documents.evaluationGuide" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>
+          <a :href="documents.rules" target="_blank" rel="noopener noreferrer">Pravidla Ceny Středoškolák roku</a>
           </nav>
         </details>
       </div>
@@ -60,13 +60,13 @@
     <template v-else>
       <div class="content">
         <div class="header_links">
-          <button class="button"><a href="https://drive.google.com/file/d/1B75kIZD1Qd-JcP05LRTr4EkM70SoK6k0/view" target="_blank">Jak na přihlášku</a></button>
-          <button class="button"><a href="https://drive.google.com/file/d/1qMiJBFtMX4yMg0aPSKYWCY5r2FBkMKQP/view" target="_blank">Jak probíhá hodnocení</a></button>
-          <button class="button"><a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view" target="_blank">Pravidla soutěže</a></button>
+          <button class="button"><a :href="documents.applicationGuide" target="_blank">Jak na přihlášku</a></button>
+          <button class="button"><a :href="documents.evaluationGuide" target="_blank">Jak probíhá hodnocení</a></button>
+          <button class="button"><a :href="documents.rules" target="_blank">Pravidla Ceny Středoškolák roku</a></button>
           <!-- <a href="tel:+420-910-110-207" target="_blank" style="color: #1dbcb9">Nefunguje vám přihláška? Zavolejte na asistenci <strong>+420 910 110 207</strong></a> -->
       </div>
         <div class="header-text" id="headerText">
-          <h1>Přihlášení do soutěže Středoškolák&nbsp;roku
+          <h1>Přihlášení do Ceny Středoškolák&nbsp;roku
             <span class="orange">{{ competitionYear }}</span>
           </h1>
           <h2 v-html="currentStep.description"></h2>
@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import documents from '../config/documents'
 import FirstStep from '../components/form/FirstStep'
 import SpecialPrizeStep from '../components/form/SpecialPrizeStep'
 import ActivitiesStep from '../components/form/ActivitiesStep'
@@ -108,6 +109,7 @@ export default {
   components: { FirstStep, SpecialPrizeStep, ActivitiesStep, FinaliseStep, SuccessStep },
   data () {
     return {
+      documents,
       //      unsaved: false,
       currentStep: FirstStep,
       formFinished: FirstStep.isFinished === true,
