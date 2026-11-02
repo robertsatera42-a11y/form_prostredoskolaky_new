@@ -149,7 +149,7 @@ describe('FinaliseStep', () => {
   it('keeps exact legal wording, links and optional marketing copy', async () => {
     await open()
     const wording = wrapper.find('.legal-wording')
-    expect(wording.text().replace(/\s+/g, ' ').trim()).toBe('Souhlasím s pravidly soutěže a uděluji souhlas se zpracováním osobních údajů.')
+    expect(wording.text().replace(/\s+/g, ' ').trim()).toBe('Souhlasím s pravidly Ceny Středoškoláka roku a uděluji souhlas se zpracováním osobních údajů.')
     const links = wording.findAll('a').wrappers.map(a => a.attributes('href'))
     expect(links).toEqual(['https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing', 'https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view'])
     expect(wrapper.text()).toContain('Chci si nechat zasílat pravidelnou dávku mimoškolních aktivit a dalších informací do svého e-mailu.')

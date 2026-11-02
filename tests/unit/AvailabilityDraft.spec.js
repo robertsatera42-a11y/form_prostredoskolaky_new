@@ -9,19 +9,21 @@ describe('Availability draft state', () => {
   beforeEach(() => { jest.resetModules(); localStorage.clear() })
   afterEach(() => { localStorage.clear() })
 
-  for (const hasTime of [true, false]) it(`persists and reloads ${hasTime} independently of repeated participation`, async () => {
-    const store = loadStore()
-    store.commit('updateField', { path: 'user.hasTime', value: hasTime })
-    store.commit('updateField', { path: 'user.isRepeting', value: !hasTime })
-    await require('vue').nextTick()
-    expect(JSON.parse(localStorage.getItem(key)).user.hasTime).toBe(hasTime)
-    jest.resetModules()
-    const restored = loadStore()
-    expect(restored.state.user.hasTime).toBe(hasTime)
-    expect(restored.state.user.isRepeting).toBe(!hasTime)
-    await restored.dispatch('clearDraft')
-    expect(restored.state.user.hasTime).toBe(false)
-  })
+  for (const hasTime of [true, false]) {
+    it(`persists and reloads ${hasTime} independently of repeated participation`, async () => {
+      const store = loadStore()
+      store.commit('updateField', { path: 'user.hasTime', value: hasTime })
+      store.commit('updateField', { path: 'user.isRepeting', value: !hasTime })
+      await require('vue').nextTick()
+      expect(JSON.parse(localStorage.getItem(key)).user.hasTime).toBe(hasTime)
+      jest.resetModules()
+      const restored = loadStore()
+      expect(restored.state.user.hasTime).toBe(hasTime)
+      expect(restored.state.user.isRepeting).toBe(!hasTime)
+      await restored.dispatch('clearDraft')
+      expect(restored.state.user.hasTime).toBe(false)
+    })
+  }
 
   it('defaults an older draft to false without inferring from isRepeting or deleting other fields', () => {
     localStorage.setItem(key, JSON.stringify({ user: { isRepeting: true, summary: 'Keep this draft' } }))
@@ -42,7 +44,10 @@ describe('Availability draft state', () => {
     require('@/client/client').getUser.mockResolvedValueOnce({ email: 'student@example.test', hasTime: true })
     await store.dispatch('revertToSaved')
     expect(store.state.user.hasTime).toBe(true)
-    expect(localStorage.getItem(key)).toBe(null)
+    await require('vue').nextTick()
+    expect(JSON.parse(localStorage.getItem(key)).user.hasTime).toBe(true)
+    jest.resetModules()
+    expect(loadStore().state.user.hasTime).toBe(true)
   })
 
   it('treats availability alone as meaningful local draft data during API hydration', () => {
