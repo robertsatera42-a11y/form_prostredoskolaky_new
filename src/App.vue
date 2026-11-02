@@ -85,7 +85,7 @@ export default {
     title: 'ProStředoškoláky',
     titleTemplate: '%s | Podporujeme středoškoláky v mimoškolních aktivitách',
     meta: [
-      { name: 'description', content: 'Jsme organizace propojující středoškoláky, kteří jsou aktivní mimo školu. Pořádáme soutěž Středoškolák roku a poskytuje informace o možnostech mimoškolního vzdělávání.' }
+      { name: 'description', content: 'Jsme organizace propojující středoškoláky, kteří jsou aktivní mimo školu. Pořádáme cenu Středoškolák roku a poskytuje informace o možnostech mimoškolního vzdělávání.' }
     ]
   },
   data () {

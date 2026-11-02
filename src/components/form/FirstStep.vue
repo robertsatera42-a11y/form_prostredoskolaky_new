@@ -1,14 +1,14 @@
 <template>
   <section class="first-step">
     <div v-if="finished" class="registration-closed">
-      <h2>Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">listopadu 2027</span></h2>
+      <h2>Přihlašování bylo ukončeno! Další ročník ceny bude zahájen v <span class="orange">listopadu 2027</span></h2>
     </div>
 
     <div v-else class="first-step-panel">
       <section class="form-section" aria-labelledby="personal-heading">
         <header class="section-heading">
           <h2 id="personal-heading">Osobní údaje</h2>
-          <p>Základní informace o tobě. Tyto údaje použijeme pro komunikaci v průběhu soutěže.</p>
+          <p>Základní informace o tobě. Tyto údaje použijeme pro komunikaci v průběhu Ceny Středoškoláka roku.</p>
         </header>
 
         <div class="form-grid">
@@ -311,7 +311,7 @@
             <label for="first-step-guide">Potvrzuji, že jsem si přečetl/a dokumenty:
                 <a href="https://drive.google.com/file/d/1UVUG5ivOKPc6szZJIS0r11C6sgF7-vsU/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak na přihlášku</a>,
                 <a href="https://drive.google.com/file/d/1Rd2zE5s4MFZdA7C0X03zdu9oQFmFMjge/view?usp=sharing" target="_blank" rel="noopener noreferrer">Jak probíhá hodnocení</a>,
-                <a href="https://drive.google.com/file/d/1Mk6u34cJalviooAW4f2XlpeLIld-f02j/view?usp=sharing" target="_blank" rel="noopener noreferrer">Pravidla soutěže</a>.
+                <a href="https://drive.google.com/file/d/1Mk6u34cJalviooAW4f2XlpeLIld-f02j/view?usp=sharing" target="_blank" rel="noopener noreferrer">Pravidla Ceny Středoškoláka roku</a>.
                 <span class="required-marker" aria-hidden="true">*</span></label>
           </div>
           <p v-if="errorsAgree.message" id="guide-error" class="field-error" role="alert">{{ errorsAgree.message }}</p>
@@ -319,7 +319,7 @@
 
         <div class="confirmation-row">
           <input id="first-step-repeating" v-model="user.isRepeting" type="checkbox">
-          <label for="first-step-repeating">Už jsem se soutěže Středoškolák roku účastnil/a.</label>
+          <label for="first-step-repeating">Už jsem se Ceny Středoškolák roku účastnil/a.</label>
         </div>
 
         <div class="confirmation-row">
@@ -329,7 +329,7 @@
 
         <div class="form-field knowledge-field">
           <b-field label-for="first-step-knowledge">
-            <template slot="label">Jak ses dozvěděl/a o soutěži Středoškolák roku? <span class="optional-label">(nepovinné)</span></template>
+            <template slot="label">Jak ses dozvěděl/a o Ceně Středoškolák roku? <span class="optional-label">(nepovinné)</span></template>
             <b-select id="first-step-knowledge" v-model="user.knowledge" expanded placeholder="Vyber z možností">
               <option v-for="option in consts.knowledge" :key="option" :value="option">{{ option }}</option>
             </b-select>
@@ -370,7 +370,7 @@ import { FETCH_USER } from '../../types'
 import ActivitiesStep from './ActivitiesStep.vue'
 
 const REGISTRATION_FINISHED = false // true, for when it should be closed
-const REGISTRATION_FINISHED_MESSAGE = 'Přihlašování bylo ukončeno! Další ročník soutěže bude zahájen v <span class="orange">listopadu 2027</span>.'
+const REGISTRATION_FINISHED_MESSAGE = 'Přihlašování bylo ukončeno! Další ročník ceny bude zahájen v <span class="orange">listopadu 2027</span>.'
 
 export default {
   name: 'first-step',

@@ -36,7 +36,7 @@
               <option v-for="option in consts.fields" :value="option" :key="option">{{ option }}</option>
             </b-select>
           </b-field>
-          <p id="activity-field-hint" class="editor-hint">Vyber, do jakého kola ses nejdál dostal/a.</p>
+          <p id="activity-field-hint" class="editor-hint">Např. do jakého kola ses nejdál dostal/a.</p>
           <p v-if="errorsField.message" id="activity-field-error" class="editor-error" role="alert">{{ errorsField.message }}</p>
         </div>
           <div v-if="showInterest.includes(activity.type)" class="editor-field">

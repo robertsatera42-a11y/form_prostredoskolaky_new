@@ -4,7 +4,7 @@
       <h2 id="special-prize-heading">Speciální ceny</h2>
       <p v-if="publishedPrizeIds.length">
         Vyplnění následujících sekcí tě zařadí do soutěže o speciální ceny našich partnerů.
-        Účast je <strong>zcela dobrovolná</strong> a tvé hodnocení v hlavní soutěži nijak neovlivní.
+        Účast je <strong>zcela dobrovolná</strong> a tvé hodnocení v Ceně Středoškoláka roku nijak neovlivní.
       </p>
     </header>
 
@@ -155,7 +155,7 @@ import mattoniTalentsPrizeImage from '../../assets/mattoni_talents_cena.jpg'
 
 export default {
   name: 'special-prize-step',
-  description: 'Zvaž zapojení do soutěže o <b>speciální ceny</b>. Účast je dobrovolná a tvé hodnocení v hlavní soutěži nijak neovlivní.',
+  description: 'Zvaž zapojení do soutěže o <b>speciální ceny</b>. Účast je dobrovolná a tvé hodnocení v Ceně Středoškolák roku nijak neovlivní.',
   number: 3,
   loaderBlockName: 'třetí krok - speciální ceny',
   components: { FinaliseStep, ActivitiesStep, SpecialPrizeNotice },

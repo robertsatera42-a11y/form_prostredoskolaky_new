@@ -3,7 +3,7 @@
     <div class="success-confirmation">
       <span class="success-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><span class="sr-only">Uložení potvrzeno.</span></span>
       <h2 id="success-heading" ref="heading" tabindex="-1">Přihláška je uložená</h2>
-      <p class="success-lead">Děkujeme za tvou přihlášku do soutěže Středoškolák roku.</p>
+      <p class="success-lead">Děkujeme za tvou přihlášku do Ceny Středoškolák roku.</p>
       <p class="success-detail">Až do uzávěrky ji můžeš znovu otevřít a upravovat. Po každé úpravě ji nezapomeň znovu odeslat ve čtvrtém kroku.</p>
       <nav class="success-actions" aria-label="Co dál s přihláškou">
         <a class="success-button success-primary" href="https://prihlaska.stredoskolakroku.cz/">Znovu otevřít přihlášku<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m14 5 7 7-7 7M21 12H3"></path></svg></a>

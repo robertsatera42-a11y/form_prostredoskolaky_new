@@ -70,7 +70,7 @@
                     <div><dt>Přečtení návodu</dt><dd>{{ user.readGuideConfirmed ? 'Potvrzeno' : 'Nepotvrzeno' }}</dd></div>
                     <div><dt>Opakovaná účast</dt><dd>{{ user.isRepeting ? 'Ano' : 'Ne' }}</dd></div>
                     <div><dt>Víkend TOP25</dt><dd>{{ user.hasTime === true ? 'Ano' : 'Ne' }}</dd></div>
-                    <div><dt>Odkud znáš soutěž</dt><dd :class="{ 'value-missing': !user.knowledge }">{{ user.knowledge || 'Neuvedeno' }}</dd></div>
+                    <div><dt>Odkud znáš Cenu Středoškoláka roku</dt><dd :class="{ 'value-missing': !user.knowledge }">{{ user.knowledge || 'Neuvedeno' }}</dd></div>
                   </dl>
                 </section>
               </template>
@@ -102,7 +102,7 @@
                     <p v-else class="review-prize-answer">Mám zájem o účast ve výběru.</p>
                   </section>
                 </div>
-                <p v-else class="review-empty">Žádná speciální cena nebyla vybrána. Účast je dobrovolná a hodnocení v hlavní soutěži neovlivní.</p>
+                <p v-else class="review-empty">Žádná speciální cena nebyla vybrána. Účast je dobrovolná a hodnocení v "Ceně Středoškoláka roku" neovlivní.</p>
                 <p v-if="selectedPrizes.length && selectedPrizes.length < publishedPrizeIds.length" class="review-optional-note">Další speciální ceny nebyly vybrány.</p>
               </template>
 
@@ -111,7 +111,7 @@
                   <div class="consent-heading">Povinný souhlas <span class="required-marker" aria-hidden="true">*</span></div>
                   <div class="consent-row">
                     <input id="finalise-consent" ref="consent" v-model="user.isAgree" type="checkbox" :disabled="isLoading" aria-required="true" :aria-invalid="validationAttempted && !user.isAgree ? 'true' : 'false'" :aria-describedby="validationAttempted && !user.isAgree ? 'consent-error' : null">
-                    <label for="finalise-consent" class="legal-wording">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank" rel="noopener noreferrer">pravidly soutěže</a> a uděluji <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank" rel="noopener noreferrer">souhlas se zpracováním osobních údajů</a>.</label>
+                    <label for="finalise-consent" class="legal-wording">Souhlasím s <a href="https://drive.google.com/file/d/1shGxE2v13FcA03s1qSt9Wz6rTTNu4hRL/view?usp=sharing" target="_blank" rel="noopener noreferrer">pravidly Ceny Středoškoláka roku</a> a uděluji <a href="https://drive.google.com/file/d/1vQtRmV_niHTE9Yy_0GPtL9521qm0XI0i/view" target="_blank" rel="noopener noreferrer">souhlas se zpracováním osobních údajů</a>.</label>
                   </div>
                   <p v-if="validationAttempted && !user.isAgree" id="consent-error" class="consent-error" role="alert">{{ requiredTerms }}</p>
                 </div>
