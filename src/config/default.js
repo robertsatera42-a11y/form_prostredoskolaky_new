@@ -100,20 +100,21 @@ export default {
       'prostě návštěvník'
     ],
     regions: [
+      'Karlovarský',
+      'Jihočeský',
+      'Jihomoravský',
+      'Královéhradecký',
+      'Liberecký',
+      'Olomoucký',
+      'Pardubický',
+      'Plzeňský',
       'Praha',
       'Středočeský',
-      'Jihočeský',
-      'Plzeňský',
-      'Karlovarský',
       'Ústecký',
-      'Liberecký',
-      'Královéhradecký',
-      'Pardubický',
       'Vysočina',
-      'Jihomoravský',
-      'Olomoucký',
+      'Zlínský',
       'Moravskoslezský',
-      'Zlínský'
+      'Mimo ČR'
     ],
     knowledge: [
       'ze školy',
