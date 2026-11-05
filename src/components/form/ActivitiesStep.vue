@@ -52,7 +52,7 @@
         <p v-if="error" id="activities-error" class="activities-error" role="alert">{{ error }}. Použij tlačítko „Přidat aktivitu“.</p>
         <div class="save-note">
           <p>Přihlášku uložíš až ve 4. kroku. Pokračováním přejdeš na speciální ceny.</p>
-          <p v-if="user.lastSaved" class="last-saved">Poslední uložení přihlášky: {{ transformDate(user.lastSaved) }}</p>
+          <p v-if="user.lastSaved" class="last-saved">Poslední odeslání přihlášky: {{ transformDate(user.lastSaved) }}</p>
         </div>
         <nav class="step-actions" aria-label="Navigace mezi kroky">
           <button type="button" class="activity-button back-button" @click="goToFirstStep"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"></path></svg>Zpět na údaje</button>
@@ -222,7 +222,7 @@ export default {
       else this.expandedActivities.splice(index, 1)
     },
     transformDate (dateString) {
-      return transformerUtils.transformDate(dateString)
+      return transformerUtils.formatRegistrationTimestamp(dateString)
     }
   }
 }

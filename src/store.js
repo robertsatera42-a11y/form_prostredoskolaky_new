@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { registrationMetadata } from './utils/registrationTimestamps'
 import createPersistedState from 'vuex-persistedstate'
 import client from './client/client'
 import { getField, updateField } from 'vuex-map-fields'
@@ -59,6 +60,8 @@ const createInitialUserState = () => ({
   lastSaved: '',
   role: '',
   createdAt: '',
+  updatedAt: '',
+  registrationId: null,
   lastLogin: '',
   sendNewsletter: false,
   schoolContact: '',
@@ -278,7 +281,7 @@ const store = new Vuex.Store({
           })
           : [],
         knowledge: user.knowledge || null,
-        lastSaved: user.updatedAt ? new Date(user.updatedAt) : undefined,
+        ...registrationMetadata(user),
         role: user.role || '',
         sendNewsletter: user.sendNewsletter || false,
         schoolContact: user.schoolContact || '',

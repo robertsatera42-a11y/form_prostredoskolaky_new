@@ -341,7 +341,7 @@
         <p class="required-note"><span class="required-marker" aria-hidden="true">*</span> Povinné údaje</p>
         <div class="save-note">
           <p>Přihlášku uložíš až ve 4. kroku tlačítkem „Odeslat přihlášku“. Potom ji můžeš až do konce přihlašování upravovat.</p>
-          <p v-if="user.lastSaved" class="last-saved">Poslední uložení přihlášky: {{ transformDate(user.lastSaved) }}</p>
+          <p v-if="user.lastSaved" class="last-saved">Poslední odeslání přihlášky: {{ transformDate(user.lastSaved) }}</p>
         </div>
         <div class="step-actions">
           <button type="button" class="step-button primary-action" @click="goToSpecialPrize">
@@ -557,7 +557,7 @@ export default {
       })
     },
     transformDate (dateString) {
-      return transformerUtils.transformDate(dateString)
+      return transformerUtils.formatRegistrationTimestamp(dateString)
     },
     getSchools: debounce(async function () {
       try {
