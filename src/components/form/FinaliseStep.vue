@@ -123,7 +123,7 @@
                   </div>
                 </div>
                 <p class="submission-explanation">Odesláním uložíš aktuální podobu přihlášky. Až do uzávěrky ji můžeš znovu otevřít a upravovat.</p>
-                <p v-if="user.lastSaved" class="review-last-saved">Poslední uložení přihlášky: {{ transformDate(user.lastSaved) }}</p>
+                <p v-if="user.lastSaved" class="review-last-saved">Poslední odeslání přihlášky: {{ transformDate(user.lastSaved) }}</p>
               </template>
             </div>
           </transition>
@@ -152,6 +152,7 @@ import SpecialPrizeStep from './SpecialPrizeStep'
 import SpecialPrizeNotice from './SpecialPrizeNotice'
 import config from '../../config/default'
 import client from '../../client/client'
+import { registrationMetadata } from '../../utils/registrationTimestamps'
 import { mapFields } from 'vuex-map-fields'
 import { required } from 'vuelidate/lib/validators'
 import transformerUtils from '../../utils/transformerUtils'
@@ -324,7 +325,7 @@ export default {
       if (typeof value !== 'string' || !/^https?:\/\//i.test(value.trim())) return null
       try { return new URL(value.trim()).href } catch (_) { return null }
     },
-    transformDate (dateString) { return transformerUtils.transformDate(dateString) },
+    transformDate (dateString) { return transformerUtils.formatRegistrationTimestamp(dateString) },
     async submit () {
       if (this.isLoading || this.submitted) return
       this.error = ''
@@ -363,6 +364,7 @@ export default {
         }
         this.registrationId = result.registrationId
         this.submitted = true
+        this.user = { ...this.user, ...registrationMetadata(result, this.user), hasRegistration: true }
         if (result.signedUrl && image) await this.uploadToGCP(image, result.signedUrl)
         try {
           await fb.updateProfileForCurrentUser(preparedUser)

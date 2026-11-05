@@ -123,7 +123,7 @@
           <div>
             <p>Přihláška se uloží až ve čtvrtém kroku po kliknutí na <strong>„Uložit přihlášku“</strong>.</p>
             <p>K úpravě přihlášky se v průběhu přihlašování můžeš kdykoliv vrátit.</p>
-            <p v-if="user.lastSaved" class="last-saved">Naposledy uloženo: {{ transformDate(user.lastSaved) }}</p>
+            <p v-if="user.lastSaved" class="last-saved">Poslední odeslání přihlášky: {{ transformDate(user.lastSaved) }}</p>
           </div>
         </div>
         <div class="step-actions">
@@ -226,7 +226,7 @@ export default {
       return isValid
     },
     transformDate (dateString) {
-      return transformerUtils.transformDate(dateString)
+      return transformerUtils.formatRegistrationTimestamp(dateString)
     }
   }
 }

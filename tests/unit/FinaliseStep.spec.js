@@ -328,4 +328,32 @@ describe('FinaliseStep', () => {
     expect(client.createRegistration).toHaveBeenCalledTimes(1)
     loggedError.mockRestore()
   })
+
+  it('applies persisted timestamps before auxiliary work and preserves them through a profile failure', async () => {
+    await open({ isAgree: true, createdAt: '2026-01-01T00:00:00.000Z' })
+    const loggedError = jest.spyOn(console, 'error').mockImplementation(() => {})
+    client.createRegistration.mockResolvedValueOnce({ registrationId: 21, createdAt: '2026-02-03T04:05:06.000Z', updatedAt: '2026-11-05T12:34:56.123Z', emailSent: false })
+    fb.updateProfileForCurrentUser.mockImplementationOnce(() => {
+      expect(store.state.user.registrationId).toBe(21)
+      expect(store.state.user.createdAt).toBe('2026-02-03T04:05:06.000Z')
+      expect(store.state.user.updatedAt).toBe('2026-11-05T12:34:56.123Z')
+      expect(store.state.user.lastSaved.toISOString()).toBe('2026-11-05T12:34:56.123Z')
+      return Promise.reject(new Error('Profile unavailable'))
+    })
+    await wrapper.vm.submit()
+    expect(store.state.user.registrationId).toBe(21)
+    expect(wrapper.emitted().changeView[0][0].name).toBe('success-step')
+    await wrapper.vm.submit()
+    expect(client.createRegistration).toHaveBeenCalledTimes(1)
+    loggedError.mockRestore()
+  })
+
+  it('does not invent timestamps when an older backend confirms without them', async () => {
+    const saved = new Date('2026-01-02T03:04:05.000Z')
+    await open({ isAgree: true, createdAt: saved.toISOString(), updatedAt: saved.toISOString(), lastSaved: saved })
+    await wrapper.vm.submit()
+    expect(store.state.user.lastSaved.toISOString()).toBe(saved.toISOString())
+    expect(store.state.user.updatedAt).toBe(saved.toISOString())
+    expect(wrapper.emitted().changeView[0][0].name).toBe('success-step')
+  })
 })

@@ -1,6 +1,8 @@
 import config from '../config/default'
+import { formatRegistrationTimestamp } from './registrationTimestamps'
 
 const TransformerUtils = {
+  formatRegistrationTimestamp,
   createCategoriesMap () {
     return new Map(config.consts.interests.map((i) => [i.name, i.short]))
   },
